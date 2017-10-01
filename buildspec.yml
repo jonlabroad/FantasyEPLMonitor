@@ -8,9 +8,9 @@ phases:
     commands:
       - mvn package
       - echo "******** Uploading to S3 ********"
-      - aws s3 cp target/FantasyEPLMonitor-0.5-SNAPSHOT.jar s3://fantasyeplmatchtracker/bin/
+      - aws s3 cp target/FantasyEPLMonitor.jar s3://fantasyeplmatchtracker/bin/FantasyEPLMonitor.jar
 artifacts:
   files:
-    - target/FantasyEPLMonitor-0.5-SNAPSHOT.jar
+    - target/FantasyEPLMonitor.jar
   discard-paths: yes
 #  base-directory: location
