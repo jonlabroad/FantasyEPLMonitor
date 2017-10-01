@@ -9,9 +9,15 @@ import Persistance.S3MatchInfoDatastore;
 import com.amazonaws.services.lambda.runtime.RequestHandler;
 import com.amazonaws.services.lambda.runtime.Context;
 
-public class DataCollectionAndAlerting implements RequestHandler<Integer, Void>{
-    public Void handleRequest(Integer teamId, Context context) {
+import java.util.Map;
+
+public class DataCollectionAndAlerting implements RequestHandler<Map<String, Object>, Void>{
+    public Void handleRequest(Map<String, Object> params, Context context) {
         try {
+            int teamId = 2365803;
+            if (params.containsKey("teamId")) {
+                teamId = (Integer) params.get("teamId");
+            }
             int leagueId = 31187;
             EPLClient client = new EPLClient();
 
