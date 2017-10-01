@@ -1,0 +1,14 @@
+version: 0.2
+
+phases:
+  build:
+    commands:
+      - mvn compile
+  post_build:
+    commands:
+      - mvn package
+artifacts:
+  files:
+    - target/FantasyEPLMonitor-0.5-SNAPSHOT.jar
+  discard-paths: yes
+#  base-directory: location
