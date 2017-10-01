@@ -7,6 +7,8 @@ phases:
   post_build:
     commands:
       - mvn package
+      - echo "******** Uploading to S3 ********"
+      - aws s3 cp target/FantasyEPLMonitor-0.5-SNAPSHOT.jar s3://fantasyeplmatchtracker/bin/
 artifacts:
   files:
     - target/FantasyEPLMonitor-0.5-SNAPSHOT.jar
