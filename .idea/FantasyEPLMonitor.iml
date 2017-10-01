@@ -33,5 +33,6 @@
     <orderEntry type="library" name="Maven: com.amazonaws:jmespath-java:1.11.205" level="project" />
     <orderEntry type="library" name="Maven: com.amazonaws:aws-java-sdk-sns:1.11.205" level="project" />
     <orderEntry type="library" name="Maven: com.amazonaws:aws-java-sdk-sqs:1.11.205" level="project" />
+    <orderEntry type="library" name="Maven: com.amazonaws:aws-lambda-java-core:1.1.0" level="project" />
   </component>
 </module>
