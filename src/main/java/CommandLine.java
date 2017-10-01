@@ -20,7 +20,7 @@ public class CommandLine {
         int teamId = 2365803;
         int leagueId = 31187;
         EPLClient client = new EPLClient();
-        while (true) {
+        //while (true) {
             MatchInfo info = client.GetMatchInfo(leagueId, teamId);
             IMatchInfoDatastore datastore = new S3MatchInfoDatastore(teamId);
             MatchInfo oldInfo = datastore.ReadLast(teamId);
@@ -36,7 +36,7 @@ public class CommandLine {
 
             System.out.format("%d - %d\n\n", info.teams.get(0).currentPoints, info.teams.get(1).currentPoints);
             System.out.println();
-            Thread.sleep(20000);
-        }
+        //    Thread.sleep(20000);
+        //}
     }
 }
