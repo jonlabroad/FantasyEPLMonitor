@@ -42,7 +42,7 @@
     </dependencies>
 
     <build>
-        <finalName>FantasyEPLMonitor.jar</finalName>
+        <finalName>FantasyEPLMonitor</finalName>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
