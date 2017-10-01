@@ -19,5 +19,15 @@
             <artifactId>unirest-java</artifactId>
             <version>1.4.9</version>
         </dependency>
+        <dependency>
+            <groupId>com.amazonaws</groupId>
+            <artifactId>aws-java-sdk-s3</artifactId>
+            <version>1.11.205</version>
+        </dependency>
+        <dependency>
+            <groupId>com.amazonaws</groupId>
+            <artifactId>aws-java-sdk-sns</artifactId>
+            <version>1.11.205</version>
+        </dependency>
     </dependencies>
 </project>
