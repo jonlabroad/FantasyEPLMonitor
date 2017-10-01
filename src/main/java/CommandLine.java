@@ -14,13 +14,18 @@ import Persistance.S3MatchInfoDatastore;
 import com.mashape.unirest.http.exceptions.UnirestException;
 
 import java.io.IOException;
+import java.util.ArrayList;
 
 public class CommandLine {
     public static void main(String[] args) throws IOException, UnirestException, InterruptedException {
-        int teamId = 2365803;
-        int leagueId = 31187;
-        EPLClient client = new EPLClient();
-        //while (true) {
+        ArrayList<Integer> teamIds = new ArrayList<Integer>();
+        teamIds.add(2365803);
+        teamIds.add(1326527);
+        for (int teamId : teamIds) {
+            //int teamId = 2365803;
+            int leagueId = 31187;
+            EPLClient client = new EPLClient();
+            //while (true) {
             MatchInfo info = client.GetMatchInfo(leagueId, teamId);
             IMatchInfoDatastore datastore = new S3MatchInfoDatastore(teamId);
             MatchInfo oldInfo = datastore.ReadLast(teamId);
@@ -31,12 +36,13 @@ public class CommandLine {
 
             for (Team team : info.teams) {
                 System.out.format("#%d %s (%s) %dW-%dD-%dL\n", team.standing.rank, team.name, team.playerName,
-                team.standing.matches_won, team.standing.matches_drawn, team.standing.matches_lost);
+                        team.standing.matches_won, team.standing.matches_drawn, team.standing.matches_lost);
             }
 
             System.out.format("%d - %d\n\n", info.teams.get(0).currentPoints, info.teams.get(1).currentPoints);
             System.out.println();
-        //    Thread.sleep(20000);
-        //}
+            //    Thread.sleep(20000);
+            //}
+        }
     }
 }

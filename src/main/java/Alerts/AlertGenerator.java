@@ -30,7 +30,7 @@ public class AlertGenerator {
 
     private void SendAlert(MatchInfoDifferenceType type, String additionalText, MatchInfo info) {
         String alertText = CreateAlertText(type, additionalText, info);
-        SMSAlertSender alertSender = new SMSAlertSender(GlobalConfig.Secrets.GetUserByTeamId(_teamId).alertPhoneNumber);
+        SMSAlertSender alertSender = new SMSAlertSender(_teamId, GlobalConfig.Secrets.GetUserByTeamId(_teamId).alertPhoneNumber);
         alertSender.SendAlert(_teamId, alertText);
     }
 

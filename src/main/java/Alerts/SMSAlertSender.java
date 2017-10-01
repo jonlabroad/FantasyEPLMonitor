@@ -1,24 +1,33 @@
 package Alerts;
 
+import Config.GlobalConfig;
 import com.amazonaws.services.sns.AmazonSNS;
 import com.amazonaws.services.sns.AmazonSNSClientBuilder;
 
 public class SMSAlertSender implements IAlertSender {
-    private static final String TOPIC_ARN_FORMAT = "arn:aws:sns:us-east-1:796987500533:matchtrackeralert_%d";
     private String _phoneNumber;
     private AmazonSNS _client;
 
-    public SMSAlertSender(String phoneNumber) {
+    public SMSAlertSender(int teamId, String phoneNumber) {
         _phoneNumber = phoneNumber;
         _client = AmazonSNSClientBuilder.defaultClient();
+        CreateTopic(teamId);
     }
 
     public void SendAlert(int teamId, String text) {
         System.out.format("Sending alert for team %d\n", teamId);
-        _client.publish(GetTopicName(teamId), text);
+        _client.publish(GetTopicArn(teamId), text);
     }
 
-    private String GetTopicName(int teamId) {
-        return String.format(TOPIC_ARN_FORMAT, teamId);
+    private String GetTopicArn(int teamId) {
+        return String.format(GlobalConfig.TopicArnFormat, teamId);
+    }
+
+    private void CreateTopic(int teamId) {
+        new SNSTopicCreator().CreateTopic(teamId);
+    }
+
+    private void SubscribeToTopic(int teamId) {
+        // TODO
     }
 }
