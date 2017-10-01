@@ -6,7 +6,7 @@
 
     <groupId>org.jonlabroad</groupId>
     <artifactId>FantasyEPLMonitor</artifactId>
-    <version>0.1-SNAPSHOT</version>
+    <version>0.5-SNAPSHOT</version>
 
     <dependencyManagement>
         <dependencies>
@@ -40,4 +40,25 @@
             <artifactId>aws-java-sdk-sns</artifactId>
         </dependency>
     </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-shade-plugin</artifactId>
+                <version>3.1.0</version>
+                <configuration>
+                    <createDependencyReducedPom>false</createDependencyReducedPom>
+                </configuration>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>shade</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
 </project>
