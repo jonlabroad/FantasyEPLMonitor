@@ -1,7 +1,11 @@
 package Data;
 
+import Client.Score;
+import Data.EPLAPI.FootballerDetails;
 import Data.EPLAPI.Picks;
 import Data.EPLAPI.Standing;
+
+import java.util.HashMap;
 
 public class Team {
     public int id;
@@ -9,5 +13,6 @@ public class Team {
     public String playerName;
     public Picks picks;
     public Standing standing;
-    public int currentPoints = 0;
+    public Score currentPoints = new Score();
+    public HashMap<Integer, FootballerDetails> footballerDetails = new HashMap<Integer, FootballerDetails>();
 }

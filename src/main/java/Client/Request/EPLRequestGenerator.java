@@ -19,6 +19,11 @@ public class EPLRequestGenerator {
         return Build(resolvedUrl);
     }
 
+    public HttpRequest GenerateFootballerDetailRequest(int footballerId) {
+        String resolvedUrl = VariableSubstitutor.SubstituteFootballerId(GlobalConfig.FootballerDetailsPath, footballerId);
+        return Build(resolvedUrl);
+    }
+
     private HttpRequest Build(String path) {
         return Unirest.get(GlobalConfig.EplBaseUrl + path);
     }

@@ -8,6 +8,7 @@ import Data.Team;
 import com.mashape.unirest.http.exceptions.UnirestException;
 import com.mashape.unirest.request.HttpRequest;
 import java.io.IOException;
+import java.util.HashMap;
 
 public class EPLClient
 {
@@ -29,6 +30,12 @@ public class EPLClient
         return bootstrap.elements;
     }
 
+    public FootballerDetails GetFootballerDetails(int footballerId) throws IOException, UnirestException {
+        HttpRequest request = _generator.GenerateFootballerDetailRequest(footballerId);
+        FootballerDetails details = _executor.Execute(request, FootballerDetails.class);
+        return details;
+    }
+
     public Picks GetPicks(int teamId, int eventId) throws IOException, UnirestException {
         HttpRequest request = _generator.GeneratePicksRequest(teamId, eventId);
         return _executor.Execute(request, Picks.class);
@@ -37,6 +44,9 @@ public class EPLClient
     public MatchInfo GetMatchInfo(int leagueId, int teamId) throws IOException, UnirestException {
         Standings standings = GetStandings(leagueId);
         Match match = FindMatch(standings, teamId);
+        HashMap<Integer, FootballerDetails> footballerDetails = new HashMap<Integer, FootballerDetails>();
+
+
         return CreateMatchInfo(standings, match);
     }
 
@@ -51,6 +61,11 @@ public class EPLClient
             team.picks = GetPicks(team.id, match.event);
             team.currentPoints = new ScoreCalculator(GetFootballers()).Calculate(team.picks);
             team.standing = FindStanding(standings, team.id);
+            team.footballerDetails = new HashMap<Integer, FootballerDetails>();
+            for (Pick pick : team.picks.picks) {
+                FootballerDetails details = GetFootballerDetails(pick.element);
+                team.footballerDetails.put(pick.element, details);
+            }
             matchInfo.teams.add(team);
         }
         return matchInfo;
