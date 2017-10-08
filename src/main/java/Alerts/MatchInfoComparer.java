@@ -1,5 +1,6 @@
 package Alerts;
 
+import Cache.DataCache;
 import Data.EPLAPI.Footballer;
 import Data.EPLAPI.FootballerDetails;
 import Data.EPLAPI.FootballerScoreDetail;
@@ -17,10 +18,10 @@ public class MatchInfoComparer {
         _myTeamId = myTeamId;
     }
 
-    public MatchInfoDifference Compare(MatchInfo oldInfo, MatchInfo newInfo, Footballer[] footballers) {
+    public MatchInfoDifference Compare(MatchInfo oldInfo, MatchInfo newInfo) {
         MatchInfoDifference diff = new MatchInfoDifference();
         CompareScore(diff, oldInfo, newInfo);
-        CompareFootballerScores(diff, oldInfo, newInfo, footballers);
+        CompareFootballerScores(diff, oldInfo, newInfo);
         return diff;
     }
 
@@ -29,25 +30,23 @@ public class MatchInfoComparer {
             AddDifference(diff, MatchInfoDifferenceType.OVERALL_SCORE);
             return;
         }
-        for (int i = 0; i < oldInfo.teams.size(); i++) {
-            if (!oldInfo.teams.get(i).currentPoints.Equals(newInfo.teams.get(i).currentPoints)) {
+        for (Team team : oldInfo.teams.values()) {
+            if (!oldInfo.teams.get(team.id).currentPoints.Equals(newInfo.teams.get(team.id).currentPoints)) {
                 AddDifference(diff, MatchInfoDifferenceType.OVERALL_SCORE);
                 return;
             }
         }
     }
 
-    private void CompareFootballerScores(MatchInfoDifference diff, MatchInfo oldInfo, MatchInfo newInfo,
-                                                Footballer[] footballers) {
-        for (int t = 0; t < newInfo.teams.size(); t++) {
-            Team team = newInfo.teams.get(t);
+    private void CompareFootballerScores(MatchInfoDifference diff, MatchInfo oldInfo, MatchInfo newInfo) {
+        for (Team team : newInfo.teams.values()) {
             for (Map.Entry<Integer, FootballerDetails> detailsEntry : team.footballerDetails.entrySet()) {
                 for (int e = 0; e < detailsEntry.getValue().explain.length; e++ ) {
                     FootballerScoreDetail newDetail = detailsEntry.getValue().explain[e];
                     FootballerScoreDetail[] oldDetailArray = null;
                     Team oldTeam = null;
                     if (oldInfo != null) {
-                        oldTeam = oldInfo.teams.get(t);
+                        oldTeam = oldInfo.teams.get(team.id);
                         if (oldTeam.footballerDetails.containsKey(detailsEntry.getKey())) {
                             oldDetailArray = oldTeam.footballerDetails.get(detailsEntry.getKey()).explain;
                         }
@@ -56,7 +55,7 @@ public class MatchInfoComparer {
                     FootballerScoreDetailElement oldElement = oldDetailArray != null && e < oldDetailArray.length ? oldDetailArray[e].explain : null;
                     FootballerScoreDetailElement newElement = newDetail.explain;
 
-                    Footballer footballer = FindFootballer(footballers, detailsEntry.getKey());
+                    Footballer footballer = DataCache.footballers.get(detailsEntry.getKey());
                     FootballerScoreDetailElement diffElement = newElement.Compare(oldElement);
                     AddDetailDifferences(diff, diffElement, team.id == _myTeamId, footballer);
                 }
@@ -77,15 +76,5 @@ public class MatchInfoComparer {
 
     private static void AddDifference(MatchInfoDifference diff, MatchInfoDifferenceType type) {
         diff.AddDifference(type, "");
-    }
-
-    // TODO move this out to some sort of hashed footballer datastore
-    public static Footballer FindFootballer(Footballer[] footballers, int elementId) {
-        for (Footballer footballer : footballers) {
-            if (footballer.id == elementId) {
-                return footballer;
-            }
-        }
-        return null;
     }
 }

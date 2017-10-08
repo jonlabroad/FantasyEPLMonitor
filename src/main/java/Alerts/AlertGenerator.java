@@ -1,7 +1,6 @@
 package Alerts;
 
 import Config.GlobalConfig;
-import Data.EPLAPI.Footballer;
 import Data.MatchInfo;
 import Data.Team;
 
@@ -12,9 +11,11 @@ import static Alerts.MatchInfoDifferenceType.OVERALL_SCORE;
 public class AlertGenerator {
     private static final HashSet<MatchInfoDifferenceType> _alertableTypes = new HashSet<MatchInfoDifferenceType>();
     private int _teamId;
+    private boolean _printOnly = true;
 
-    public AlertGenerator(int teamId) {
+    public AlertGenerator(int teamId, boolean printOnly) {
         _teamId = teamId;
+        _printOnly = printOnly;
 
         // TODO config this by user
         _alertableTypes.add(OVERALL_SCORE);
@@ -22,8 +23,8 @@ public class AlertGenerator {
         _alertableTypes.add(MatchInfoDifferenceType.ASSIST);
     }
 
-    public void Generate(MatchInfo newInfo, MatchInfo oldInfo, Footballer[] footballers) {
-        MatchInfoDifference diff = new MatchInfoComparer(_teamId).Compare(oldInfo, newInfo, footballers);
+    public void Generate(MatchInfo newInfo, MatchInfo oldInfo) {
+        MatchInfoDifference diff = new MatchInfoComparer(_teamId).Compare(oldInfo, newInfo);
         if (diff.types.contains(OVERALL_SCORE)) {
             String alertText = CreateAlertText(OVERALL_SCORE, diff.additionalText.get(diff.types.indexOf(OVERALL_SCORE)), newInfo);
             for (int i = 0; i < diff.types.size(); i++) {
@@ -38,14 +39,22 @@ public class AlertGenerator {
         }
     }
 
+    public void GenerateScoutingReport(ScoutingReport report) {
+        String alertText = report.toPregameString();
+        SendAlert(alertText);
+    }
+
     private void SendAlert(String alertText) {
-        SMSAlertSender alertSender = new SMSAlertSender(_teamId, GlobalConfig.Secrets.GetUserByTeamId(_teamId).alertPhoneNumber);
-        alertSender.SendAlert(_teamId, alertText);
+        if (!_printOnly) {
+            SMSAlertSender alertSender = new SMSAlertSender(_teamId, GlobalConfig.Secrets.GetUserByTeamId(_teamId).alertPhoneNumber);
+            alertSender.SendAlert(_teamId, alertText);
+        }
+        System.out.format("Alert [%d]: %s\n", _teamId, alertText);
     }
 
     private String CreateAlertText(MatchInfoDifferenceType type, String text, MatchInfo info) {
         String alertText = String.format("%s!\n%s\n", DifferenceTypeToReadableString(type), text);
-        for (Team team : info.teams) {
+        for (Team team : info.teams.values()) {
             alertText += String.format("%s: %d (%d)\n", team.name, team.currentPoints.startingScore, team.currentPoints.subScore);
         }
         return alertText;

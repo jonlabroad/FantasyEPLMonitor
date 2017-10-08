@@ -1,5 +1,6 @@
 package Client;
 
+import Cache.DataCache;
 import Client.Request.EPLRequestGenerator;
 import Client.Request.RequestExecutor;
 import Data.EPLAPI.*;
@@ -38,19 +39,21 @@ public class EPLClient
 
     public Picks GetPicks(int teamId, int eventId) throws IOException, UnirestException {
         HttpRequest request = _generator.GeneratePicksRequest(teamId, eventId);
-        return _executor.Execute(request, Picks.class);
+        try {
+            return _executor.Execute(request, Picks.class);
+        }
+        catch (Exception ex) {
+            return null;
+        }
     }
 
-    public MatchInfo GetMatchInfo(int leagueId, int teamId) throws IOException, UnirestException {
+    public MatchInfo GetMatchInfo(int leagueId, int teamId, boolean next) throws IOException, UnirestException {
         Standings standings = GetStandings(leagueId);
-        Match match = FindMatch(standings, teamId);
-        HashMap<Integer, FootballerDetails> footballerDetails = new HashMap<Integer, FootballerDetails>();
-
-
-        return CreateMatchInfo(standings, match);
+        Match match = FindMatch(standings, teamId, next);
+        return CreateMatchInfo(standings, match, next);
     }
 
-    private MatchInfo CreateMatchInfo(Standings standings, Match match) throws IOException, UnirestException {
+    private MatchInfo CreateMatchInfo(Standings standings, Match match, boolean isNext) throws IOException, UnirestException {
         MatchInfo matchInfo = new MatchInfo();
         matchInfo.match = match;
         for (int i = 0; i < 2; i++) {
@@ -58,21 +61,26 @@ public class EPLClient
             team.id = i == 0 ? match.entry_1_entry : match.entry_2_entry;
             team.name = i == 0 ? match.entry_1_name : match.entry_2_name;
             team.playerName = i == 0 ? match.entry_1_player_name : match.entry_2_player_name;
-            team.picks = GetPicks(team.id, match.event);
-            team.currentPoints = new ScoreCalculator(GetFootballers()).Calculate(team.picks);
-            team.standing = FindStanding(standings, team.id);
-            team.footballerDetails = new HashMap<Integer, FootballerDetails>();
-            for (Pick pick : team.picks.picks) {
-                FootballerDetails details = GetFootballerDetails(pick.element);
-                team.footballerDetails.put(pick.element, details);
+            int picksEventId = isNext ? match.event - 1 : match.event;
+            team.picks = GetPicks(team.id, picksEventId);
+            if (team.picks != null) {
+                team.currentPoints = !isNext ? new ScoreCalculator().Calculate(team.picks) : new Score();
+                team.footballerDetails = new HashMap<Integer, FootballerDetails>();
+                for (Pick pick : team.picks.picks) {
+                    FootballerDetails details = GetFootballerDetails(pick.element);
+                    DataCache.footballerDetails.put(pick.element, details);
+                    team.footballerDetails.put(pick.element, details);
+                }
             }
-            matchInfo.teams.add(team);
+            team.standing = FindStanding(standings, team.id);
+            matchInfo.teams.put(team.id, team);
         }
         return matchInfo;
     }
 
-    private Match FindMatch(Standings standings, int teamId) {
-        for (Match match : standings.matches_this.results) {
+    private Match FindMatch(Standings standings, int teamId, boolean next) {
+        Matches matches = next ? standings.matches_next : standings.matches_this;
+        for (Match match : matches.results) {
             if (match.entry_1_entry == teamId || match.entry_2_entry == teamId) {
                 return match;
             }
