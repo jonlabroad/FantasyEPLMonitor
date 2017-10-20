@@ -11,7 +11,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 public abstract class CommonRunner {
-    protected ArrayList<Integer> _teamIds = new ArrayList<Integer>();
+    protected ArrayList<Integer> _teamIds = new ArrayList<>();
     protected Integer _leagueId = 31187;
     protected boolean _forceUpdate = false;
 

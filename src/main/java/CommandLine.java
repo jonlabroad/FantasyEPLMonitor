@@ -21,8 +21,8 @@ import java.util.ArrayList;
 
 public class CommandLine {
     public static void main(String[] args) throws IOException, UnirestException, InterruptedException {
-        PregameRunner pregame = new PregameRunner();
-        pregame.Run();
+        //PregameRunner pregame = new PregameRunner();
+        //pregame.Run();
 
         GamedayRunner runner = new GamedayRunner();
         runner.Run();

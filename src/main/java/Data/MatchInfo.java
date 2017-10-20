@@ -8,6 +8,7 @@ import java.util.HashMap;
 
 public class MatchInfo {
     public Match match;
-    public ArrayList<Picks> picks = new ArrayList<Picks>();
-    public HashMap<Integer, Team> teams = new HashMap<Integer, Team>();
+    public ArrayList<Picks> picks = new ArrayList<>();
+    public HashMap<Integer, Team> teams = new HashMap<>();
+    public ArrayList<String> matchEvents = new ArrayList<>();
 }

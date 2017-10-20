@@ -7,7 +7,7 @@ import Persistance.S3MatchInfoDatastore;
 import java.util.ArrayList;
 
 public class PregameRunner extends CommonRunner {
-    private boolean _force = true;
+    private boolean _force = false;
     private boolean _printOnly = false;
 
     public PregameRunner() {

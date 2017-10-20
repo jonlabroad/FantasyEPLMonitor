@@ -1,6 +1,7 @@
 package Alerts;
 
 import Config.GlobalConfig;
+import Data.ScoreNotification;
 import com.amazonaws.services.sns.AmazonSNS;
 import com.amazonaws.services.sns.AmazonSNSClientBuilder;
 import com.amazonaws.services.sns.model.Endpoint;
@@ -19,21 +20,21 @@ public class AndroidAlertSender implements IAlertSender {
         _client = AmazonSNSClientBuilder.defaultClient();
     }
 
-    public void SendAlert(int teamId, String text) {
+    public void SendAlert(int teamId, ScoreNotification scoreChange) {
         System.out.format("Sending alert for team %d\n", teamId);
         List<String> endpoints =  findTeamEndpoints(teamId);
         for (String endpointArn : endpoints) {
             PublishRequest request = new PublishRequest();
             request.setTargetArn(endpointArn);
-            request.setMessage(createNotification(text.replace("\n", " ")));
+            request.setMessage(createNotification(scoreChange));
             request.setMessageStructure("json");
             _client.publish(request);
 
             request = new PublishRequest();
             request.setTargetArn(endpointArn);
             request.setMessageStructure("json");
-            request.setMessage(createDataMessage(text.replace("\n", " ")));
-            _client.publish(request);
+            request.setMessage(createDataMessage(scoreChange));
+            //_client.publish(request);
         }
     }
 
@@ -53,14 +54,17 @@ public class AndroidAlertSender implements IAlertSender {
         return endpoints;
     }
 
-    protected String createNotification(String text) {
-        String msg = String.format("{ \"GCM\": \"{\\\"notification\\\": {\\\"title\\\": \\\"%s\\\"}}\"}", text);
+    protected String createNotification(ScoreNotification scoreChange) {
+        String msg = String.format("{ \"GCM\": \"{\\\"notification\\\": {\\\"title\\\": \\\"%s\\\", \\\"body\\\": \\\"%s\\\", \\\"sound\\\": \\\"default\\\", \\\"tag\\\": \\\"0\\\"}}\"}",
+                scoreChange.title,
+                scoreChange.shortDescription);
         System.out.println(msg);
         return msg;
     }
 
-    protected String createDataMessage(String text) {
-        String msg = String.format("{ \"GCM\": \"{\\\"data\\\": {\\\"title\\\": \\\"%s\\\"}}\"}", text);
+    protected String createDataMessage(ScoreNotification scoreChange) {
+        String msg = String.format("{ \"GCM\": \"{\\\"data\\\": {\\\"title\\\": \\\"%s\\\"}}\"}",
+                scoreChange.title);
         return msg;
     }
 }

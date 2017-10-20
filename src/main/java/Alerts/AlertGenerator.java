@@ -2,7 +2,9 @@ package Alerts;
 
 import Config.GlobalConfig;
 import Data.MatchInfo;
+import Data.ScoreNotification;
 import Data.Team;
+import org.joda.time.DateTime;
 
 import java.util.HashSet;
 
@@ -26,13 +28,26 @@ public class AlertGenerator {
     public void Generate(MatchInfo newInfo, MatchInfo oldInfo) {
         MatchInfoDifference diff = new MatchInfoComparer(_teamId).Compare(oldInfo, newInfo);
         if (diff.types.contains(OVERALL_SCORE)) {
-            String alertText = CreateAlertText(OVERALL_SCORE, diff.additionalText.get(diff.types.indexOf(OVERALL_SCORE)), newInfo);
+            Team[] teamsArray = newInfo.teams.values().toArray(new Team[]{});
+            ScoreNotification scoreNotification = new ScoreNotification(DateTime.now(),
+                    teamsArray[0].currentPoints.startingScore, teamsArray[0].currentPoints.subScore,
+                    teamsArray[1].currentPoints.startingScore, teamsArray[1].currentPoints.startingScore,
+                    teamsArray[0].name,
+                    teamsArray[1].name);
+
+            String overallScoreText = CreateAlertText(OVERALL_SCORE, diff.additionalText.get(diff.types.indexOf(OVERALL_SCORE)), newInfo);
+            scoreNotification.addEvent(overallScoreText);
             for (int i = 0; i < diff.types.size(); i++) {
                 if (diff.types.get(i) != OVERALL_SCORE) {
-                    alertText += "\n" + diff.additionalText.get(i);
+                    scoreNotification.addEvent(diff.additionalText.get(i));
                 }
             }
-            SendAlert(alertText);
+            SendAlert(scoreNotification);
+
+            // TODO move this out of here!
+            for (String event : scoreNotification.getTickerEvents()) {
+                newInfo.matchEvents.add(event);
+            }
         }
         else {
             // anything?
@@ -41,10 +56,11 @@ public class AlertGenerator {
 
     public void GenerateScoutingReport(ScoutingReport report) {
         String alertText = report.toPregameString();
-        SendAlert(alertText);
+        // TODO reenable scouting report alert
+        //SendAlert(alertText);
     }
 
-    private void SendAlert(String alertText) {
+    private void SendAlert(ScoreNotification alertText) {
         if (!_printOnly) {
             AndroidAlertSender alertSender = new AndroidAlertSender();
             alertSender.SendAlert(_teamId, alertText);
@@ -53,9 +69,9 @@ public class AlertGenerator {
     }
 
     private String CreateAlertText(MatchInfoDifferenceType type, String text, MatchInfo info) {
-        String alertText = String.format("%s!\n%s\n", DifferenceTypeToReadableString(type), text);
+        String alertText = String.format("%s!: %s", DifferenceTypeToReadableString(type), text);
         for (Team team : info.teams.values()) {
-            alertText += String.format("%s: %d (%d)\n", team.name, team.currentPoints.startingScore, team.currentPoints.subScore);
+            //alertText += String.format("%s: %d (%d)\n", team.name, team.currentPoints.startingScore, team.currentPoints.subScore);
         }
         return alertText;
     }
