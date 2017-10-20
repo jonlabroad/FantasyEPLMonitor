@@ -46,7 +46,7 @@ public class AlertGenerator {
 
     private void SendAlert(String alertText) {
         if (!_printOnly) {
-            SMSAlertSender alertSender = new SMSAlertSender(_teamId, GlobalConfig.Secrets.GetUserByTeamId(_teamId).alertPhoneNumber);
+            AndroidAlertSender alertSender = new AndroidAlertSender();
             alertSender.SendAlert(_teamId, alertText);
         }
         System.out.format("Alert [%d]: %s\n", _teamId, alertText);
