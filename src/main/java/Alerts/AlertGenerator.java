@@ -31,7 +31,7 @@ public class AlertGenerator {
             Team[] teamsArray = newInfo.teams.values().toArray(new Team[]{});
             ScoreNotification scoreNotification = new ScoreNotification(DateTime.now(),
                     teamsArray[0].currentPoints.startingScore, teamsArray[0].currentPoints.subScore,
-                    teamsArray[1].currentPoints.startingScore, teamsArray[1].currentPoints.startingScore,
+                    teamsArray[1].currentPoints.startingScore, teamsArray[1].currentPoints.subScore,
                     teamsArray[0].name,
                     teamsArray[1].name);
 
