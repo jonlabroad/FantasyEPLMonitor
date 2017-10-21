@@ -50,6 +50,18 @@ public abstract class CommonRunner {
                 if (!_forceUpdate) {
                     _prevThisMatchInfo = datastore.ReadMatchInfo(teamId, _thisMatchInfo.match.event);
                     _prevNextMatchInfo = datastore.ReadNextMatchInfo(teamId, _thisMatchInfo.match.event + 1);
+
+                    // Update this match info with previous events. This should probably be done elsewhere
+                    if (_prevThisMatchInfo != null) {
+                        ArrayList<String> thisMatchEvents = _thisMatchInfo.matchEvents;
+                        _thisMatchInfo.matchEvents = new ArrayList<String>();
+                        for (String event : _prevThisMatchInfo.matchEvents) {
+                            _thisMatchInfo.matchEvents.add(event);
+                        }
+                        for (String event : thisMatchEvents) {
+                            _thisMatchInfo.matchEvents.add(event);
+                        }
+                    }
                 }
             } catch (Exception ex) {
                 System.out.println(ex.getMessage());
