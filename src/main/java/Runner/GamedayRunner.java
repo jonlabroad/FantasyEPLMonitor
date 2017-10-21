@@ -5,6 +5,7 @@ import Data.Team;
 import Persistance.S3MatchInfoDatastore;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class GamedayRunner extends CommonRunner {
 
@@ -27,17 +28,14 @@ public class GamedayRunner extends CommonRunner {
                                team.standing.matches_won, team.standing.matches_drawn, team.standing.matches_lost);
         }
 
-        ArrayList<Team> teams = new ArrayList<Team>();
-        for (Team t : _thisMatchInfo.teams.values()) {
-            teams.add(t);
-        }
+        HashMap<Integer, Team> teams = _thisMatchInfo.teams;
         new S3MatchInfoDatastore(teamId).WriteCurrent(_thisMatchInfo);
 
         System.out.format("%d (%d) - %d (%d)\n\n",
-                    teams.get(0).currentPoints.startingScore,
-                    teams.get(0).currentPoints.subScore,
-                    teams.get(1).currentPoints.startingScore,
-                    teams.get(1).currentPoints.subScore);
+                    teams.get(_thisMatchInfo.teamIds.get(0)).currentPoints.startingScore,
+                    teams.get(_thisMatchInfo.teamIds.get(0)).currentPoints.subScore,
+                    teams.get(_thisMatchInfo.teamIds.get(1)).currentPoints.startingScore,
+                    teams.get(_thisMatchInfo.teamIds.get(1)).currentPoints.subScore);
         System.out.println();
     }
 }

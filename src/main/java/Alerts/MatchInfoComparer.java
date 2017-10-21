@@ -39,7 +39,8 @@ public class MatchInfoComparer {
     }
 
     private void CompareFootballerScores(MatchInfoDifference diff, MatchInfo oldInfo, MatchInfo newInfo) {
-        for (Team team : newInfo.teams.values()) {
+        for (int teamId : newInfo.teamIds) {
+            Team team = newInfo.teams.get(teamId);
             for (Map.Entry<Integer, FootballerDetails> detailsEntry : team.footballerDetails.entrySet()) {
                 for (int e = 0; e < detailsEntry.getValue().explain.length; e++ ) {
                     FootballerScoreDetail newDetail = detailsEntry.getValue().explain[e];

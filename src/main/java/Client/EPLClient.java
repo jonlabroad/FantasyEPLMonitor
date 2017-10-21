@@ -59,6 +59,7 @@ public class EPLClient
         for (int i = 0; i < 2; i++) {
             Team team = new Team();
             team.id = i == 0 ? match.entry_1_entry : match.entry_2_entry;
+            matchInfo.teamIds.add(team.id);
             team.name = i == 0 ? match.entry_1_name : match.entry_2_name;
             team.playerName = i == 0 ? match.entry_1_player_name : match.entry_2_player_name;
             int picksEventId = isNext ? match.event - 1 : match.event;

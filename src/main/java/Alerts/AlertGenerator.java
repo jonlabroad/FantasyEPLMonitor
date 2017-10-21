@@ -28,12 +28,15 @@ public class AlertGenerator {
     public void Generate(MatchInfo newInfo, MatchInfo oldInfo) {
         MatchInfoDifference diff = new MatchInfoComparer(_teamId).Compare(oldInfo, newInfo);
         if (diff.types.contains(OVERALL_SCORE)) {
-            Team[] teamsArray = newInfo.teams.values().toArray(new Team[]{});
+            int team1Id = newInfo.teamIds.get(0);
+            int team2Id = newInfo.teamIds.get(1);
+            Team team1 = newInfo.teams.get(team1Id);
+            Team team2 = newInfo.teams.get(team2Id);
             ScoreNotification scoreNotification = new ScoreNotification(DateTime.now(),
-                    teamsArray[0].currentPoints.startingScore, teamsArray[0].currentPoints.subScore,
-                    teamsArray[1].currentPoints.startingScore, teamsArray[1].currentPoints.subScore,
-                    teamsArray[0].name,
-                    teamsArray[1].name);
+                    team1.currentPoints.startingScore, team1.currentPoints.subScore,
+                    team2.currentPoints.startingScore, team2.currentPoints.subScore,
+                    team1.name,
+                    team2.name);
 
             String overallScoreText = CreateAlertText(OVERALL_SCORE, diff.additionalText.get(diff.types.indexOf(OVERALL_SCORE)), newInfo);
             scoreNotification.addEvent(overallScoreText);
@@ -70,7 +73,8 @@ public class AlertGenerator {
 
     private String CreateAlertText(MatchInfoDifferenceType type, String text, MatchInfo info) {
         String alertText = String.format("%s!: %s", DifferenceTypeToReadableString(type), text);
-        for (Team team : info.teams.values()) {
+        for (int teamId : info.teamIds) {
+            Team team = info.teams.get(teamId);
             //alertText += String.format("%s: %d (%d)\n", team.name, team.currentPoints.startingScore, team.currentPoints.subScore);
         }
         return alertText;
