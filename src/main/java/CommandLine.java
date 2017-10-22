@@ -1,6 +1,4 @@
-import Config.DeviceConfig;
-import Config.DeviceConfigurator;
-import Runner.GamedayRunner;
+import runner.GamedayRunner;
 import com.mashape.unirest.http.exceptions.UnirestException;
 
 import java.io.IOException;
