@@ -1,4 +1,4 @@
-package com.jlabroad.eplfantasymatchtracker.Data.EPLAPI;
+package com.jlabroad.eplfantasymatchtracker.data.eplapi;
 
 public class Footballer {
     public int id;

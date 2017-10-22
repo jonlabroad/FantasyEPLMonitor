@@ -1,4 +1,4 @@
-package com.jlabroad.eplfantasymatchtracker.Data.EPLAPI;
+package com.jlabroad.eplfantasymatchtracker.data.eplapi;
 
 /**
  * Created by jonla on 9/30/2017.

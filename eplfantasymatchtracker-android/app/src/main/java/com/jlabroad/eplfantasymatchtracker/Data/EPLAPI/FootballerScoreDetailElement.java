@@ -1,4 +1,4 @@
-package com.jlabroad.eplfantasymatchtracker.Data.EPLAPI;
+package com.jlabroad.eplfantasymatchtracker.data.eplapi;
 
 public class FootballerScoreDetailElement {
     public ScoreExplain minutes = new ScoreExplain();

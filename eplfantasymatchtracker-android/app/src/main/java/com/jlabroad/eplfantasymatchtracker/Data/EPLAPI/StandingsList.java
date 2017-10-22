@@ -1,4 +1,4 @@
-package com.jlabroad.eplfantasymatchtracker.Data.EPLAPI;
+package com.jlabroad.eplfantasymatchtracker.data.eplapi;
 
 public class StandingsList {
     public boolean has_next;

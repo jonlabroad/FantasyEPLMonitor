@@ -1,4 +1,4 @@
-package com.jlabroad.eplfantasymatchtracker.Client;
+package com.jlabroad.eplfantasymatchtracker.data;
 
 public class Score {
     public int startingScore =0;

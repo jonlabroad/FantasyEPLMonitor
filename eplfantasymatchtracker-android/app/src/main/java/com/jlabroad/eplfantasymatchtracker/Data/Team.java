@@ -1,10 +1,9 @@
-package com.jlabroad.eplfantasymatchtracker.Data;
+package com.jlabroad.eplfantasymatchtracker.data;
 
-import com.jlabroad.eplfantasymatchtracker.Client.Score;
-import com.jlabroad.eplfantasymatchtracker.Data.EPLAPI.Footballer;
-import com.jlabroad.eplfantasymatchtracker.Data.EPLAPI.FootballerDetails;
-import com.jlabroad.eplfantasymatchtracker.Data.EPLAPI.Picks;
-import com.jlabroad.eplfantasymatchtracker.Data.EPLAPI.Standing;
+import com.jlabroad.eplfantasymatchtracker.data.eplapi.Footballer;
+import com.jlabroad.eplfantasymatchtracker.data.eplapi.FootballerDetails;
+import com.jlabroad.eplfantasymatchtracker.data.eplapi.Picks;
+import com.jlabroad.eplfantasymatchtracker.data.eplapi.Standing;
 
 import java.util.HashMap;
 
