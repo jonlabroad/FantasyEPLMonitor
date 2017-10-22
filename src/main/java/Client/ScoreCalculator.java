@@ -4,6 +4,7 @@ import Cache.DataCache;
 import Data.EPLAPI.Footballer;
 import Data.EPLAPI.Pick;
 import Data.EPLAPI.Picks;
+import Data.Score;
 
 public class ScoreCalculator {
     public Score Calculate(Picks picks) {

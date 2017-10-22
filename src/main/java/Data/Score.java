@@ -1,4 +1,4 @@
-package Client;
+package Data;
 
 public class Score {
     public int startingScore =0;

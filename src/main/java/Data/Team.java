@@ -1,6 +1,5 @@
 package Data;
 
-import Client.Score;
 import Data.EPLAPI.Footballer;
 import Data.EPLAPI.FootballerDetails;
 import Data.EPLAPI.Picks;

@@ -5,6 +5,7 @@ import Client.Request.EPLRequestGenerator;
 import Client.Request.RequestExecutor;
 import Data.EPLAPI.*;
 import Data.MatchInfo;
+import Data.Score;
 import Data.Team;
 import com.mashape.unirest.http.exceptions.UnirestException;
 import com.mashape.unirest.request.HttpRequest;
@@ -15,6 +16,7 @@ public class EPLClient
 {
     private EPLRequestGenerator _generator;
     private RequestExecutor _executor;
+    private HashMap<Integer, MatchInfoProvider> _matchInfoProviderByLeague = new HashMap<>();
 
     public EPLClient() throws IOException {
         Initialize();
@@ -66,7 +68,7 @@ public class EPLClient
             team.picks = GetPicks(team.id, picksEventId);
             if (team.picks != null) {
                 team.currentPoints = !isNext ? new ScoreCalculator().Calculate(team.picks) : new Score();
-                team.footballerDetails = new HashMap<Integer, FootballerDetails>();
+                team.footballerDetails = new HashMap<>();
                 for (Pick pick : team.picks.picks) {
                     FootballerDetails details = GetFootballerDetails(pick.element);
                     DataCache.footballerDetails.put(pick.element, details);

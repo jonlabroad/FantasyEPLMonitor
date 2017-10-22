@@ -17,29 +17,26 @@ public class S3MatchInfoDatastore implements IMatchInfoDatastore {
     private static final String CURRENT_KEY_FORMAT = "MatchInfo_%d_%d";
     private static final String NEXT_KEY_FORMAT = "ScoutingReport_%d_%d";
 
-    private int _teamId;
-
-    public S3MatchInfoDatastore(int teamId) {
-        _teamId = teamId;
+    public S3MatchInfoDatastore() {
         _client = AmazonS3ClientBuilder.defaultClient();
     }
 
-    public MatchInfo ReadMatchInfo(int teamId, int eventId) {
-        return ReadInfo(CreateCurrentKey(eventId));
+    public MatchInfo readMatchInfo(int teamId, int eventId) {
+        return ReadInfo(CreateCurrentKey(teamId, eventId));
     }
 
-    public MatchInfo ReadNextMatchInfo(int teamId, int eventId) {
-        return ReadInfo(CreateNextKey(eventId));
+    public MatchInfo readNextMatchInfo(int teamId, int eventId) {
+        return ReadInfo(CreateNextKey(teamId, eventId));
     }
 
-    public void WriteCurrent(MatchInfo info) {
+    public void writeCurrent(int teamId, MatchInfo info) {
         String json = toJson(info);
-        _client.putObject(BUCKET_NAME, CreateCurrentKey(info.match.event), json);
+        _client.putObject(BUCKET_NAME, CreateCurrentKey(teamId, info.match.event), json);
     }
 
-    public void WriteNext(MatchInfo info) {
+    public void writeNext(int teamId, MatchInfo info) {
         String json = toJson(info);
-        _client.putObject(BUCKET_NAME, CreateNextKey(info.match.event), json);
+        _client.putObject(BUCKET_NAME, CreateNextKey(teamId, info.match.event), json);
     }
 
     public String ReadObject(S3Object obj) {
@@ -57,10 +54,10 @@ public class S3MatchInfoDatastore implements IMatchInfoDatastore {
         return null;
     }
 
-    private String CreateCurrentKey(int eventId) {
-        return String.format(CURRENT_KEY_FORMAT, _teamId, eventId);
+    private String CreateCurrentKey(int teamId, int eventId) {
+        return String.format(CURRENT_KEY_FORMAT, teamId, eventId);
     }
-    private String CreateNextKey(int eventId) { return String.format(NEXT_KEY_FORMAT, _teamId, eventId); }
+    private String CreateNextKey(int teamId, int eventId) { return String.format(NEXT_KEY_FORMAT, teamId, eventId); }
 
     private String toJson(MatchInfo info) {
         return new Gson().toJson(info);
