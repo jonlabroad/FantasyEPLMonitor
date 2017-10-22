@@ -14,4 +14,6 @@ public class GlobalConfig {
     public static final String TopicArnFormat = String.format("arn:aws:sns:us-east-1:796987500533:%s", TopicNamePrefix) + "%d";
 
     public static SecretConfig Secrets = new SecretConfigurator().ReadConfig();
+
+    public static DeviceConfig DeviceConfig = new DeviceConfigurator().readConfig();
 }

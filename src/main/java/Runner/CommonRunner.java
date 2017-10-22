@@ -3,27 +3,31 @@ package Runner;
 import Cache.FootballerDataReader;
 import Client.EPLClient;
 import Client.MatchInfoProvider;
+import Config.DeviceConfig;
+import Config.GlobalConfig;
 import Persistance.S3MatchInfoDatastore;
 import com.mashape.unirest.http.exceptions.UnirestException;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashSet;
 
 public abstract class CommonRunner {
     protected EPLClient _client;
     protected MatchInfoProvider _matchInfoProvider;
     protected S3MatchInfoDatastore _matchInfoDatastore;
 
-    protected ArrayList<Integer> _teamIds = new ArrayList<>();
+    protected HashSet<Integer> _teamIds = new HashSet<>();
     protected Integer _leagueId = 31187;
     protected boolean _forceUpdate = false;
 
     public CommonRunner() {
-        _teamIds.add(2365803);
-        _teamIds.add(1326527);
+        //_teamIds.add(2365803);
+        //_teamIds.add(1326527);
+        _teamIds = GlobalConfig.DeviceConfig.getAllTeamIds();
     }
 
-    public CommonRunner(ArrayList<Integer> teamIds) {
+    public CommonRunner(HashSet<Integer> teamIds) {
         _teamIds = teamIds;
     }
 

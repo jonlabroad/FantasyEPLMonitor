@@ -1,5 +1,6 @@
 package Persistance;
 
+import Config.GlobalConfig;
 import Data.MatchInfo;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3ClientBuilder;
@@ -13,7 +14,7 @@ import java.util.stream.Collectors;
 public class S3MatchInfoDatastore implements IMatchInfoDatastore {
 
     private AmazonS3 _client;
-    private static final String BUCKET_NAME = "fantasyeplmatchtracker";
+    private static final String BUCKET_NAME = GlobalConfig.S3Bucket;
     private static final String CURRENT_KEY_FORMAT = "MatchInfo_%d_%d";
     private static final String NEXT_KEY_FORMAT = "ScoutingReport_%d_%d";
 

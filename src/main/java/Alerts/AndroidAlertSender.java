@@ -10,6 +10,7 @@ import com.amazonaws.services.sns.model.ListEndpointsByPlatformApplicationResult
 import com.amazonaws.services.sns.model.PublishRequest;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
@@ -34,7 +35,7 @@ public class AndroidAlertSender implements IAlertSender {
             request.setTargetArn(endpointArn);
             request.setMessageStructure("json");
             request.setMessage(createDataMessage(scoreChange));
-            //_client.publish(request);
+            _client.publish(request);
         }
     }
 
@@ -43,15 +44,25 @@ public class AndroidAlertSender implements IAlertSender {
         ListEndpointsByPlatformApplicationRequest request = new ListEndpointsByPlatformApplicationRequest();
         request.setPlatformApplicationArn(GlobalConfig.Secrets.platformApplicationArn);
         ListEndpointsByPlatformApplicationResult result = _client.listEndpointsByPlatformApplication(request);
+        HashSet<String> devices = findDevicesSubscribed(teamId);
+
         for (Endpoint endpoint : result.getEndpoints()) {
-            for (Map.Entry<String, String> attrEntry : endpoint.getAttributes().entrySet()) {
-                System.out.println(attrEntry.getKey() + " = " + attrEntry.getValue());
-                if (attrEntry.getValue().contains(Integer.toString(teamId))) {
+            String endpointDevice = endpoint.getAttributes().get("CustomUserData");
+
+            // TODO change this once app is updated with new subscription method
+            endpointDevice = endpointDevice.substring(endpointDevice.indexOf('_') + 1);
+            if (endpointDevice != null && endpointDevice.length() > 3) {
+                if (devices.contains(endpointDevice)) {
                     endpoints.add(endpoint.getEndpointArn());
                 }
             }
         }
         return endpoints;
+    }
+
+    // TODO use this to determine the endpoints once app subscribes appropriately
+    protected HashSet<String> findDevicesSubscribed(int teamId) {
+        return GlobalConfig.DeviceConfig.getSubscribers(teamId);
     }
 
     protected String createNotification(ScoreNotification scoreChange) {
@@ -65,6 +76,7 @@ public class AndroidAlertSender implements IAlertSender {
     protected String createDataMessage(ScoreNotification scoreChange) {
         String msg = String.format("{ \"GCM\": \"{\\\"data\\\": {\\\"title\\\": \\\"%s\\\"}}\"}",
                 scoreChange.title);
+        System.out.println(msg);
         return msg;
     }
 }
