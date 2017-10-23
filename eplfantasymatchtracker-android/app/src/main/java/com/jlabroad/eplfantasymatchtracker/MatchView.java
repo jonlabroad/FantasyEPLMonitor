@@ -20,6 +20,7 @@ import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.s3.model.S3Object;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.gson.Gson;
+import com.jlabroad.eplfantasymatchtracker.config.GlobalConfig;
 import com.jlabroad.eplfantasymatchtracker.data.MatchInfo;
 import com.jlabroad.eplfantasymatchtracker.data.Team;
 import com.jlabroad.eplfantasymatchtracker.aws.ApplicationEndpointRegister;
