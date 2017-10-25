@@ -21,20 +21,20 @@ public class AndroidAlertSender implements IAlertSender {
         _client = AmazonSNSClientBuilder.defaultClient();
     }
 
-    public void SendAlert(int teamId, ScoreNotification scoreChange) {
+    public void sendAlert(int teamId, String title, String subtitle) {
         System.out.format("Sending alert for team %d\n", teamId);
         List<String> endpoints =  findTeamEndpoints(teamId);
         for (String endpointArn : endpoints) {
             PublishRequest request = new PublishRequest();
             request.setTargetArn(endpointArn);
-            request.setMessage(createNotification(scoreChange));
+            request.setMessage(createNotification(title, subtitle));
             request.setMessageStructure("json");
             _client.publish(request);
 
             request = new PublishRequest();
             request.setTargetArn(endpointArn);
             request.setMessageStructure("json");
-            request.setMessage(createDataMessage(scoreChange));
+            request.setMessage(createDataMessage(title));
             _client.publish(request);
         }
     }
@@ -68,17 +68,17 @@ public class AndroidAlertSender implements IAlertSender {
         return devices;
     }
 
-    protected String createNotification(ScoreNotification scoreChange) {
+    protected String createNotification(String title, String subtitle) {
         String msg = String.format("{ \"GCM\": \"{\\\"notification\\\": {\\\"title\\\": \\\"%s\\\", \\\"body\\\": \\\"%s\\\", \\\"sound\\\": \\\"default\\\", \\\"tag\\\": \\\"0\\\"}}\"}",
-                scoreChange.title,
-                scoreChange.shortDescription);
+                title,
+                subtitle);
         System.out.println(msg);
         return msg;
     }
 
-    protected String createDataMessage(ScoreNotification scoreChange) {
+    protected String createDataMessage(String title) {
         String msg = String.format("{ \"GCM\": \"{\\\"data\\\": {\\\"title\\\": \\\"%s\\\"}}\"}",
-                scoreChange.title);
+                title);
         System.out.println(msg);
         return msg;
     }

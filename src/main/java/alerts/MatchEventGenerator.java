@@ -27,25 +27,4 @@ public class MatchEventGenerator {
         // TODO reenable scouting report alert
         //SendAlert(alertText);
     }
-
-    private void SendAlert(ScoreNotification alertText) {
-        if (!_printOnly) {
-            AndroidAlertSender alertSender = new AndroidAlertSender();
-            alertSender.SendAlert(_teamId, alertText);
-        }
-        System.out.format("Alert [%d]: %s\n", _teamId, alertText);
-    }
-
-    private String CreateAlertText(MatchEventType type, String text, MatchInfo info) {
-        /*
-        String alertText = String.format("%s!: %s", info.type(type), text);
-        for (int teamId : info.teamIds) {
-            Team team = info.teams.get(teamId);
-            //alertText += String.format("%s: %d (%d)\n", team.name, team.currentPoints.startingScore, team.currentPoints.subScore);
-        }
-        return alertText;
-        */
-        return ""; //TODO?
-    }
-
 }

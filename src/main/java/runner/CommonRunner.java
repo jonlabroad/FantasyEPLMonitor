@@ -26,7 +26,6 @@ public abstract class CommonRunner {
         for (DeviceConfig config : GlobalConfig.DeviceConfig.values()) {
             _teamIds.addAll(config.getAllTeamIds());
         }
-        
     }
 
     public CommonRunner(HashSet<Integer> teamIds) {

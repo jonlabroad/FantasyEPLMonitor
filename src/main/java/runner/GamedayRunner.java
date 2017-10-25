@@ -1,5 +1,7 @@
 package runner;
 
+import alerts.AlertGenerator;
+import alerts.AndroidAlertSender;
 import alerts.MatchEventGenerator;
 import data.MatchEvent;
 import data.MatchInfo;
@@ -21,8 +23,11 @@ public class GamedayRunner extends CommonRunner {
     public void runImpl(int teamId) {
         preRunTasks(teamId);
 
-        MatchEventGenerator alertGen = new MatchEventGenerator(teamId, _printOnly);
-        alertGen.Generate(_thisMatchInfo, _prevThisMatchInfo);
+        MatchEventGenerator matchEventGen = new MatchEventGenerator(teamId, _printOnly);
+        matchEventGen.Generate(_thisMatchInfo, _prevThisMatchInfo);
+
+        AlertGenerator alertGen = new AlertGenerator(teamId, new AndroidAlertSender());
+        alertGen.generateAlerts(_thisMatchInfo, _prevThisMatchInfo);
 
         for (Team team : _thisMatchInfo.teams.values()) {
             new S3MatchInfoDatastore().writeCurrent(team.id, _thisMatchInfo);
