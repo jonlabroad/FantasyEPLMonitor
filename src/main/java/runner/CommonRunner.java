@@ -18,15 +18,15 @@ public abstract class CommonRunner {
 
     protected HashSet<Integer> _teamIds = new HashSet<>();
     protected Integer _leagueId = 31187;
-    protected boolean _forceUpdate = true;
+    protected boolean _forceUpdate = false;
 
     public CommonRunner() {
-        _teamIds.add(2365803); //me
-        /*
+        //_teamIds.add(2365803); //me
+
         for (DeviceConfig config : GlobalConfig.DeviceConfig.values()) {
             _teamIds.addAll(config.getAllTeamIds());
         }
-        */
+        
     }
 
     public CommonRunner(HashSet<Integer> teamIds) {
