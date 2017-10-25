@@ -1,5 +1,7 @@
 package config;
 
+import java.util.Map;
+
 public class GlobalConfig {
     public static final String EplBaseUrl = "https://fantasy.premierleague.com/drf";
     public static final String FootballersPath = "/bootstrap";
@@ -15,5 +17,5 @@ public class GlobalConfig {
 
     public static SecretConfig Secrets = new SecretConfigurator().ReadConfig();
 
-    public static DeviceConfig DeviceConfig = new DeviceConfigurator().readConfig();
+    public static Map<String, DeviceConfig> DeviceConfig = new DeviceConfigurator().readAllConfig();
 }

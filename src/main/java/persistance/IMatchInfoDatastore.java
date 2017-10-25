@@ -1,5 +1,6 @@
 package persistance;
 
+
 import data.MatchInfo;
 
 public interface IMatchInfoDatastore {

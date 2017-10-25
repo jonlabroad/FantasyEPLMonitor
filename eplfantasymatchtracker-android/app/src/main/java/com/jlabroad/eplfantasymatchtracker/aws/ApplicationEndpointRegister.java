@@ -8,6 +8,7 @@ import com.amazonaws.services.sns.model.CreatePlatformEndpointRequest;
 import com.amazonaws.services.sns.model.Endpoint;
 import com.amazonaws.services.sns.model.ListEndpointsByPlatformApplicationRequest;
 import com.amazonaws.services.sns.model.ListEndpointsByPlatformApplicationResult;
+import com.jlabroad.eplfantasymatchtracker.config.GlobalConfig;
 
 import java.util.Map;
 
@@ -25,21 +26,21 @@ public class ApplicationEndpointRegister {
         _deviceId = deviceId;
     }
 
-    public void register(int teamId) {
-        Endpoint endpoint = findEndpoint(teamId);
+    public void register() {
+        Endpoint endpoint = findEndpoint();
         if (endpoint == null) {
             CreatePlatformEndpointRequest request = new CreatePlatformEndpointRequest();
-            request.setPlatformApplicationArn("arn:aws:sns:us-east-1:796987500533:app/GCM/EPL_Fantasy_MatchTracker");
-            request.setCustomUserData(String.format("%d_%s", teamId, _deviceId));
+            request.setPlatformApplicationArn(GlobalConfig.PlatformApplicationId);
             request.setToken(_deviceToken);
+            request.setCustomUserData(_deviceId);
             _sns.createPlatformEndpoint(request);
         }
     }
 
-    protected Endpoint findEndpoint(int teamId) {
-        String keyToFind = createEndpointKey(teamId, _deviceId);
+    protected Endpoint findEndpoint() {
+        String keyToFind = createEndpointKey();
         ListEndpointsByPlatformApplicationRequest request = new ListEndpointsByPlatformApplicationRequest();
-        request.setPlatformApplicationArn("arn:aws:sns:us-east-1:796987500533:app/GCM/EPL_Fantasy_MatchTracker");
+        request.setPlatformApplicationArn(GlobalConfig.PlatformApplicationId);
         ListEndpointsByPlatformApplicationResult result = _sns.listEndpointsByPlatformApplication(request);
         for (Endpoint endpoint : result.getEndpoints()) {
             for (Map.Entry<String, String> entry : endpoint.getAttributes().entrySet()) {
@@ -51,7 +52,7 @@ public class ApplicationEndpointRegister {
         return null;
     }
 
-    protected String createEndpointKey(int teamId, String deviceId) {
-        return String.format("%d_%s", teamId, deviceId);
+    protected String createEndpointKey() {
+        return String.format("%s", _deviceId);
     }
 }

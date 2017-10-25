@@ -2,25 +2,96 @@
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
     tools:context="com.jlabroad.eplfantasymatchtracker.MatchView">
 
     <FrameLayout
         android:id="@+id/container"
-        android:layout_width="368dp"
-        android:layout_height="495dp"
-        tools:layout_editor_absoluteY="8dp"
-        tools:layout_editor_absoluteX="8dp">
-        <ScrollView
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        tools:layout_editor_absoluteX="8dp"
+        tools:layout_editor_absoluteY="8dp">
+
+        <LinearLayout
             android:layout_width="fill_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
             <LinearLayout
-                android:id="@+id/livescorelayout"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:orientation="vertical">
+                android:orientation="horizontal">
+
+                <TableLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:stretchColumns="*">
+                    <TableRow>
+                        <TextView
+                            android:id="@+id/team1name"
+                            android:layout_width="0dp"
+                            android:text="TEAM1"
+                            android:gravity="center"
+                            android:textSize="20sp"
+                            android:textStyle="bold">
+                        </TextView>
+                        <TextView
+                            android:id="@+id/team2name"
+                            android:text="TEAM2"
+                            android:layout_width="0dp"
+                            android:gravity="center"
+                            android:textSize="20sp"
+                            android:textStyle="bold">
+                        </TextView>
+                    </TableRow>
+                    <TableRow>
+                        <TextView
+                            android:id="@+id/team1record"
+                            android:layout_width="0dp"
+                            android:text="W0-L0-D0"
+                            android:gravity="center"
+                            android:textSize="10sp">
+                        </TextView>
+                        <TextView
+                            android:id="@+id/team2record"
+                            android:text="W0-L0-D0"
+                            android:layout_width="0dp"
+                            android:gravity="center"
+                            android:textSize="10sp">
+                        </TextView>
+                    </TableRow>
+                </TableLayout>
             </LinearLayout>
-        </ScrollView>
+
+            <RelativeLayout
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content">
+                <TextView
+                    android:id="@+id/scoreText"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:text="0 - 0"
+                    android:gravity="center"
+                    android:textSize="32sp"
+                    android:textStyle="bold">
+                </TextView>
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content">
+                <ScrollView
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content">
+                    <LinearLayout
+                        android:id="@+id/livescorelayout"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+                    </LinearLayout>
+                </ScrollView>
+            </RelativeLayout>
+        </LinearLayout>
     </FrameLayout>
 </android.support.constraint.ConstraintLayout>

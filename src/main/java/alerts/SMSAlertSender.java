@@ -1,6 +1,7 @@
 package alerts;
 
 import config.GlobalConfig;
+import data.MatchEvent;
 import data.ScoreNotification;
 import com.amazonaws.services.sns.AmazonSNS;
 import com.amazonaws.services.sns.AmazonSNSClientBuilder;
@@ -18,8 +19,8 @@ public class SMSAlertSender implements IAlertSender {
     public void SendAlert(int teamId, ScoreNotification scoreChange) {
         System.out.format("Sending alert for team %d\n", teamId);
         // This shouldn't actually be used, just put it in here to get it to compile
-        for (String event : scoreChange.getTickerEvents()) {
-            _client.publish(GetTopicArn(teamId), event);
+        for (MatchEvent event : scoreChange.getTickerEvents()) {
+            _client.publish(GetTopicArn(teamId), event.footballer.web_name);
         }
     }
 

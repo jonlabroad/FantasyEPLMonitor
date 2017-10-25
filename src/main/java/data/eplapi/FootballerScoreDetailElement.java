@@ -6,6 +6,14 @@ public class FootballerScoreDetailElement {
     public ScoreExplain bonus = new ScoreExplain();
     public ScoreExplain clean_sheets = new ScoreExplain();
     public ScoreExplain assists = new ScoreExplain();
+    public ScoreExplain yellow_cards = new ScoreExplain();
+    public ScoreExplain red_cards = new ScoreExplain();
+    public ScoreExplain penalty_misses = new ScoreExplain(); // No idea if this is correct yet
+    public ScoreExplain goals_conceded = new ScoreExplain();
+    public ScoreExplain saves = new ScoreExplain();
+    public ScoreExplain penalty_saves = new ScoreExplain(); // D not know if this is correct
+    public ScoreExplain own_goals = new ScoreExplain();
+
 
     public FootballerScoreDetailElement Compare(FootballerScoreDetailElement other) {
         if (other == null) {

@@ -1,6 +1,7 @@
 package runner;
 
-import alerts.AlertGenerator;
+import alerts.MatchEventGenerator;
+import data.MatchEvent;
 import data.MatchInfo;
 import data.Team;
 import persistance.S3MatchInfoDatastore;
@@ -20,7 +21,7 @@ public class GamedayRunner extends CommonRunner {
     public void runImpl(int teamId) {
         preRunTasks(teamId);
 
-        AlertGenerator alertGen = new AlertGenerator(teamId, _printOnly);
+        MatchEventGenerator alertGen = new MatchEventGenerator(teamId, _printOnly);
         alertGen.Generate(_thisMatchInfo, _prevThisMatchInfo);
 
         for (Team team : _thisMatchInfo.teams.values()) {
@@ -46,12 +47,12 @@ public class GamedayRunner extends CommonRunner {
 
                 // Update this match info with previous events. This should probably be done elsewhere
                 if (_prevThisMatchInfo != null) {
-                    ArrayList<String> thisMatchEvents = _thisMatchInfo.matchEvents;
+                    ArrayList<MatchEvent> thisMatchEvents = _thisMatchInfo.matchEvents;
                     _thisMatchInfo.matchEvents = new ArrayList<>();
-                    for (String event : _prevThisMatchInfo.matchEvents) {
+                    for (MatchEvent event : _prevThisMatchInfo.matchEvents) {
                         _thisMatchInfo.matchEvents.add(event);
                     }
-                    for (String event : thisMatchEvents) {
+                    for (MatchEvent event : thisMatchEvents) {
                         _thisMatchInfo.matchEvents.add(event);
                     }
                 }

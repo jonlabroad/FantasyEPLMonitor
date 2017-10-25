@@ -4,41 +4,33 @@ import java.util.HashMap;
 import java.util.HashSet;
 
 public class DeviceConfig {
-    HashMap<String, Subscription> subscriptions = new HashMap<>();
+    public String deviceId;
+    public Subscription subscriptions = new Subscription();
+
+    public DeviceConfig(String devId) {
+        deviceId = devId;
+    }
 
     public void addSubscription(String deviceId, int teamId, String teamName) {
-        Subscription subscription = subscriptions.get(deviceId);
-        if (subscription == null) {
-            subscription = new Subscription(deviceId);
-            subscriptions.put(deviceId, subscription);
-        }
-        subscription.teamsByTeamId.put(teamId, new TeamSubscription(teamId, teamName));
+        subscriptions.teamsByTeamId.put(teamId, new TeamSubscription(teamId, teamName));
     }
 
     public boolean isSubscribed(String deviceId, int teamId) {
-        Subscription subscription = subscriptions.get(deviceId);
-        if (subscription != null) {
-            return subscription.teamsByTeamId.containsKey(teamId);
-        }
-        return false;
+        return subscriptions.teamsByTeamId.containsKey(teamId);
     }
 
     public HashSet<String> getSubscribers(int teamId) {
         HashSet<String> devices = new HashSet<>();
-        for (Subscription sub : subscriptions.values()) {
-            if (sub.teamsByTeamId.containsKey(teamId) && !devices.contains(sub.deviceId)) {
-                devices.add(sub.deviceId);
-            }
+        if (subscriptions.teamsByTeamId.containsKey(teamId) && !devices.contains(deviceId)) {
+            devices.add(deviceId);
         }
         return devices;
     }
 
     public HashSet<Integer> getAllTeamIds() {
         HashSet<Integer> teams = new HashSet<>();
-        for (Subscription sub : subscriptions.values()) {
-            for (int teamId : sub.teamsByTeamId.keySet()) {
-                teams.add(teamId);
-            }
+        for (int teamId : subscriptions.teamsByTeamId.keySet()) {
+            teams.add(teamId);
         }
         return teams;
     }

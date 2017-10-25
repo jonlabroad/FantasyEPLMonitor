@@ -11,5 +11,5 @@ public class MatchInfo {
     public Match match;
     public ArrayList<Picks> picks = new ArrayList<>();
     public HashMap<Integer, Team> teams = new HashMap<>();
-    public ArrayList<String> matchEvents = new ArrayList<>();
+    public ArrayList<MatchEvent> matchEvents = new ArrayList<>();
 }

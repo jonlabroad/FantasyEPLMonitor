@@ -1,3 +1,5 @@
+import config.DeviceConfig;
+import config.DeviceConfigurator;
 import runner.GamedayRunner;
 import com.mashape.unirest.http.exceptions.UnirestException;
 
@@ -14,11 +16,14 @@ public class CommandLine {
 
     private static void writeConfig() {
         System.out.println("WRITING TEST CONFIG. I HOPE YOU REALLY WANT THIS");
-        /*
-        DeviceConfig config = new DeviceConfig();
-        config.addSubscription("d2KCofjd1jQ", 1326527, "Pinky and De Bruyne");
-        config.addSubscription("cjT6mHUW3O0", 2365803, "The Vardy Boys");
-        new DeviceConfigurator().writeConfig(config);
-        */
+        String deviceId = "d2KCofjd1jQ";
+        DeviceConfig config = new DeviceConfig(deviceId);
+        config.addSubscription(deviceId, 1326527, "Pinky and De Bruyne");
+        new DeviceConfigurator().writeConfig(config, deviceId);
+
+        deviceId = "cjT6mHUW3O0";
+        config = new DeviceConfig(deviceId);
+        config.addSubscription(deviceId, 2365803, "The Vardy Boys");
+        new DeviceConfigurator().writeConfig(config, deviceId);
     }
 }

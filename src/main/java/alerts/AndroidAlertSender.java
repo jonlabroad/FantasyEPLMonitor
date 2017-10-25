@@ -1,13 +1,14 @@
 package alerts;
 
+import config.DeviceConfig;
 import config.GlobalConfig;
-import data.ScoreNotification;
 import com.amazonaws.services.sns.AmazonSNS;
 import com.amazonaws.services.sns.AmazonSNSClientBuilder;
 import com.amazonaws.services.sns.model.Endpoint;
 import com.amazonaws.services.sns.model.ListEndpointsByPlatformApplicationRequest;
 import com.amazonaws.services.sns.model.ListEndpointsByPlatformApplicationResult;
 import com.amazonaws.services.sns.model.PublishRequest;
+import data.ScoreNotification;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -59,9 +60,12 @@ public class AndroidAlertSender implements IAlertSender {
         return endpoints;
     }
 
-    // TODO use this to determine the endpoints once app subscribes appropriately
     protected HashSet<String> findDevicesSubscribed(int teamId) {
-        return GlobalConfig.DeviceConfig.getSubscribers(teamId);
+        HashSet<String> devices = new HashSet<>();
+        for (DeviceConfig config : GlobalConfig.DeviceConfig.values()) {
+            devices.addAll(config.getSubscribers(teamId));
+        }
+        return devices;
     }
 
     protected String createNotification(ScoreNotification scoreChange) {

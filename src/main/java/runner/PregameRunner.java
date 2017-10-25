@@ -1,6 +1,6 @@
 package runner;
 
-import alerts.AlertGenerator;
+import alerts.MatchEventGenerator;
 import alerts.ScoutingReport;
 import data.MatchInfo;
 import persistance.S3MatchInfoDatastore;
@@ -20,7 +20,7 @@ public class PregameRunner extends CommonRunner {
         if (_force || (_prevNextMatchInfo == null && _nextMatchInfo != null)) {
             ScoutingReport report = new ScoutingReport(_nextMatchInfo, true);
             new S3MatchInfoDatastore().writeNext(teamId, _nextMatchInfo);
-            AlertGenerator alertGen = new AlertGenerator(teamId, _printOnly);
+            MatchEventGenerator alertGen = new MatchEventGenerator(teamId, _printOnly);
             alertGen.GenerateScoutingReport(report);
         }
     }

@@ -3,6 +3,7 @@ package runner;
 import cache.FootballerDataReader;
 import client.EPLClient;
 import client.MatchInfoProvider;
+import config.DeviceConfig;
 import config.GlobalConfig;
 import persistance.S3MatchInfoDatastore;
 import com.mashape.unirest.http.exceptions.UnirestException;
@@ -17,12 +18,15 @@ public abstract class CommonRunner {
 
     protected HashSet<Integer> _teamIds = new HashSet<>();
     protected Integer _leagueId = 31187;
-    protected boolean _forceUpdate = false;
+    protected boolean _forceUpdate = true;
 
     public CommonRunner() {
-        //_teamIds.add(2365803);
-        //_teamIds.add(1326527);
-        _teamIds = GlobalConfig.DeviceConfig.getAllTeamIds();
+        _teamIds.add(2365803); //me
+        /*
+        for (DeviceConfig config : GlobalConfig.DeviceConfig.values()) {
+            _teamIds.addAll(config.getAllTeamIds());
+        }
+        */
     }
 
     public CommonRunner(HashSet<Integer> teamIds) {
