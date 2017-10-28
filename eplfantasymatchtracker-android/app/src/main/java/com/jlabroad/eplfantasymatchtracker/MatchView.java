@@ -43,7 +43,7 @@ import static com.jlabroad.eplfantasymatchtracker.notification.MatchDataAlertRec
 public class MatchView extends AppCompatActivity {
     public static final String TEAM_CHOOSE_REQUEST = "com.jlabroad.eplfantasymatchtracker.TEAM_CHOOSE_REQUEST";
 
-    private int _gameweek = 9;
+    private int _gameweek = 10;
     private int _teamId;
     BroadcastReceiver _matchAlertDataReceiver;
 
