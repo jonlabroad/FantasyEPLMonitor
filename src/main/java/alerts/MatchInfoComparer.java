@@ -67,7 +67,7 @@ public class MatchInfoComparer {
             diff.add(createMatchEvent(time, MatchEventType.GOAL, footballer, detailsDiff.goals_scored.value, detailsDiff.goals_scored.points, teamId));
         }
         if (detailsDiff.minutes.points != 0) {
-            diff.add(createMatchEvent(time, MatchEventType.MINUTES_PLAYED, footballer, detailsDiff.minutes.value, detailsDiff.minutes.points, teamId));
+            //diff.add(createMatchEvent(time, MatchEventType.MINUTES_PLAYED, footballer, detailsDiff.minutes.value, detailsDiff.minutes.points, teamId));
         }
         if (detailsDiff.clean_sheets.value > 0) {
             diff.add(createMatchEvent(time, MatchEventType.CLEAN_SHEET, footballer, detailsDiff.clean_sheets.value, detailsDiff.clean_sheets.points, teamId));
