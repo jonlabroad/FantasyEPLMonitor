@@ -8,12 +8,25 @@ import com.mashape.unirest.request.HttpRequest;
 import java.io.IOException;
 
 public class RequestExecutor {
-    public RequestExecutor() throws IOException {
+    boolean _record;
+    RequestResponseRecorder _recorder;
+
+    public RequestExecutor(boolean record) throws IOException {
+        _record = record;
+        if (_record) {
+            _recorder = new RequestResponseRecorder(10);
+        }
     }
 
     public <T> T Execute(HttpRequest request, Class<T> cls) throws IOException, UnirestException {
+        System.out.println(request.getUrl());
         HttpResponse<String> jsonResponse = request.asString();
         T parsedResponse = Parse(jsonResponse.getBody(), cls);
+
+        if (_record) {
+            _recorder.record(request.getUrl(), jsonResponse.getBody());
+        }
+
         return parsedResponse;
     }
 

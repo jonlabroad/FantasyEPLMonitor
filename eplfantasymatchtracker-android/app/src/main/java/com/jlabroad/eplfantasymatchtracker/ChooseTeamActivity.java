@@ -20,7 +20,10 @@ public class ChooseTeamActivity extends AppCompatActivity {
         String message = intent.getStringExtra(MatchView.TEAM_CHOOSE_REQUEST);
 
         // JUST FOR TESTING THE FLOW
-        GlobalConfig.deviceConfig.addSubscription(2365803, "The Vardy Boys");
+        //GlobalConfig.deviceConfig.addSubscription(2365803, "The Vardy Boys");
+        //new DeviceConfigurator().writeConfig(GlobalConfig.deviceConfig, getUniqueDeviceId());
+
+        GlobalConfig.deviceConfig.addSubscription(1326527, "Pinky and De Bruyne");
         new DeviceConfigurator().writeConfig(GlobalConfig.deviceConfig, getUniqueDeviceId());
 
         Intent backToMain = new Intent(getApplicationContext(), MatchView.class);

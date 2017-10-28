@@ -3,6 +3,7 @@ package client;
 import cache.DataCache;
 import client.Request.EPLRequestGenerator;
 import client.Request.RequestExecutor;
+import config.GlobalConfig;
 import data.eplapi.*;
 import data.MatchInfo;
 import data.Score;
@@ -102,6 +103,6 @@ public class EPLClient
 
     private void Initialize() throws IOException {
         _generator = new EPLRequestGenerator();
-        _executor = new RequestExecutor();
+        _executor = new RequestExecutor(GlobalConfig.Record);
     }
 }
