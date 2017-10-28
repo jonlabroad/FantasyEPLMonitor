@@ -16,14 +16,14 @@ public class CommandLine {
 
     private static void writeConfig() {
         System.out.println("WRITING TEST CONFIG. I HOPE YOU REALLY WANT THIS");
-        String deviceId = "d2KCofjd1jQ";
+        String deviceId = "d2KCofjd1jQ"; // TODO update
         DeviceConfig config = new DeviceConfig(deviceId);
-        config.addSubscription(deviceId, 1326527, "Pinky and De Bruyne");
+        config.addSubscription(1326527, "Pinky and De Bruyne");
         new DeviceConfigurator().writeConfig(config, deviceId);
 
-        deviceId = "cjT6mHUW3O0";
+        deviceId = "cjT6mHUW3O0"; // TODO update
         config = new DeviceConfig(deviceId);
-        config.addSubscription(deviceId, 2365803, "The Vardy Boys");
+        config.addSubscription(2365803, "The Vardy Boys");
         new DeviceConfigurator().writeConfig(config, deviceId);
     }
 }

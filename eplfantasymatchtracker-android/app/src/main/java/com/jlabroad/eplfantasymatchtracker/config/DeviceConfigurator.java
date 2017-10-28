@@ -43,7 +43,7 @@ public class DeviceConfigurator {
         ObjectListing result = _s3.listObjects(S3_BUCKET_NAME, S3_CONFIG_DIR);
         for (S3ObjectSummary summary : result.getObjectSummaries()) {
             DeviceConfig config = readConfigByKey(summary.getKey());
-            configs.put(config.deviceId, config);
+            configs.put(config.uniqueDeviceId, config);
         }
         return configs;
     }

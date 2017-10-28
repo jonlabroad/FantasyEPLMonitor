@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.drawable.Drawable;
 import android.os.StrictMode;
+import android.provider.Settings;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
@@ -43,7 +44,7 @@ import static com.jlabroad.eplfantasymatchtracker.notification.MatchDataAlertRec
 public class MatchView extends AppCompatActivity {
     public static final String TEAM_CHOOSE_REQUEST = "com.jlabroad.eplfantasymatchtracker.TEAM_CHOOSE_REQUEST";
 
-    private int _gameweek = 9;
+    private int _gameweek = 10;
     private int _teamId;
     BroadcastReceiver _matchAlertDataReceiver;
 
@@ -227,10 +228,16 @@ public class MatchView extends AppCompatActivity {
     private void registerDevice() throws IOException {
         Credentials.instance().initializeCognitoProvider(getApplicationContext());
         String deviceId = FirebaseInstanceId.getInstance().getId();
-        ApplicationEndpointRegister endpointRegister = new ApplicationEndpointRegister(deviceId,
+        ApplicationEndpointRegister endpointRegister = new ApplicationEndpointRegister(
+                getUniqueDeviceId(),
+                deviceId,
                 FirebaseInstanceId.getInstance().getToken(), Credentials.instance().creds);
         endpointRegister.register();
 
-        GlobalConfig.deviceConfig = new DeviceConfigurator().readConfig(deviceId);
+        GlobalConfig.deviceConfig = new DeviceConfigurator().readConfig(getUniqueDeviceId());
+    }
+
+    private  String getUniqueDeviceId() {
+        return Settings.Secure.getString(getApplicationContext().getContentResolver(), Settings.Secure.ANDROID_ID);
     }
 }

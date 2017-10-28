@@ -24,12 +24,12 @@ public class DeviceConfigurator {
         _s3 = AmazonS3ClientBuilder.defaultClient();
     }
 
-    public DeviceConfig readConfig(String deviceId) {
-        String s3Key = getDeviceConfigPath(deviceId);
+    public DeviceConfig readConfig(String uniqueDeviceId) {
+        String s3Key = getDeviceConfigPath(uniqueDeviceId);
         if (_s3.doesObjectExist(S3_BUCKET_NAME, s3Key)) {
             return readConfigByKey(s3Key);
         }
-        return new DeviceConfig(deviceId);
+        return new DeviceConfig(uniqueDeviceId);
     }
 
     public DeviceConfig readConfigByKey(String key) {
@@ -42,7 +42,7 @@ public class DeviceConfigurator {
         ObjectListing result = _s3.listObjects(S3_BUCKET_NAME, S3_CONFIG_DIR);
         for (S3ObjectSummary summary : result.getObjectSummaries()) {
             DeviceConfig config = readConfigByKey(summary.getKey());
-            configs.put(config.deviceId, config);
+            configs.put(config.uniqueDeviceId, config);
         }
         return configs;
     }

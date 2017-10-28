@@ -1,6 +1,7 @@
 package alerts;
 
 import config.DeviceConfig;
+import config.EndpointUserData;
 import config.GlobalConfig;
 import com.amazonaws.services.sns.AmazonSNS;
 import com.amazonaws.services.sns.AmazonSNSClientBuilder;
@@ -8,7 +9,6 @@ import com.amazonaws.services.sns.model.Endpoint;
 import com.amazonaws.services.sns.model.ListEndpointsByPlatformApplicationRequest;
 import com.amazonaws.services.sns.model.ListEndpointsByPlatformApplicationResult;
 import com.amazonaws.services.sns.model.PublishRequest;
-import data.ScoreNotification;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -47,14 +47,10 @@ public class AndroidAlertSender implements IAlertSender {
         HashSet<String> devices = findDevicesSubscribed(teamId);
 
         for (Endpoint endpoint : result.getEndpoints()) {
-            String endpointDevice = endpoint.getAttributes().get("CustomUserData");
+            EndpointUserData userData = readUserData(endpoint.getAttributes().get("CustomUserData"));
 
-            // TODO change this once app is updated with new subscription method
-            endpointDevice = endpointDevice.substring(endpointDevice.indexOf('_') + 1);
-            if (endpointDevice != null && endpointDevice.length() > 3) {
-                if (devices.contains(endpointDevice)) {
-                    endpoints.add(endpoint.getEndpointArn());
-                }
+            if (devices.contains(userData.uniqueUserId)) {
+                endpoints.add(endpoint.getEndpointArn());
             }
         }
         return endpoints;
@@ -81,5 +77,9 @@ public class AndroidAlertSender implements IAlertSender {
                 title);
         System.out.println(msg);
         return msg;
+    }
+
+    protected EndpointUserData readUserData(String userDataRaw) {
+        return new EndpointUserData(userDataRaw);
     }
 }

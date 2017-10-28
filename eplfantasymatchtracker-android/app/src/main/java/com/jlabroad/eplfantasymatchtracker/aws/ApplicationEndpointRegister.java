@@ -14,16 +14,18 @@ import java.util.Map;
 
 public class ApplicationEndpointRegister {
 
-    String _deviceToken;
-    String _deviceId;
-    AmazonSNS _sns;
-    CognitoCachingCredentialsProvider _provider;
+    private String _deviceToken;
+    private String _firebaseDeviceId;
+    private String _uniqueDeviceId;
+    private AmazonSNS _sns;
+    private CognitoCachingCredentialsProvider _provider;
 
-    public ApplicationEndpointRegister(String deviceId, String deviceToken, CognitoCachingCredentialsProvider provider) {
+    public ApplicationEndpointRegister(String uniqueDeviceId, String firebaseId, String deviceToken, CognitoCachingCredentialsProvider provider) {
         _provider = provider;
         _sns = new AmazonSNSClient(_provider);
         _deviceToken = deviceToken;
-        _deviceId = deviceId;
+        _firebaseDeviceId = firebaseId;
+        _uniqueDeviceId = uniqueDeviceId;
     }
 
     public void register() {
@@ -32,7 +34,7 @@ public class ApplicationEndpointRegister {
             CreatePlatformEndpointRequest request = new CreatePlatformEndpointRequest();
             request.setPlatformApplicationArn(GlobalConfig.PlatformApplicationId);
             request.setToken(_deviceToken);
-            request.setCustomUserData(_deviceId);
+            request.setCustomUserData(createEndpointKey());
             _sns.createPlatformEndpoint(request);
         }
     }
@@ -53,6 +55,7 @@ public class ApplicationEndpointRegister {
     }
 
     protected String createEndpointKey() {
-        return String.format("%s", _deviceId);
+        return String.format("%s:%s", _uniqueDeviceId, _firebaseDeviceId);
     }
+
 }
