@@ -54,18 +54,17 @@ public class MatchView extends AppCompatActivity {
         // TODO Get rid of this and do it the right way (async network)
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
 
         try {
             registerDevice();
         } catch (IOException e) {
             e.printStackTrace();
         }
-
-    }
-
-    @Override
-    public void onStart() {
-        super.onStart();
 
         // TODO really gotta make this better!
         if (GlobalConfig.deviceConfig.getAllTeamIds().isEmpty()) {
@@ -225,13 +224,6 @@ public class MatchView extends AppCompatActivity {
 
     private void registerDevice() throws IOException {
         Credentials.instance().initializeCognitoProvider(getApplicationContext());
-        String deviceId = FirebaseInstanceId.getInstance().getId();
-        ApplicationEndpointRegister endpointRegister = new ApplicationEndpointRegister(
-                getUniqueDeviceId(),
-                deviceId,
-                FirebaseInstanceId.getInstance().getToken(), Credentials.instance().creds);
-        endpointRegister.register();
-
         GlobalConfig.deviceConfig = new DeviceConfigurator().readConfig(getUniqueDeviceId());
     }
 
