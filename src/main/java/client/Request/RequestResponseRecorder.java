@@ -1,25 +1,21 @@
 package client.Request;
 
-import com.amazonaws.services.s3.AmazonS3;
-import com.amazonaws.services.s3.AmazonS3ClientBuilder;
-import com.amazonaws.services.s3.model.S3Object;
-import com.google.gson.Gson;
 import config.GlobalConfig;
-
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.util.stream.Collectors;
+import persistance.S3JsonReader;
+import persistance.S3JsonWriter;
 
 public class RequestResponseRecorder {
-    public static final String BASE_PATH = "recorder";
-    public static final String PATH_FMT = BASE_PATH + "/%d/%d/%s";
+    public static final String PATH_FMT = GlobalConfig.RECORDER_PATH_FMT;
 
-    AmazonS3 _s3;
+    S3JsonWriter _writer;
+    S3JsonReader _reader;
     private int _gameweek = 10; // heh
     private int _sequenceId;
 
     public RequestResponseRecorder(int gameweek) {
-        _s3 = AmazonS3ClientBuilder.defaultClient();
+        _gameweek = gameweek;
+        _writer = new S3JsonWriter();
+        _reader = new S3JsonReader();
         _sequenceId = getSequenceId();
     }
 
@@ -33,33 +29,21 @@ public class RequestResponseRecorder {
         newRecord.url = url;
         newRecord.response = response;
         records.records.put(url, newRecord);
-        _s3.putObject(GlobalConfig.S3Bucket, getObjPath(_sequenceId), new Gson().toJson(records, RecordCollection.class));
+        _writer.write(getObjPath(_sequenceId), records);
     }
 
     public RecordCollection readExisting() {
         String key = getObjPath(_sequenceId);
-        if (_s3.doesObjectExist(GlobalConfig.S3Bucket, key)) {
-            S3Object s3Obj = _s3.getObject(GlobalConfig.S3Bucket, key);
-            RecordCollection record = readObject(s3Obj, RecordCollection.class);
-            return record;
-        }
-        return null;
+        return _reader.read(key, RecordCollection.class);
     }
 
     private String getObjPath(int sequenceId) {
         return String.format(PATH_FMT, _gameweek, sequenceId, "responses");
     }
 
-    private <T> T readObject(S3Object obj, Class<T> cls) {
-        // Read one text line at a time and display.
-        BufferedReader reader = new BufferedReader(new InputStreamReader(obj.getObjectContent()));
-        String json = reader.lines().parallel().collect(Collectors.joining("\n"));
-        return new Gson().fromJson(json, cls);
-    }
-
     private int getSequenceId() {
         int i = 0;
-        while (_s3.doesObjectExist(GlobalConfig.S3Bucket, getObjPath(i))) {
+        while (_reader.doesObjectExist(getObjPath(i))) {
             i++;
         }
         return i;

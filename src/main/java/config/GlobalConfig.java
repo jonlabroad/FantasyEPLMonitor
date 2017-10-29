@@ -17,7 +17,14 @@ public class GlobalConfig {
 
     public static SecretConfig Secrets = new SecretConfigurator().ReadConfig();
 
-    public static boolean Record = true;
+    public static final String RECORDER_BASE_PATH = "recorder";
+    public static final String RECORDER_PATH_FMT = RECORDER_BASE_PATH + "/%d/%d/%s";
+
+    public static boolean TestMode = false;
+    public static boolean PlaybackMode = false;
+    public static int PlaybackGameweek = 10;
+    public static int CurrentPlaybackSequence = 0;
+    public static boolean Record = false;
 
     public static Map<String, DeviceConfig> DeviceConfig = new DeviceConfigurator().readAllConfig();
 }

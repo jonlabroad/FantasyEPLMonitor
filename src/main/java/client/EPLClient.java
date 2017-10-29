@@ -2,8 +2,7 @@ package client;
 
 import cache.DataCache;
 import client.Request.EPLRequestGenerator;
-import client.Request.RequestExecutor;
-import config.GlobalConfig;
+import client.Request.IRequestExecutor;
 import data.eplapi.*;
 import data.MatchInfo;
 import data.Score;
@@ -16,11 +15,11 @@ import java.util.HashMap;
 public class EPLClient
 {
     private EPLRequestGenerator _generator;
-    private RequestExecutor _executor;
+    private IRequestExecutor _executor;
     private HashMap<Integer, MatchInfoProvider> _matchInfoProviderByLeague = new HashMap<>();
 
-    public EPLClient() throws IOException {
-        Initialize();
+    public EPLClient(IRequestExecutor executor) throws IOException {
+        initialize(executor);
     }
 
     public Standings GetStandings(int leagueId) throws IOException, UnirestException {
@@ -101,8 +100,8 @@ public class EPLClient
         return null;
     }
 
-    private void Initialize() throws IOException {
+    private void initialize(IRequestExecutor executor) throws IOException {
         _generator = new EPLRequestGenerator();
-        _executor = new RequestExecutor(GlobalConfig.Record);
+        _executor = executor;
     }
 }

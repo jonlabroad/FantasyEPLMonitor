@@ -2,9 +2,11 @@ package runner;
 
 import cache.FootballerDataReader;
 import client.EPLClient;
+import client.EPLClientFactory;
 import client.MatchInfoProvider;
 import config.DeviceConfig;
 import config.GlobalConfig;
+import jdk.nashorn.internal.objects.Global;
 import persistance.S3MatchInfoDatastore;
 import com.mashape.unirest.http.exceptions.UnirestException;
 
@@ -21,10 +23,14 @@ public abstract class CommonRunner {
     protected boolean _forceUpdate = false;
 
     public CommonRunner() {
-        //_teamIds.add(2365803); //me
-
-        for (DeviceConfig config : GlobalConfig.DeviceConfig.values()) {
-            _teamIds.addAll(config.getAllTeamIds());
+        if (GlobalConfig.TestMode) {
+            _teamIds.add(2365803); //me
+            _forceUpdate = false;
+        }
+        else {
+            for (DeviceConfig config : GlobalConfig.DeviceConfig.values()) {
+                _teamIds.addAll(config.getAllTeamIds());
+            }
         }
     }
 
@@ -35,7 +41,7 @@ public abstract class CommonRunner {
     public void run() {
         _client = null;
         try {
-            _client = new EPLClient();
+            _client = EPLClientFactory.createClient();
             _matchInfoProvider = new MatchInfoProvider(_leagueId, _client);
             FootballerDataReader dataReader = new FootballerDataReader(_client);
             dataReader.ReadFootballers();
