@@ -17,7 +17,7 @@ public class GlobalConfig {
 
     public static SecretConfig Secrets = new SecretConfigurator().ReadConfig();
 
-    public static boolean Record = false;
+    public static boolean Record = true;
 
     public static Map<String, DeviceConfig> DeviceConfig = new DeviceConfigurator().readAllConfig();
 }
