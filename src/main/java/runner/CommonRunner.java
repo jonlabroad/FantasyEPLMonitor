@@ -46,7 +46,7 @@ public abstract class CommonRunner {
             FootballerDataReader dataReader = new FootballerDataReader(_client);
             dataReader.ReadFootballers();
 
-            _matchInfoDatastore = new S3MatchInfoDatastore();
+            _matchInfoDatastore = new S3MatchInfoDatastore(_leagueId);
         } catch (IOException e) {
             e.printStackTrace();
         } catch (UnirestException e) {

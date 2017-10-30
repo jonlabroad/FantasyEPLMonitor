@@ -32,7 +32,7 @@ public class GamedayRunner extends CommonRunner {
         alertGen.generateAlerts(_thisMatchInfo, _prevThisMatchInfo);
 
         for (Team team : _thisMatchInfo.teams.values()) {
-            new S3MatchInfoDatastore().writeCurrent(team.id, _thisMatchInfo);
+            new S3MatchInfoDatastore(_leagueId).writeCurrent(team.id, _thisMatchInfo);
             System.out.format("#%d %s (%s) %dW-%dD-%dL\n", team.standing.rank, team.name, team.playerName,
                                team.standing.matches_won, team.standing.matches_drawn, team.standing.matches_lost);
         }

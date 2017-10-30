@@ -19,7 +19,7 @@ public class PregameRunner extends CommonRunner {
     public void runImpl(int teamId) {
         if (_force || (_prevNextMatchInfo == null && _nextMatchInfo != null)) {
             ScoutingReport report = new ScoutingReport(_nextMatchInfo, true);
-            new S3MatchInfoDatastore().writeNext(teamId, _nextMatchInfo);
+            new S3MatchInfoDatastore(_leagueId).writeNext(teamId, _nextMatchInfo);
             MatchEventGenerator alertGen = new MatchEventGenerator(teamId, _printOnly);
             alertGen.GenerateScoutingReport(report);
         }
