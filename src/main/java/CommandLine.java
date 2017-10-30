@@ -1,6 +1,4 @@
-import config.DeviceConfig;
-import config.DeviceConfigurator;
-import config.GlobalConfig;
+import config.*;
 import runner.GamedayRunner;
 import com.mashape.unirest.http.exceptions.UnirestException;
 
@@ -39,5 +37,11 @@ public class CommandLine {
         config = new DeviceConfig(deviceId);
         config.addSubscription(2365803, "The Vardy Boys");
         new DeviceConfigurator().writeConfig(config, deviceId);
+    }
+
+    private static void writeCloudAppConfig() {
+        CloudAppConfig config = new CloudAppConfig();
+        config.CurrentGameWeek = 10;
+        new CloudAppConfigProvider().write(config);
     }
 }

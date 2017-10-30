@@ -16,6 +16,7 @@ public class GlobalConfig {
     public static final String TopicArnFormat = String.format("arn:aws:sns:us-east-1:796987500533:%s", TopicNamePrefix) + "%d";
 
     public static SecretConfig Secrets = new SecretConfigurator().ReadConfig();
+    public static CloudAppConfig CloudAppConfig = new CloudAppConfigProvider().read();
 
     public static final String RECORDER_BASE_PATH = "recorder";
     public static final String RECORDER_PATH_FMT = RECORDER_BASE_PATH + "/%d/%d/%s";
@@ -24,7 +25,7 @@ public class GlobalConfig {
     public static boolean PlaybackMode = false;
     public static int PlaybackGameweek = 10;
     public static int CurrentPlaybackSequence = 0;
-    public static boolean Record = true;
+    public static boolean Record = false;
 
     public static Map<String, DeviceConfig> DeviceConfig = new DeviceConfigurator().readAllConfig();
 }

@@ -3,6 +3,8 @@ package runner;
 import alerts.AlertGenerator;
 import alerts.AndroidAlertSender;
 import alerts.MatchEventGenerator;
+import config.CloudAppConfigProvider;
+import config.GlobalConfig;
 import data.MatchEvent;
 import data.MatchInfo;
 import data.Team;
@@ -42,6 +44,11 @@ public class GamedayRunner extends CommonRunner {
                     teams.get(_thisMatchInfo.teamIds.get(1)).currentPoints.startingScore,
                     teams.get(_thisMatchInfo.teamIds.get(1)).currentPoints.subScore);
         System.out.println();
+
+        if (GlobalConfig.CloudAppConfig.CurrentGameWeek != _thisMatchInfo.match.event) {
+            GlobalConfig.CloudAppConfig.CurrentGameWeek = _thisMatchInfo.match.event;
+            new CloudAppConfigProvider().write(GlobalConfig.CloudAppConfig);
+        }
     }
 
     private void preRunTasks(int teamId) {
