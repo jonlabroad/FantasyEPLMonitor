@@ -28,6 +28,9 @@ public abstract class CommonRunner {
             _forceUpdate = false;
         }
         else {
+            _teamIds.add(1326527);
+            _teamIds.add(2365803);
+            _teamIds.add(3303381);
             for (DeviceConfig config : GlobalConfig.DeviceConfig.values()) {
                 _teamIds.addAll(config.getAllTeamIds());
             }

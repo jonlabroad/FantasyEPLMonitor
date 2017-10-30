@@ -8,6 +8,7 @@ import config.GlobalConfig;
 import data.MatchEvent;
 import data.MatchInfo;
 import data.Team;
+import data.TeamIdName;
 import persistance.S3MatchInfoDatastore;
 
 import java.util.ArrayList;
@@ -45,8 +46,22 @@ public class GamedayRunner extends CommonRunner {
                     teams.get(_thisMatchInfo.teamIds.get(1)).currentPoints.subScore);
         System.out.println();
 
+        boolean writeConfig = false;
+        if (!GlobalConfig.CloudAppConfig.AvailableTeams.containsKey(teamId)) {
+            TeamIdName teamIdName = new TeamIdName();
+            teamIdName.teamId = teamId;
+            teamIdName.teamName = _thisMatchInfo.teams.get(teamId).name;
+            teamIdName.teamOwner = _thisMatchInfo.teams.get(teamId).playerName;
+            GlobalConfig.CloudAppConfig.AvailableTeams.put(teamId, teamIdName);
+            writeConfig = true;
+        }
+
         if (GlobalConfig.CloudAppConfig.CurrentGameWeek != _thisMatchInfo.match.event) {
             GlobalConfig.CloudAppConfig.CurrentGameWeek = _thisMatchInfo.match.event;
+            writeConfig = true;
+        }
+
+        if (writeConfig) {
             new CloudAppConfigProvider().write(GlobalConfig.CloudAppConfig);
         }
     }
