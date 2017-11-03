@@ -1,6 +1,7 @@
 import config.*;
 import runner.GamedayRunner;
 import com.mashape.unirest.http.exceptions.UnirestException;
+import runner.PlaybackRunner;
 
 import java.io.IOException;
 
@@ -9,21 +10,11 @@ public class CommandLine {
         //PregameRunner pregame = new PregameRunner();
         //pregame.run();
 
-        if (!GlobalConfig.PlaybackMode) {
-            GamedayRunner runner = new GamedayRunner();
-            runner.run();
-        }
-        else {
-            runPlayback(1, 6);
-        }
-    }
+        GamedayRunner runner = new GamedayRunner();
+        runner.run();
 
-    private static void runPlayback(int startSequence, int stopSequence) {
-        for (int s = startSequence; s <= stopSequence; s++) {
-            GlobalConfig.CurrentPlaybackSequence = s;
-            GamedayRunner runner = new GamedayRunner();
-            runner.run();
-        }
+        //PlaybackRunner runner = new PlaybackRunner();
+        //runner.run();
     }
 
     private static void writeConfig() {

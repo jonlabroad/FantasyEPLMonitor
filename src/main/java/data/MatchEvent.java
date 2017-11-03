@@ -1,13 +1,11 @@
 package data;
 
-import data.eplapi.Footballer;
-
 public class MatchEvent {
     public String dateTime;
     public MatchEventType type;
     public String typeString;
     public int footballerId;
-    public Footballer footballer;
+    public String footballerName;
     public int pointDifference;
     public int number;
     public int teamId;

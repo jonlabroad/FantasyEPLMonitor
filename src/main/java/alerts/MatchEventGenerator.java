@@ -14,7 +14,7 @@ public class MatchEventGenerator {
     }
 
     public void Generate(MatchInfo newInfo, MatchInfo oldInfo) {
-        List<MatchEvent> diff = new MatchInfoComparer(_teamId).Compare(oldInfo, newInfo);
+        List<MatchEvent> diff = new MatchInfoComparer().Compare(oldInfo, newInfo);
 
         // TODO move this out of here!
         for (MatchEvent event : diff) {
