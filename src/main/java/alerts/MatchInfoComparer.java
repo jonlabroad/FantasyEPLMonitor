@@ -29,7 +29,7 @@ public class MatchInfoComparer {
         List<MatchEvent> events = new ArrayList<>();
         for (int teamId : newInfo.teamIds) {
             if (diff.get(teamId).size() == 0) {
-                AddScoreDifferences(diff, oldInfo, newInfo);
+                AddScoreDifferences(teamId, diff, oldInfo, newInfo);
             }
             events.addAll(diff.get(teamId));
         }
@@ -43,7 +43,7 @@ public class MatchInfoComparer {
         for (int teamId : newInfo.teamIds) {
             Team team = newInfo.teams.get(teamId);
             for (Map.Entry<Integer, FootballerDetails> detailsEntry : team.footballerDetails.entrySet()) {
-                for (int e = 0; e < detailsEntry.getValue().explain.length; e++ ) {
+                for (int e = 0; e < detailsEntry.getValue().explain.length; e++) {
                     FootballerScoreDetail newDetail = detailsEntry.getValue().explain[e];
                     FootballerScoreDetail[] oldDetailArray = null;
                     Team oldTeam = null;
@@ -65,31 +65,24 @@ public class MatchInfoComparer {
         }
     }
 
-    private static void AddScoreDifferences(Map<Integer, List<MatchEvent>> diff, MatchInfo prevInfo, MatchInfo newInfo) {
+    private static void AddScoreDifferences(int teamId, Map<Integer, List<MatchEvent>> diff, MatchInfo prevInfo, MatchInfo newInfo) {
         DateTime time = DateTime.now();
-        for (int teamId : newInfo.teamIds) {
-            Score prevScore = null;
-            if (prevInfo == null) {
-                prevScore = new Score();
-                prevScore.startingScore = 0;
-                prevScore.subScore = 0;
-            }
-            else {
-                prevScore = prevInfo.teams.get(teamId).currentPoints;
-            }
+        Score prevScore = null;
+        if (prevInfo == null) {
+            prevScore = new Score();
+            prevScore.startingScore = 0;
+            prevScore.subScore = 0;
+        } else {
+            prevScore = prevInfo.teams.get(teamId).currentPoints;
+        }
 
-            Score newScore = newInfo.teams.get(teamId).currentPoints;
-            if (prevInfo == null ||
-                    (prevScore.startingScore != newScore.startingScore) ||
-                    (prevScore.subScore != newScore.subScore) )
-            {
-                int diffScore = (newScore.startingScore + newScore.subScore) - (prevScore.startingScore + prevScore.subScore);
-                if (diffScore < 0) {
-                    System.out.println("EH?");
-                }
-                MatchEvent event = createMatchEvent(time, MatchEventType.OTHER, null, 0, diffScore, teamId);
-                diff.get(teamId).add(event);
-            }
+        Score newScore = newInfo.teams.get(teamId).currentPoints;
+        if ((prevInfo == null && newScore.startingScore + newScore.subScore > 0) ||
+                (prevScore.startingScore != newScore.startingScore) ||
+                (prevScore.subScore != newScore.subScore)) {
+            int diffScore = (newScore.startingScore + newScore.subScore) - (prevScore.startingScore + prevScore.subScore);
+            MatchEvent event = createMatchEvent(time, MatchEventType.OTHER, null, 0, diffScore, teamId);
+            diff.get(teamId).add(event);
         }
     }
 
@@ -148,8 +141,7 @@ public class MatchInfoComparer {
         if (footballer != null) {
             event.footballerName = footballer.web_name;
             event.footballerId = footballer.id;
-        }
-        else {
+        } else {
             event.footballerName = "";
             event.footballerId = 0;
         }
