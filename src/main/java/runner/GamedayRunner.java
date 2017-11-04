@@ -3,6 +3,7 @@ package runner;
 import alerts.AlertGenerator;
 import alerts.AndroidAlertSender;
 import alerts.MatchEventGenerator;
+import cache.DataCache;
 import config.CloudAppConfigProvider;
 import config.GlobalConfig;
 import data.MatchEvent;
@@ -85,7 +86,7 @@ public class GamedayRunner extends CommonRunner {
                 }
             }
         } catch (Exception ex) {
-            System.out.println(ex.getMessage());
+            ex.printStackTrace();
         }
     }
 }

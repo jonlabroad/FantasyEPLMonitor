@@ -10,7 +10,7 @@ public class PlaybackRunner extends CommonRunner {
     public void runImpl(int teamId) {
 
         SetPlaybackParameters();
-        runPlayback(0, 45);
+        runPlayback(0, 6);
     }
 
     @Override
@@ -21,13 +21,14 @@ public class PlaybackRunner extends CommonRunner {
     public void SetPlaybackParameters() {
         GlobalConfig.TestMode = true;
         GlobalConfig.PlaybackMode = true;
-        GlobalConfig.PlaybackGameweek = 10;
+        GlobalConfig.PlaybackGameweek = 11;
         GlobalConfig.CurrentPlaybackSequence = 0;
         GlobalConfig.Record = false;
     }
 
     private static void runPlayback(int startSequence, int stopSequence) {
         for (int s = startSequence; s <= stopSequence; s++) {
+            System.out.format("Sequence: %d:\n", s);
             GlobalConfig.CurrentPlaybackSequence = s;
             GamedayRunner runner = new GamedayRunner();
             runner.run();

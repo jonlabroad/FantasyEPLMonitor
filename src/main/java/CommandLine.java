@@ -10,6 +10,8 @@ public class CommandLine {
         //PregameRunner pregame = new PregameRunner();
         //pregame.run();
 
+        GlobalConfig.TestMode = true;
+        GlobalConfig.Record = false;
         GamedayRunner runner = new GamedayRunner();
         runner.run();
 

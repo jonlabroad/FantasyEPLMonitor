@@ -9,6 +9,7 @@ import com.mashape.unirest.http.exceptions.UnirestException;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 
 public class FootballerDataReader {
     private EPLClient _client;
@@ -24,14 +25,12 @@ public class FootballerDataReader {
         }
     }
 
-    public void ReadFootballerDetails(ArrayList<Picks> eventPicks) throws IOException, UnirestException {
-        for (Picks picks : eventPicks) {
-            for (Pick pick : picks.picks) {
+    public void ReadFootballerDetails(Pick[] eventPicks) throws IOException, UnirestException {
+        for (Pick pick : eventPicks) {
                 if (!DataCache.footballerDetails.containsKey(pick.element)) {
                     FootballerDetails detail = _client.GetFootballerDetails(pick.element);
                     DataCache.footballerDetails.put(pick.element, detail);
                 }
             }
-        }
     }
 }

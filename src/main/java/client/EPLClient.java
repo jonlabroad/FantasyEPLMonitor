@@ -1,6 +1,7 @@
 package client;
 
 import cache.DataCache;
+import cache.FootballerDataReader;
 import client.Request.EPLRequestGenerator;
 import client.Request.IRequestExecutor;
 import data.eplapi.*;
@@ -67,11 +68,13 @@ public class EPLClient
             int picksEventId = isNext ? match.event - 1 : match.event;
             team.picks = GetPicks(team.id, picksEventId);
             if (team.picks != null) {
-                team.currentPoints = !isNext ? new ScoreCalculator().Calculate(team.picks) : new Score();
+                FootballerDataReader footballerReader = new FootballerDataReader(this); // gross
+                footballerReader.ReadFootballerDetails(team.picks.picks);
+                team.currentPoints = !isNext ? new ScoreCalculator().Calculate(team.picks, DataCache.footballerDetails) : new Score();
                 team.footballerDetails = new HashMap<>();
                 for (Pick pick : team.picks.picks) {
-                    FootballerDetails details = GetFootballerDetails(pick.element);
-                    DataCache.footballerDetails.put(pick.element, details);
+                    FootballerDetails details = DataCache.footballerDetails.get(pick.element);
+                    //DataCache.footballerDetails.put(pick.element, details);
                     team.footballerDetails.put(pick.element, details);
                 }
             }

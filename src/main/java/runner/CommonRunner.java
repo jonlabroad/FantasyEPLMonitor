@@ -1,5 +1,6 @@
 package runner;
 
+import cache.DataCache;
 import cache.FootballerDataReader;
 import client.EPLClient;
 import client.EPLClientFactory;
@@ -44,6 +45,8 @@ public abstract class CommonRunner {
     public void run() {
         _client = null;
         try {
+            DataCache.clear(); // Sucks to put this here
+
             _client = EPLClientFactory.createClient();
             _matchInfoProvider = new MatchInfoProvider(_leagueId, _client);
             FootballerDataReader dataReader = new FootballerDataReader(_client);
