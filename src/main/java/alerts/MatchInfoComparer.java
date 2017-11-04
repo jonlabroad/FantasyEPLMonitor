@@ -68,7 +68,16 @@ public class MatchInfoComparer {
     private static void AddScoreDifferences(Map<Integer, List<MatchEvent>> diff, MatchInfo prevInfo, MatchInfo newInfo) {
         DateTime time = DateTime.now();
         for (int teamId : newInfo.teamIds) {
-            Score prevScore = prevInfo.teams.get(teamId).currentPoints;
+            Score prevScore = null;
+            if (prevInfo == null) {
+                prevScore = new Score();
+                prevScore.startingScore = 0;
+                prevScore.subScore = 0;
+            }
+            else {
+                prevScore = prevInfo.teams.get(teamId).currentPoints;
+            }
+
             Score newScore = newInfo.teams.get(teamId).currentPoints;
             if (prevInfo == null ||
                     (prevScore.startingScore != newScore.startingScore) ||
