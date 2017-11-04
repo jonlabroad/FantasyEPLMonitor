@@ -47,10 +47,11 @@ public class AndroidAlertSender implements IAlertSender {
         HashSet<String> devices = findDevicesSubscribed(teamId);
 
         for (Endpoint endpoint : result.getEndpoints()) {
-            EndpointUserData userData = readUserData(endpoint.getAttributes().get("CustomUserData"));
-
-            if (devices.contains(userData.uniqueUserId)) {
-                endpoints.add(endpoint.getEndpointArn());
+            if (endpoint.getAttributes().get("Enabled").equalsIgnoreCase("true")) {
+                EndpointUserData userData = readUserData(endpoint.getAttributes().get("CustomUserData"));
+                if (devices.contains(userData.uniqueUserId)) {
+                    endpoints.add(endpoint.getEndpointArn());
+                }
             }
         }
         return endpoints;
