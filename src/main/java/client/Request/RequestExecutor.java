@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.exceptions.UnirestException;
 import com.mashape.unirest.request.HttpRequest;
+import config.GlobalConfig;
 
 import java.io.IOException;
 
@@ -14,7 +15,7 @@ public class RequestExecutor implements IRequestExecutor {
     public RequestExecutor(boolean record) throws IOException {
         _record = record;
         if (_record) {
-            _recorder = new RequestResponseRecorder(10);
+            _recorder = new RequestResponseRecorder(GlobalConfig.CloudAppConfig.CurrentGameWeek);
         }
     }
 

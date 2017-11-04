@@ -9,7 +9,7 @@ public class RequestResponseRecorder {
 
     S3JsonWriter _writer;
     S3JsonReader _reader;
-    private int _gameweek = 10; // heh
+    private int _gameweek;
     private int _sequenceId;
 
     public RequestResponseRecorder(int gameweek) {
