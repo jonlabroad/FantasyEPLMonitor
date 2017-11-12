@@ -23,7 +23,7 @@ public class ScoreCalculator {
                     try {
                         ScoreExplain explain = (ScoreExplain) field.get(scoreDetail.explain);
                         if (explain.points > 0 || explain.value > 0) {
-                            System.out.format("%s %s %d %d\n", footballer.web_name, field.getName(), explain.value, explain.points);
+                            //System.out.format("%s %s %d %d\n", footballer.web_name, field.getName(), explain.value, explain.points);
                         }
                         thisScore += explain.points * pick.multiplier;
                     } catch (IllegalAccessException e) {

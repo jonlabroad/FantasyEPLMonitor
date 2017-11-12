@@ -13,6 +13,7 @@ import data.TeamIdName;
 import persistance.S3MatchInfoDatastore;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 
 public class GamedayRunner extends CommonRunner {
@@ -22,6 +23,10 @@ public class GamedayRunner extends CommonRunner {
 
     public GamedayRunner() {
         super();
+    }
+
+    public GamedayRunner(Collection<Integer> teamIds) {
+        super(teamIds);
     }
 
     public void runImpl(int teamId) {

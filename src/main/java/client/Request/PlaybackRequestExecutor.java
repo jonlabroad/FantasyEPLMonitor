@@ -3,14 +3,14 @@ package client.Request;
 import com.google.gson.Gson;
 import com.mashape.unirest.request.HttpRequest;
 import config.GlobalConfig;
+import persistance.FileCachingS3JsonReader;
 import persistance.S3JsonReader;
 
 import java.util.HashMap;
 
 public class PlaybackRequestExecutor implements IRequestExecutor {
-
     private int _gameweek;
-    S3JsonReader _reader = new S3JsonReader();
+    S3JsonReader _reader = new FileCachingS3JsonReader();
     HashMap<Integer, RecordCollection> _recordCache = new HashMap<>();
 
     public PlaybackRequestExecutor(int gameweek) {

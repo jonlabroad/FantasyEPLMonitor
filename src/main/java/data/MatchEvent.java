@@ -38,6 +38,8 @@ public class MatchEvent {
                 return "Penalty save" + plural;
             case OWN_GOALS:
                 return "Own goal" + plural;
+            case AUTOSUB:
+                return "Autosub";
             default:
                 return type.toString();
         }

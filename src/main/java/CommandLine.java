@@ -4,19 +4,23 @@ import com.mashape.unirest.http.exceptions.UnirestException;
 import runner.PlaybackRunner;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class CommandLine {
     public static void main(String[] args) throws IOException, UnirestException, InterruptedException {
         //PregameRunner pregame = new PregameRunner();
         //pregame.run();
 
-        GlobalConfig.TestMode = true;
-        GlobalConfig.Record = false;
-        GamedayRunner runner = new GamedayRunner();
-        runner.run();
-
-        //PlaybackRunner runner = new PlaybackRunner();
+        //GlobalConfig.TestMode = true;
+        //GlobalConfig.Record = false;
+        //GamedayRunner runner = new GamedayRunner();
         //runner.run();
+
+        List<Integer> teamIds = new ArrayList<>();
+        teamIds.add(2365803);
+        PlaybackRunner runner = new PlaybackRunner(teamIds);
+        runner.run();
     }
 
     private static void writeConfig() {

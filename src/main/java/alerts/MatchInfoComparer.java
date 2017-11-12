@@ -2,18 +2,12 @@ package alerts;
 
 import cache.DataCache;
 import data.*;
-import data.eplapi.Footballer;
-import data.eplapi.FootballerDetails;
-import data.eplapi.FootballerScoreDetail;
-import data.eplapi.FootballerScoreDetailElement;
+import data.eplapi.*;
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class MatchInfoComparer {
 
@@ -28,9 +22,7 @@ public class MatchInfoComparer {
         CompareFootballerScores(diff, oldInfo, newInfo);
         List<MatchEvent> events = new ArrayList<>();
         for (int teamId : newInfo.teamIds) {
-            if (diff.get(teamId).size() == 0) {
-                AddScoreDifferences(teamId, diff, oldInfo, newInfo);
-            }
+            addAutoSub(diff.get(teamId), oldInfo, newInfo);
             events.addAll(diff.get(teamId));
         }
 
@@ -65,64 +57,70 @@ public class MatchInfoComparer {
         }
     }
 
-    private static void AddScoreDifferences(int teamId, Map<Integer, List<MatchEvent>> diff, MatchInfo prevInfo, MatchInfo newInfo) {
-        DateTime time = DateTime.now();
-        Score prevScore = null;
-        if (prevInfo == null) {
-            prevScore = new Score();
-            prevScore.startingScore = 0;
-            prevScore.subScore = 0;
-        } else {
-            prevScore = prevInfo.teams.get(teamId).currentPoints;
+    private void addAutoSub(List<MatchEvent> diff, MatchInfo oldInfo, MatchInfo newInfo) {
+        if (oldInfo == null || newInfo == null) {
+            return;
         }
 
-        Score newScore = newInfo.teams.get(teamId).currentPoints;
-        if ((prevInfo == null && newScore.startingScore + newScore.subScore > 0) ||
-                (prevScore.startingScore != newScore.startingScore) ||
-                (prevScore.subScore != newScore.subScore)) {
-            int diffScore = (newScore.startingScore + newScore.subScore) - (prevScore.startingScore + prevScore.subScore);
-            MatchEvent event = createMatchEvent(time, MatchEventType.OTHER, null, 0, diffScore, teamId);
-            diff.get(teamId).add(event);
+        DateTime time = DateTime.now();
+        for (int teamId : newInfo.teamIds) {
+            HashSet<Integer> oldStarters = getStarters(teamId, oldInfo);
+            HashSet<Integer> newStarters = getStarters(teamId, newInfo);
+            newStarters.removeAll(oldStarters);
+            // Anything left is a sub!
+            for (Integer footballerId : newStarters) {
+                Footballer footballer = DataCache.footballers.get(footballerId);
+                diff.add(createMatchEvent(time, MatchEventType.AUTOSUB, footballer, 1, 0, teamId));
+            }
         }
+    }
+
+    private HashSet<Integer> getStarters(int teamId, MatchInfo info) {
+        HashSet<Integer> starters = new HashSet<>();
+        for (int i=0; i<11; i++) {
+            Pick pick = info.teams.get(teamId).picks.picks[i];
+            starters.add(pick.element);
+        }
+        return starters;
     }
 
     private static void AddDetailDifferences(Map<Integer, List<MatchEvent>> diff, FootballerScoreDetailElement detailsDiff,
                                              int teamId, Footballer footballer) {
         DateTime time = DateTime.now();
-        if (detailsDiff.assists.value > 0) {
+        if (detailsDiff.assists.value != 0) {
             diff.get(teamId).add(createMatchEvent(time, MatchEventType.ASSIST, footballer, detailsDiff.assists.value, detailsDiff.assists.points, teamId));
         }
-        if (detailsDiff.goals_scored.value > 0) {
+        if (detailsDiff.goals_scored.value != 0) {
             diff.get(teamId).add(createMatchEvent(time, MatchEventType.GOAL, footballer, detailsDiff.goals_scored.value, detailsDiff.goals_scored.points, teamId));
         }
-        if (detailsDiff.minutes.points > 0) {
+        if (detailsDiff.minutes.points != 0) {
             diff.get(teamId).add(createMatchEvent(time, MatchEventType.MINUTES_PLAYED, footballer, detailsDiff.minutes.value, detailsDiff.minutes.points, teamId));
         }
-        if (detailsDiff.clean_sheets.value > 0) {
+        if (detailsDiff.clean_sheets.value != 0) {
             diff.get(teamId).add(createMatchEvent(time, MatchEventType.CLEAN_SHEET, footballer, detailsDiff.clean_sheets.value, detailsDiff.clean_sheets.points, teamId));
         }
-        if (detailsDiff.bonus.value > 0) {
+        if (detailsDiff.bonus.value != 0) {
             diff.get(teamId).add(createMatchEvent(time, MatchEventType.BONUS, footballer, detailsDiff.bonus.value, detailsDiff.bonus.points, teamId));
         }
-        if (detailsDiff.yellow_cards.value > 0) {
+        if (detailsDiff.yellow_cards.value != 0) {
             diff.get(teamId).add(createMatchEvent(time, MatchEventType.YELLOW_CARD, footballer, detailsDiff.yellow_cards.value, detailsDiff.yellow_cards.points, teamId));
         }
-        if (detailsDiff.red_cards.value > 0) {
+        if (detailsDiff.red_cards.value != 0) {
             diff.get(teamId).add(createMatchEvent(time, MatchEventType.RED_CARD, footballer, detailsDiff.red_cards.value, detailsDiff.red_cards.points, teamId));
         }
-        if (detailsDiff.penalty_misses.value > 0) {
+        if (detailsDiff.penalty_misses.value != 0) {
             diff.get(teamId).add(createMatchEvent(time, MatchEventType.PENALTY_MISS, footballer, detailsDiff.penalty_misses.value, detailsDiff.penalty_misses.points, teamId));
         }
-        if (detailsDiff.goals_conceded.value > 0) {
+        if (detailsDiff.goals_conceded.value != 0) {
             diff.get(teamId).add(createMatchEvent(time, MatchEventType.GOALS_CONCEDED, footballer, detailsDiff.goals_conceded.value, detailsDiff.goals_conceded.points, teamId));
         }
-        if (detailsDiff.saves.value > 0) {
+        if (detailsDiff.saves.value != 0) {
             diff.get(teamId).add(createMatchEvent(time, MatchEventType.SAVES, footballer, detailsDiff.saves.value, detailsDiff.saves.points, teamId));
         }
-        if (detailsDiff.penalty_saves.value > 0) {
+        if (detailsDiff.penalty_saves.value != 0) {
             diff.get(teamId).add(createMatchEvent(time, MatchEventType.PENALTY_SAVES, footballer, detailsDiff.penalty_saves.value, detailsDiff.penalty_saves.points, teamId));
         }
-        if (detailsDiff.own_goals.value > 0) {
+        if (detailsDiff.own_goals.value != 0) {
             diff.get(teamId).add(createMatchEvent(time, MatchEventType.OWN_GOALS, footballer, detailsDiff.own_goals.value, detailsDiff.own_goals.points, teamId));
         }
     }
@@ -130,7 +128,7 @@ public class MatchInfoComparer {
     private void printMatchEvents(Map<Integer, List<MatchEvent>> events) {
         for (List<MatchEvent> teamEvents : events.values()) {
             for (MatchEvent event : teamEvents) {
-                System.out.println(String.format("%d %s %s %d", event.number, event.typeString, event.footballerName, event.pointDifference));
+                System.out.println(String.format("%d: %d %s %s %d", event.teamId, event.number, event.typeString, event.footballerName, event.pointDifference));
             }
         }
     }

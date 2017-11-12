@@ -21,7 +21,7 @@ public class S3JsonReader extends SimpleS3Provider {
         return _client.doesObjectExist(_bucketName, key);
     }
 
-    private String readObject(S3Object obj) {
+    protected String readObject(S3Object obj) {
         BufferedReader reader = new BufferedReader(new InputStreamReader(obj.getObjectContent()));
         return reader.lines().parallel().collect(Collectors.joining("\n"));
     }

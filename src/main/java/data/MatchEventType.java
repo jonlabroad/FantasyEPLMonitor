@@ -13,5 +13,6 @@ public enum MatchEventType {
     GOALS_CONCEDED,
     SAVES,
     PENALTY_SAVES,
-    OWN_GOALS
+    OWN_GOALS,
+    AUTOSUB
 }

@@ -1,37 +1,61 @@
 package runner;
 
 import config.GlobalConfig;
+import persistance.S3MatchInfoDatastore;
+
+import java.util.ArrayList;
+import java.util.Collection;
 
 public class PlaybackRunner extends CommonRunner {
+    private Collection<Integer> _teamIds = new ArrayList<>();
+
     public PlaybackRunner() {
         super();
     }
 
-    public void runImpl(int teamId) {
+    public PlaybackRunner(Collection<Integer> teamIds) {
+        _teamIds.addAll(teamIds);
+    }
 
-        SetPlaybackParameters();
-        runPlayback(0, 6);
+    public void runImpl(int teamId) {
+        setPlaybackParameters();
+        clearMatchInfo();
+        runPlayback(92, 180);
     }
 
     @Override
     public void run() {
-        runImpl(1);
+        for (Integer teamId : _teamIds) {
+            runImpl(teamId);
+        }
     }
 
-    public void SetPlaybackParameters() {
+    public void setPlaybackParameters() {
         GlobalConfig.TestMode = true;
         GlobalConfig.PlaybackMode = true;
         GlobalConfig.PlaybackGameweek = 11;
         GlobalConfig.CurrentPlaybackSequence = 0;
         GlobalConfig.Record = false;
+        GlobalConfig.MatchInfoRoot = "testdata";
     }
 
     private static void runPlayback(int startSequence, int stopSequence) {
         for (int s = startSequence; s <= stopSequence; s++) {
             System.out.format("Sequence: %d:\n", s);
-            GlobalConfig.CurrentPlaybackSequence = s;
-            GamedayRunner runner = new GamedayRunner();
-            runner.run();
+            try {
+                GlobalConfig.CurrentPlaybackSequence = s;
+                GamedayRunner runner = new GamedayRunner();
+                runner.run();
+            }
+            catch (Exception ex) {
+                System.out.println(ex.toString());
+            }
+        }
+    }
+
+    private void clearMatchInfo() {
+        for (Integer teamId : _teamIds) {
+            new S3MatchInfoDatastore(_leagueId).delete(teamId, GlobalConfig.PlaybackGameweek);
         }
     }
 }

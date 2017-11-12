@@ -11,6 +11,9 @@ public class GlobalConfig {
     public static final String LeagueH2hPath = "/leagues-h2h-standings/{LEAGUE_ID}";
     public static final String FootballerDetailsPath = "/element-summary/{FOOTBALLER_ID}";
 
+    // MatchInfo
+    public static String MatchInfoRoot = "data";
+
     public static final String S3Bucket = "fantasyeplmatchtracker";
     public static final String TopicNamePrefix = "matchtrackeralert_";
     public static final String TopicArnFormat = String.format("arn:aws:sns:us-east-1:796987500533:%s", TopicNamePrefix) + "%d";

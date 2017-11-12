@@ -12,6 +12,7 @@ import persistance.S3MatchInfoDatastore;
 import com.mashape.unirest.http.exceptions.UnirestException;
 
 import java.io.IOException;
+import java.util.Collection;
 import java.util.HashSet;
 
 public abstract class CommonRunner {
@@ -36,6 +37,10 @@ public abstract class CommonRunner {
                 _teamIds.addAll(config.getAllTeamIds());
             }
         }
+    }
+
+    public CommonRunner(Collection<Integer> teamIds) {
+        _teamIds.addAll(teamIds);
     }
 
     public CommonRunner(HashSet<Integer> teamIds) {

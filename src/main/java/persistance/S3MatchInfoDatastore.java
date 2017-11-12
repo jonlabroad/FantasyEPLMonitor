@@ -1,12 +1,13 @@
 package persistance;
 
+import config.GlobalConfig;
 import data.MatchInfo;
 
 public class S3MatchInfoDatastore implements IMatchInfoDatastore {
 
     private S3JsonReader _reader;
     private S3JsonWriter _writer;
-    private static final String KEY_PATH_FORMAT = "data/%d/%d/%d";
+    private static final String KEY_PATH_FORMAT = "%s/%d/%d/%d";
     private static final String CURRENT_KEY_FORMAT = KEY_PATH_FORMAT + "/" + "MatchInfo";
     private static final String NEXT_KEY_FORMAT = KEY_PATH_FORMAT + "/" + "ScoutingReport";
 
@@ -32,6 +33,11 @@ public class S3MatchInfoDatastore implements IMatchInfoDatastore {
         _writer.write(createNextKey(teamId, info.match.event), info);
     }
 
+    public void delete(int teamId, int eventId) {
+        _writer.delete(createNextKey(teamId, eventId));
+        _writer.delete(createCurrentKey(teamId, eventId));
+    }
+
     private void init(int leagueId) {
         _reader = new S3JsonReader();
         _writer = new S3JsonWriter();
@@ -43,8 +49,10 @@ public class S3MatchInfoDatastore implements IMatchInfoDatastore {
     }
 
     private String createCurrentKey(int teamId, int eventId) {
-        return String.format(CURRENT_KEY_FORMAT, _leagueId, teamId, eventId);
+        return String.format(CURRENT_KEY_FORMAT, GlobalConfig.MatchInfoRoot, _leagueId, teamId, eventId);
     }
 
-    private String createNextKey(int teamId, int eventId) { return String.format(NEXT_KEY_FORMAT, _leagueId, teamId, eventId); }
+    private String createNextKey(int teamId, int eventId) {
+        return String.format(NEXT_KEY_FORMAT, GlobalConfig.MatchInfoRoot, _leagueId, teamId, eventId);
+    }
 }
