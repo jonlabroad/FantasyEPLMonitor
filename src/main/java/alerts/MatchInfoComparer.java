@@ -26,6 +26,7 @@ public class MatchInfoComparer {
             events.addAll(diff.get(teamId));
         }
 
+        consolidateEventsOnBothTeams(events);
         printMatchEvents(diff);
 
         return events;
@@ -55,6 +56,31 @@ public class MatchInfoComparer {
                 }
             }
         }
+    }
+
+    private void consolidateEventsOnBothTeams(List<MatchEvent> events) {
+        List<MatchEvent> newEvents = new ArrayList<>();
+        while (events.size() > 0) {
+            HashSet<MatchEvent> toRemove = new HashSet<>();
+            MatchEvent currentEvent = events.get(0);
+            boolean matchFound = false;
+            for (int j = 1; j < events.size(); j++) {
+                MatchEvent otherEvent = events.get(j);
+                if (otherEvent.equals(currentEvent)) {
+                    currentEvent.teamId = -1;
+                    matchFound = true;
+                    newEvents.add(currentEvent);
+                    toRemove.add(otherEvent);
+                    toRemove.add(currentEvent);
+                }
+            }
+            if (!matchFound) {
+                newEvents.add(currentEvent);
+                toRemove.add(currentEvent);
+            }
+            events.removeAll(toRemove);
+        }
+        events.addAll(newEvents);
     }
 
     private void addAutoSub(List<MatchEvent> diff, MatchInfo oldInfo, MatchInfo newInfo) {

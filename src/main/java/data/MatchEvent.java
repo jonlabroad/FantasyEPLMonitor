@@ -10,6 +10,19 @@ public class MatchEvent {
     public int number;
     public int teamId;
 
+    public boolean appliesToBothTeams() {
+        return teamId < 0;
+    }
+
+    @Override
+    public boolean equals(Object otherObj) {
+        MatchEvent other = (MatchEvent) otherObj;
+        return  type == other.type &&
+                footballerId == other.footballerId &&
+                pointDifference == other.pointDifference &&
+                number == other.number;
+    }
+
     public String typeToReadableString(int number) {
         String plural = number > 1 ? "s" : "";
         String ePlural = number > 1 ? "es" : "";
