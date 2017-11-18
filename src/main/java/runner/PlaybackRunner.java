@@ -20,7 +20,7 @@ public class PlaybackRunner extends CommonRunner {
     public void runImpl(int teamId) {
         setPlaybackParameters();
         clearMatchInfo();
-        runPlayback(92, 180);
+        runPlayback(1, 19);
     }
 
     @Override
@@ -33,7 +33,7 @@ public class PlaybackRunner extends CommonRunner {
     public void setPlaybackParameters() {
         GlobalConfig.TestMode = true;
         GlobalConfig.PlaybackMode = true;
-        GlobalConfig.PlaybackGameweek = 11;
+        GlobalConfig.PlaybackGameweek = 12;
         GlobalConfig.CurrentPlaybackSequence = 0;
         GlobalConfig.Record = false;
         GlobalConfig.MatchInfoRoot = "testdata";

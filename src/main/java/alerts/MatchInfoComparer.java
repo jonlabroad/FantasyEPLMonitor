@@ -52,7 +52,7 @@ public class MatchInfoComparer {
 
                     Footballer footballer = DataCache.footballers.get(detailsEntry.getKey());
                     FootballerScoreDetailElement diffElement = newElement.Compare(oldElement);
-                    AddDetailDifferences(diff, diffElement, team.id, footballer);
+                    AddDetailDifferences(diff, diffElement, team.id, footballer, newElement);
                 }
             }
         }
@@ -111,7 +111,8 @@ public class MatchInfoComparer {
     }
 
     private static void AddDetailDifferences(Map<Integer, List<MatchEvent>> diff, FootballerScoreDetailElement detailsDiff,
-                                             int teamId, Footballer footballer) {
+                                             int teamId, Footballer footballer, FootballerScoreDetailElement currentDetail) {
+
         DateTime time = DateTime.now();
         if (detailsDiff.assists.value != 0) {
             diff.get(teamId).add(createMatchEvent(time, MatchEventType.ASSIST, footballer, detailsDiff.assists.value, detailsDiff.assists.points, teamId));
@@ -120,7 +121,7 @@ public class MatchInfoComparer {
             diff.get(teamId).add(createMatchEvent(time, MatchEventType.GOAL, footballer, detailsDiff.goals_scored.value, detailsDiff.goals_scored.points, teamId));
         }
         if (detailsDiff.minutes.points != 0) {
-            diff.get(teamId).add(createMatchEvent(time, MatchEventType.MINUTES_PLAYED, footballer, detailsDiff.minutes.value, detailsDiff.minutes.points, teamId));
+            diff.get(teamId).add(createMatchEvent(time, MatchEventType.MINUTES_PLAYED, footballer, currentDetail.minutes.value, detailsDiff.minutes.points, teamId));
         }
         if (detailsDiff.clean_sheets.value != 0) {
             diff.get(teamId).add(createMatchEvent(time, MatchEventType.CLEAN_SHEET, footballer, detailsDiff.clean_sheets.value, detailsDiff.clean_sheets.points, teamId));
