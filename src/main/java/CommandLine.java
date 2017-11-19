@@ -1,4 +1,5 @@
 import config.*;
+import persistance.S3JsonWriter;
 import runner.GamedayRunner;
 import com.mashape.unirest.http.exceptions.UnirestException;
 import runner.PlaybackRunner;
@@ -21,6 +22,8 @@ public class CommandLine {
         teamIds.add(2365803);
         PlaybackRunner runner = new PlaybackRunner(teamIds);
         runner.run();
+
+        //cleanRecordings();
     }
 
     private static void writeConfig() {
@@ -40,5 +43,14 @@ public class CommandLine {
         CloudAppConfig config = new CloudAppConfig();
         config.CurrentGameWeek = 10;
         new CloudAppConfigProvider().write(config);
+    }
+
+    private static void cleanRecordings() {
+        S3JsonWriter writer = new S3JsonWriter();
+        for (int i = 90; i < 100; i++) {
+            String key = String.format("recorder/12/%d/responses", i);
+            System.out.println(key);
+            writer.delete(key);
+        }
     }
 }

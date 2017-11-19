@@ -24,6 +24,7 @@ public class AndroidAlertSender implements IAlertSender {
     public void sendAlert(int teamId, String title, String subtitle) {
         System.out.format("Sending alert for team %d\n", teamId);
         List<String> endpoints =  findTeamEndpoints(teamId);
+        System.out.format("Found %d endpoints for team %d\n", endpoints.size(), teamId);
         for (String endpointArn : endpoints) {
             PublishRequest request = new PublishRequest();
             request.setTargetArn(endpointArn);
@@ -47,9 +48,13 @@ public class AndroidAlertSender implements IAlertSender {
         HashSet<String> devices = findDevicesSubscribed(teamId);
 
         for (Endpoint endpoint : result.getEndpoints()) {
+            System.out.format("Found endpoint: %s\n", endpoint.getEndpointArn());
             if (endpoint.getAttributes().get("Enabled").equalsIgnoreCase("true")) {
+                System.out.format("Found enabled endpoint: %s\n", endpoint.getEndpointArn());
                 EndpointUserData userData = readUserData(endpoint.getAttributes().get("CustomUserData"));
+                System.out.format("Endpoint user id: %s, Firebase id %s\n", userData.uniqueUserId, userData.firebaseId);
                 if (devices.contains(userData.uniqueUserId)) {
+                    System.out.format("Found subscribed device! %s\n", userData.uniqueUserId);
                     endpoints.add(endpoint.getEndpointArn());
                 }
             }
