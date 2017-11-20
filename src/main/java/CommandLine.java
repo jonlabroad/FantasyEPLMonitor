@@ -1,4 +1,5 @@
 import config.*;
+import dispatcher.GamedayDispatcher;
 import persistance.S3JsonWriter;
 import runner.GamedayRunner;
 import com.mashape.unirest.http.exceptions.UnirestException;
@@ -18,10 +19,13 @@ public class CommandLine {
         //GamedayRunner runner = new GamedayRunner();
         //runner.run();
 
-        List<Integer> teamIds = new ArrayList<>();
-        teamIds.add(2365803);
-        PlaybackRunner runner = new PlaybackRunner(teamIds);
-        runner.run();
+        //List<Integer> teamIds = new ArrayList<>();
+        //teamIds.add(2365803);
+        //PlaybackRunner runner = new PlaybackRunner(teamIds);
+        //runner.run();
+
+        GamedayDispatcher dispatcher = new GamedayDispatcher();
+        dispatcher.dispatch();
 
         //cleanRecordings();
     }
