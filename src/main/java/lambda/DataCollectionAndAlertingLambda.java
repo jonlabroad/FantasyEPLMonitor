@@ -24,6 +24,10 @@ public class DataCollectionAndAlertingLambda implements RequestHandler<Map<Strin
     }
 
     public ArrayList<Integer> readTeamIds(Map<String, Object> params) {
+        for (String key : params.keySet()) {
+            System.out.println(key);
+        }
+
         try {
             Integer[] teamIds = (Integer[]) params.get("teamIds");
             ArrayList<Integer> teamIdsList = new ArrayList<>();
@@ -35,7 +39,7 @@ public class DataCollectionAndAlertingLambda implements RequestHandler<Map<Strin
         catch (Exception ex) {
             ex.printStackTrace();
             return new ArrayList<>();
-            
+
         }
     }
 }
