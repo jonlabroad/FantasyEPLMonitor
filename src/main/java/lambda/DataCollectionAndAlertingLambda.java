@@ -35,6 +35,7 @@ public class DataCollectionAndAlertingLambda implements RequestHandler<Map<Strin
         catch (Exception ex) {
             ex.printStackTrace();
             return new ArrayList<>();
+            
         }
     }
 }
