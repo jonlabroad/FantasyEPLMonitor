@@ -33,7 +33,7 @@ public class GamedayDispatcher {
             request.setFunctionName("EPLFantasyDataPolling");
             request.setPayload(generatePayload(list));
             InvokeResult result = lambda.invoke(request);
-            System.out.println(result.getLogResult());
+            System.out.println(result.getStatusCode());
         }
     }
 

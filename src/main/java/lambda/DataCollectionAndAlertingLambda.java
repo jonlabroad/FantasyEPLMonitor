@@ -29,7 +29,7 @@ public class DataCollectionAndAlertingLambda implements RequestHandler<Map<Strin
         }
 
         try {
-            Integer[] teamIds = (Integer[]) params.get("teamIds");
+            ArrayList<Integer> teamIds = (ArrayList<Integer>) params.get("teamIds");
             ArrayList<Integer> teamIdsList = new ArrayList<>();
             for (int teamId : teamIds) {
                 teamIdsList.add(teamId);
