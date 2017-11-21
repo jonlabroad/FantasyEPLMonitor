@@ -1,6 +1,6 @@
 package alerts;
 
-import cache.DataCache;
+import client.EPLClient;
 import data.*;
 import data.eplapi.*;
 import org.joda.time.DateTime;
@@ -11,7 +11,10 @@ import java.util.*;
 
 public class MatchInfoComparer {
 
-    public MatchInfoComparer() {
+    private EPLClient _client;
+
+    public MatchInfoComparer(EPLClient client) {
+        _client = client;
     }
 
     public List<MatchEvent> Compare(MatchInfo oldInfo, MatchInfo newInfo) {
@@ -50,7 +53,7 @@ public class MatchInfoComparer {
                     FootballerScoreDetailElement oldElement = oldDetailArray != null && e < oldDetailArray.length ? oldDetailArray[e].explain : null;
                     FootballerScoreDetailElement newElement = newDetail.explain;
 
-                    Footballer footballer = DataCache.footballers.get(detailsEntry.getKey());
+                    Footballer footballer = _client.getFootballers().get(detailsEntry.getKey());
                     FootballerScoreDetailElement diffElement = newElement.Compare(oldElement);
                     AddDetailDifferences(diff, diffElement, team.id, footballer, newElement);
                 }
@@ -67,7 +70,6 @@ public class MatchInfoComparer {
             for (int j = 1; j < events.size(); j++) {
                 MatchEvent otherEvent = events.get(j);
                 if (otherEvent.equals(currentEvent)) {
-                    currentEvent.teamId = -1;
                     matchFound = true;
                     newEvents.add(currentEvent);
                     toRemove.add(otherEvent);
@@ -95,7 +97,7 @@ public class MatchInfoComparer {
             newStarters.removeAll(oldStarters);
             // Anything left is a sub!
             for (Integer footballerId : newStarters) {
-                Footballer footballer = DataCache.footballers.get(footballerId);
+                Footballer footballer = _client.getFootballers().get(footballerId);
                 diff.add(createMatchEvent(time, MatchEventType.AUTOSUB, footballer, 1, 0, teamId));
             }
         }
@@ -155,7 +157,7 @@ public class MatchInfoComparer {
     private void printMatchEvents(Map<Integer, List<MatchEvent>> events) {
         for (List<MatchEvent> teamEvents : events.values()) {
             for (MatchEvent event : teamEvents) {
-                System.out.println(String.format("%d: %d %s %s %d", event.teamId, event.number, event.typeString, event.footballerName, event.pointDifference));
+                System.out.println(String.format("%d %s %s %d", event.number, event.typeString, event.footballerName, event.pointDifference));
             }
         }
     }
@@ -174,7 +176,6 @@ public class MatchInfoComparer {
         event.typeString = type.toString();
         event.pointDifference = scoreDiff;
         event.number = number;
-        event.teamId = teamId;
         return event;
     }
 

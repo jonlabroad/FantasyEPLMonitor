@@ -1,20 +1,23 @@
 package client;
 
-import cache.DataCache;
+import cache.FootballerDataCache;
+import com.mashape.unirest.http.exceptions.UnirestException;
 import data.eplapi.*;
 import data.Score;
 
+import java.io.IOException;
 import java.lang.reflect.Field;
 import java.util.Map;
 
 public class ScoreCalculator {
-    public Score Calculate(Picks picks, Map<Integer, FootballerDetails> details) {
+
+    public Score Calculate(Picks picks, Map<Integer, Footballer> footballers, Map<Integer, FootballerDetails> details) throws IOException, UnirestException {
         // Find the footballers and tally the current score
         Score score = new Score();
         for (int i = 0; i < picks.picks.length; i++) {
             boolean isSub = i >= 11;
             Pick pick = picks.picks[i];
-            Footballer footballer = DataCache.footballers.get(pick.element);
+            Footballer footballer = footballers.get(pick.element);
             FootballerDetails detail = details.get(pick.element);
             int thisScore = 0;
             Field[] fields = FootballerScoreDetailElement.class.getFields();

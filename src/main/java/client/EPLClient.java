@@ -1,7 +1,6 @@
 package client;
 
-import cache.DataCache;
-import cache.FootballerDataReader;
+import cache.FootballerDataCache;
 import client.Request.EPLRequestGenerator;
 import client.Request.IRequestExecutor;
 import data.eplapi.*;
@@ -12,35 +11,63 @@ import com.mashape.unirest.http.exceptions.UnirestException;
 import com.mashape.unirest.request.HttpRequest;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Set;
 
 public class EPLClient
 {
     private EPLRequestGenerator _generator;
     private IRequestExecutor _executor;
+    private FootballerDataCache _footballerCache;
     private HashMap<Integer, MatchInfoProvider> _matchInfoProviderByLeague = new HashMap<>();
 
     public EPLClient(IRequestExecutor executor) throws IOException {
         initialize(executor);
     }
 
-    public Standings GetStandings(int leagueId) throws IOException, UnirestException {
+    public Standings getStandings(int leagueId) throws IOException, UnirestException {
         HttpRequest request = _generator.GenerateLeagueH2hStandingsRequest(leagueId);
         return _executor.Execute(request, Standings.class);
     }
 
-    public Footballer[] GetFootballers() throws IOException, UnirestException {
-        HttpRequest request = _generator.GenerateFootballersRequest();
-        Bootstrap bootstrap = _executor.Execute(request, Bootstrap.class);
-        return bootstrap.elements;
+    public HashMap<Integer, Footballer> getFootballers() {
+        if (_footballerCache.footballers.size() <= 0) {
+            HttpRequest request = _generator.GenerateFootballersRequest();
+            Bootstrap bootstrap = _executor.Execute(request, Bootstrap.class);
+            _footballerCache.setFootballers(bootstrap.elements);
+        }
+        return _footballerCache.footballers;
     }
 
-    public FootballerDetails GetFootballerDetails(int footballerId) throws IOException, UnirestException {
+    public FootballerDetails readFootballerDetails(int footballerId) throws IOException, UnirestException {
         HttpRequest request = _generator.GenerateFootballerDetailRequest(footballerId);
         FootballerDetails details = _executor.Execute(request, FootballerDetails.class);
         return details;
     }
 
-    public Picks GetPicks(int teamId, int eventId) throws IOException, UnirestException {
+    public HashMap<Integer, FootballerDetails> getFootballerDetails(Set<Integer> ids) throws IOException, UnirestException {
+        return readFootballerDetails(ids);
+    }
+
+    public HashMap<Integer, FootballerDetails> readFootballerDetails(Set<Integer> ids) throws IOException, UnirestException {
+        for (int id : ids) {
+            FootballerDetails detail = getCachedDetails(id);
+            if (detail == null) {
+                _footballerCache.footballerDetails.put(id, readFootballerDetails(id));
+            }
+        }
+        return _footballerCache.footballerDetails;
+    }
+
+    public void readFootballerDetails(Picks picks) throws IOException, UnirestException {
+        HashSet<Integer> ids = new HashSet<>();
+        for (Pick pick : picks.picks) {
+            ids.add(pick.element);
+        }
+        readFootballerDetails(ids);
+    }
+
+    public Picks getPicks(int teamId, int eventId) throws IOException, UnirestException {
         HttpRequest request = _generator.GeneratePicksRequest(teamId, eventId);
         try {
             return _executor.Execute(request, Picks.class);
@@ -50,13 +77,21 @@ public class EPLClient
         }
     }
 
-    public MatchInfo GetMatchInfo(int leagueId, int teamId, boolean next) throws IOException, UnirestException {
-        Standings standings = GetStandings(leagueId);
-        Match match = FindMatch(standings, teamId, next);
-        return CreateMatchInfo(standings, match, next);
+    public MatchInfo getMatchInfo(int leagueId, int teamId, boolean next) throws IOException, UnirestException {
+        Standings standings = getStandings(leagueId);
+        Match match = findMatch(standings, teamId, next);
+        return createMatchInfo(standings, match, next);
     }
 
-    private MatchInfo CreateMatchInfo(Standings standings, Match match, boolean isNext) throws IOException, UnirestException {
+    private HashMap<Integer, Footballer> getCachedFootballers() {
+        return _footballerCache.footballers;
+    }
+
+    private FootballerDetails getCachedDetails(int id) {
+        return _footballerCache.footballerDetails.get(id);
+    }
+
+    private MatchInfo createMatchInfo(Standings standings, Match match, boolean isNext) throws IOException, UnirestException {
         MatchInfo matchInfo = new MatchInfo();
         matchInfo.match = match;
         for (int i = 0; i < 2; i++) {
@@ -66,25 +101,23 @@ public class EPLClient
             team.name = i == 0 ? match.entry_1_name : match.entry_2_name;
             team.playerName = i == 0 ? match.entry_1_player_name : match.entry_2_player_name;
             int picksEventId = isNext ? match.event - 1 : match.event;
-            team.picks = GetPicks(team.id, picksEventId);
+            team.picks = getPicks(team.id, picksEventId);
             if (team.picks != null) {
-                FootballerDataReader footballerReader = new FootballerDataReader(this); // gross
-                footballerReader.ReadFootballerDetails(team.picks.picks);
-                team.currentPoints = !isNext ? new ScoreCalculator().Calculate(team.picks, DataCache.footballerDetails) : new Score();
+                readFootballerDetails(team.picks);
+                team.currentPoints = !isNext ? new ScoreCalculator().Calculate(team.picks, _footballerCache.footballers, _footballerCache.footballerDetails) : new Score();
                 team.footballerDetails = new HashMap<>();
                 for (Pick pick : team.picks.picks) {
-                    FootballerDetails details = DataCache.footballerDetails.get(pick.element);
-                    //DataCache.footballerDetails.put(pick.element, details);
+                    FootballerDetails details = _footballerCache.footballerDetails.get(pick.element);
                     team.footballerDetails.put(pick.element, details);
                 }
             }
-            team.standing = FindStanding(standings, team.id);
+            team.standing = findStanding(standings, team.id);
             matchInfo.teams.put(team.id, team);
         }
         return matchInfo;
     }
 
-    private Match FindMatch(Standings standings, int teamId, boolean next) {
+    private Match findMatch(Standings standings, int teamId, boolean next) {
         Matches matches = next ? standings.matches_next : standings.matches_this;
         for (Match match : matches.results) {
             if (match.entry_1_entry == teamId || match.entry_2_entry == teamId) {
@@ -94,7 +127,7 @@ public class EPLClient
         return null;
     }
 
-    private Standing FindStanding(Standings standings, int teamId) {
+    private Standing findStanding(Standings standings, int teamId) {
         for (Standing standing : standings.standings.results) {
             if (standing.entry == teamId) {
                 return standing;
@@ -106,5 +139,6 @@ public class EPLClient
     private void initialize(IRequestExecutor executor) throws IOException {
         _generator = new EPLRequestGenerator();
         _executor = executor;
+        _footballerCache = new FootballerDataCache();
     }
 }

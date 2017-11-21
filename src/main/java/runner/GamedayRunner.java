@@ -3,7 +3,6 @@ package runner;
 import alerts.AlertGenerator;
 import alerts.AndroidAlertSender;
 import alerts.MatchEventGenerator;
-import cache.DataCache;
 import config.CloudAppConfigProvider;
 import config.GlobalConfig;
 import data.MatchEvent;
@@ -32,7 +31,7 @@ public class GamedayRunner extends CommonRunner {
     public void runImpl(int teamId) {
         preRunTasks(teamId);
 
-        MatchEventGenerator matchEventGen = new MatchEventGenerator(teamId, _printOnly);
+        MatchEventGenerator matchEventGen = new MatchEventGenerator(teamId, _client, _printOnly);
         matchEventGen.Generate(_thisMatchInfo, _prevThisMatchInfo);
 
         AlertGenerator alertGen = new AlertGenerator(teamId, new AndroidAlertSender());

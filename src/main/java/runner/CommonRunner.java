@@ -1,13 +1,11 @@
 package runner;
 
-import cache.DataCache;
-import cache.FootballerDataReader;
+import cache.FootballerDataCache;
 import client.EPLClient;
 import client.EPLClientFactory;
 import client.MatchInfoProvider;
 import config.DeviceConfig;
 import config.GlobalConfig;
-import jdk.nashorn.internal.objects.Global;
 import persistance.S3MatchInfoDatastore;
 import com.mashape.unirest.http.exceptions.UnirestException;
 
@@ -49,20 +47,11 @@ public abstract class CommonRunner {
 
     public void run() {
         _client = null;
-        try {
-            DataCache.clear(); // Sucks to put this here
+        _client = EPLClientFactory.createClient();
+        _matchInfoProvider = new MatchInfoProvider(_leagueId, _client);
 
-            _client = EPLClientFactory.createClient();
-            _matchInfoProvider = new MatchInfoProvider(_leagueId, _client);
-            FootballerDataReader dataReader = new FootballerDataReader(_client);
-            dataReader.ReadFootballers();
+        _matchInfoDatastore = new S3MatchInfoDatastore(_leagueId);
 
-            _matchInfoDatastore = new S3MatchInfoDatastore(_leagueId);
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (UnirestException e) {
-            e.printStackTrace();
-        }
         for (int teamId : _teamIds) {
             runImpl(teamId);
         }

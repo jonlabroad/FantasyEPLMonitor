@@ -1,6 +1,8 @@
 import config.*;
 import dispatcher.GamedayDispatcher;
+import org.joda.time.DateTime;
 import persistance.S3JsonWriter;
+import processor.PlayerProcessor;
 import runner.GamedayRunner;
 import com.mashape.unirest.http.exceptions.UnirestException;
 import runner.PlaybackRunner;
@@ -24,8 +26,15 @@ public class CommandLine {
         //PlaybackRunner runner = new PlaybackRunner(teamIds);
         //runner.run();
 
-        GamedayDispatcher dispatcher = new GamedayDispatcher();
-        dispatcher.dispatch();
+        //GamedayDispatcher dispatcher = new GamedayDispatcher();
+        //dispatcher.dispatch();
+
+        DateTime start = DateTime.now();
+        PlayerProcessor processor = new PlayerProcessor();
+        processor.process();
+        DateTime stop = DateTime.now();
+        double diffSec = (stop.getMillis() - start.getMillis())/1000;
+        System.out.format("Player processing took %.1f seconds\n", diffSec);
 
         //cleanRecordings();
     }

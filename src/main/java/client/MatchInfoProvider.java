@@ -18,13 +18,13 @@ public class MatchInfoProvider {
     }
 
     public MatchInfo getCurrentMatch(int teamId) throws IOException, UnirestException {
-        MatchInfo info = _client.GetMatchInfo(_leagueId, teamId, false);
+        MatchInfo info = _client.getMatchInfo(_leagueId, teamId, false);
         _cache.writeCurrentMatchInfo(info);
         return info;
     }
 
     public MatchInfo getNextMatch(int teamId) throws IOException, UnirestException {
-        MatchInfo info = _client.GetMatchInfo(_leagueId, teamId, true);
+        MatchInfo info = _client.getMatchInfo(_leagueId, teamId, true);
         _cache.writeNextMatchInfo(info);
         return info;
     }
