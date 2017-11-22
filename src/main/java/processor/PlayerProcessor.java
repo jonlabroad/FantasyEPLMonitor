@@ -14,9 +14,7 @@ import java.util.Set;
 
 public class PlayerProcessor {
 
-    EPLClient _client;
-
-    HashSet<Integer> players = new HashSet<>();
+    private EPLClient _client;
 
     public PlayerProcessor() {
         _client = EPLClientFactory.createHttpClient();
@@ -28,21 +26,26 @@ public class PlayerProcessor {
     }
 
     public void process() throws IOException, UnirestException {
-        Set<Integer> players = new HashSet<>();
-        for (int i = 1; i <= 20; i++) {
-            players.add(i);
-        }
-
         // Get all the footballer data required
         HashMap<Integer, Footballer> footballers = getFootballers();
+        Set<Integer> players = footballers.keySet();
         HashMap<Integer, FootballerDetails> details = getDetails(players);
 
         for(int id : players) {
             Footballer footballer = footballers.get(id);
             FootballerDetails detail = details.get(id);
-            SinglePlayerProcessor processor = new SinglePlayerProcessor(footballer, detail, null);
+            SinglePlayerProcessor processor = new SinglePlayerProcessor(footballer, detail);
             processor.process();
         }
+    }
+
+    // For testing
+    private Set<Integer> getSmallSetOfIds() {
+        Set<Integer> players = new HashSet<>();
+        for (int i = 1; i <= 20; i++) {
+            players.add(i);
+        }
+        return players;
     }
 
     private HashMap<Integer, Footballer> getFootballers() throws IOException, UnirestException {
