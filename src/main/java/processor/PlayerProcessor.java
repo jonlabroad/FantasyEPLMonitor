@@ -8,17 +8,24 @@ import data.eplapi.FootballerDetails;
 import processor.player.SinglePlayerProcessor;
 
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 public class PlayerProcessor {
 
     private EPLClient _client;
+    private int _playerStart = -1;
+    private int _playerEnd = -1;
 
     public PlayerProcessor() {
         _client = EPLClientFactory.createHttpClient();
         initialize(EPLClientFactory.createHttpClient());
+    }
+
+    public PlayerProcessor(int start, int end) {
+        _client = EPLClientFactory.createHttpClient();
+        initialize(EPLClientFactory.createHttpClient());
+        _playerStart = start;
+        _playerEnd = end;
     }
 
     public PlayerProcessor(EPLClient client) {
@@ -28,7 +35,7 @@ public class PlayerProcessor {
     public void process() throws IOException, UnirestException {
         // Get all the footballer data required
         HashMap<Integer, Footballer> footballers = getFootballers();
-        Set<Integer> players = footballers.keySet();
+        Set<Integer> players = getFootballersToProcess(footballers);
         HashMap<Integer, FootballerDetails> details = getDetails(players);
 
         for(int id : players) {
@@ -37,6 +44,22 @@ public class PlayerProcessor {
             SinglePlayerProcessor processor = new SinglePlayerProcessor(footballer, detail);
             processor.process();
         }
+    }
+
+    private Set<Integer> getFootballersToProcess(HashMap<Integer, Footballer> footballers) {
+        Set<Integer> players = new HashSet<>();
+        if (_playerStart < 0) {
+            players = footballers.keySet();
+        }
+        else {
+            if (_playerEnd > footballers.size() - 1) {
+                _playerEnd = footballers.size() - 1;
+            }
+            for (int i = _playerStart; i <= _playerEnd; i++) {
+                players.add(i);
+            }
+        }
+        return players;
     }
 
     // For testing
