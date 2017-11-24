@@ -3,6 +3,7 @@ package processor;
 import client.EPLClient;
 import client.EPLClientFactory;
 import com.mashape.unirest.http.exceptions.UnirestException;
+import config.PlayerProcessorConfig;
 import data.eplapi.Footballer;
 import data.eplapi.FootballerDetails;
 import processor.player.SinglePlayerProcessor;
@@ -17,13 +18,12 @@ public class PlayerProcessor {
     private int _playerEnd = -1;
 
     public PlayerProcessor() {
-        _client = EPLClientFactory.createHttpClient();
         initialize(EPLClientFactory.createHttpClient());
     }
 
     public PlayerProcessor(int start, int end) {
-        _client = EPLClientFactory.createHttpClient();
-        initialize(EPLClientFactory.createHttpClient());
+        initialize(EPLClientFactory.createHttpClient(PlayerProcessorConfig.getInstance().record,
+                PlayerProcessorConfig.getInstance().recorderSequence));
         _playerStart = start;
         _playerEnd = end;
     }

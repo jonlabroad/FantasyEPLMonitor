@@ -4,6 +4,8 @@ import config.GlobalConfig;
 import persistance.S3JsonReader;
 import persistance.S3JsonWriter;
 
+import java.util.Random;
+
 public class RequestResponseRecorder {
     public static final String PATH_FMT = GlobalConfig.RECORDER_PATH_FMT;
 
@@ -11,25 +13,31 @@ public class RequestResponseRecorder {
     S3JsonReader _reader;
     private int _gameweek;
     private int _sequenceId;
+    private int _recordId;
 
-    public RequestResponseRecorder(int gameweek) {
+    RecordCollection _records = null;
+
+    public RequestResponseRecorder(int gameweek, int recordSequence) {
         _gameweek = gameweek;
         _writer = new S3JsonWriter();
         _reader = new S3JsonReader();
-        _sequenceId = getSequenceId();
+        _sequenceId = recordSequence;
+        _recordId = getRecordId();
     }
 
     public void record(String url, String response) {
-        RecordCollection records = readExisting();
-        if (records == null) {
-            records = new RecordCollection();
+        if (_records == null) {
+            _records = readExisting();
+            if (_records == null) {
+                _records = new RecordCollection();
+            }
         }
 
         Record newRecord = new Record();
         newRecord.url = url;
         newRecord.response = response;
-        records.records.put(url, newRecord);
-        _writer.write(getObjPath(_sequenceId), records);
+        _records.records.put(url, newRecord);
+        _writer.write(getObjPath(_sequenceId), _records);
     }
 
     public RecordCollection readExisting() {
@@ -38,14 +46,11 @@ public class RequestResponseRecorder {
     }
 
     private String getObjPath(int sequenceId) {
-        return String.format(PATH_FMT, _gameweek, sequenceId, "responses");
+        return String.format(PATH_FMT, _gameweek, sequenceId, "responses_" + Integer.toString(_recordId));
     }
 
-    private int getSequenceId() {
-        int i = 0;
-        while (_reader.doesObjectExist(getObjPath(i))) {
-            i++;
-        }
-        return i;
+    private int getRecordId() {
+        Random rand = new Random();
+        return rand.nextInt(10000);
     }
 }

@@ -12,10 +12,18 @@ public class RequestExecutor implements IRequestExecutor {
     boolean _record;
     RequestResponseRecorder _recorder;
 
-    public RequestExecutor(boolean record) throws IOException {
+    public RequestExecutor() {
+        initialize(false, 0);
+    }
+
+    public RequestExecutor(boolean record, int recordSequence) throws IOException {
+        initialize(record, recordSequence);
+    }
+
+    private void initialize(boolean record, int recordSequence) {
         _record = record;
         if (_record) {
-            _recorder = new RequestResponseRecorder(GlobalConfig.CloudAppConfig.CurrentGameWeek);
+            _recorder = new RequestResponseRecorder(GlobalConfig.CloudAppConfig.CurrentGameWeek, recordSequence);
         }
     }
 

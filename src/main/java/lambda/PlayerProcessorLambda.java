@@ -31,7 +31,11 @@ public class PlayerProcessorLambda implements RequestHandler<Map<String, Object>
             Integer[] range = new Integer[2];
             range[0] = (Integer) params.get("start");
             range[1] = (Integer) params.get("end");
+            System.out.format("Found range: [%d, %d]\n", range[0], range[1]);
             return range;
+        }
+        else {
+            System.out.println("No range found in params");
         }
         return null;
     }

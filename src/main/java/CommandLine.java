@@ -1,5 +1,6 @@
 import config.*;
 import dispatcher.GamedayDispatcher;
+import dispatcher.PlayerProcessorDispatcher;
 import org.joda.time.DateTime;
 import persistance.S3JsonWriter;
 import processor.PlayerProcessor;
@@ -29,12 +30,17 @@ public class CommandLine {
         //GamedayDispatcher dispatcher = new GamedayDispatcher();
         //dispatcher.dispatch();
 
-        DateTime start = DateTime.now();
-        PlayerProcessor processor = new PlayerProcessor();
-        processor.process();
-        DateTime stop = DateTime.now();
-        double diffSec = (stop.getMillis() - start.getMillis())/1000;
-        System.out.format("Player processing took %.1f seconds\n", diffSec);
+        //DateTime start = DateTime.now();
+        //PlayerProcessor processor = new PlayerProcessor(1, 50);
+        //processor.process();
+        //DateTime stop = DateTime.now();
+        //double diffSec = (stop.getMillis() - start.getMillis())/1000;
+        //System.out.format("Player processing took %.1f seconds\n", diffSec);
+
+        //writePlayerProcessorConfig();
+
+        PlayerProcessorDispatcher dispatcher = new PlayerProcessorDispatcher();
+        dispatcher.dispatchAll();
 
         //cleanRecordings();
     }
@@ -56,6 +62,13 @@ public class CommandLine {
         CloudAppConfig config = new CloudAppConfig();
         config.CurrentGameWeek = 10;
         new CloudAppConfigProvider().write(config);
+    }
+
+    private static void writePlayerProcessorConfig() {
+        PlayerProcessorConfig config = PlayerProcessorConfig.getInstance();
+        config.record = true;
+        config.recorderSequence = 0;
+        config.write();
     }
 
     private static void cleanRecordings() {
