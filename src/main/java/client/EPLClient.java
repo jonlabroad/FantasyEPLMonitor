@@ -64,6 +64,11 @@ public class EPLClient
             team.id = i == 0 ? match.entry_1_entry : match.entry_2_entry;
             matchInfo.teamIds.add(team.id);
             team.name = i == 0 ? match.entry_1_name : match.entry_2_name;
+
+            if (team.name.contains("Boom Sauce")) {
+                team.name = "Boom Sauce Sucks";
+            }
+
             team.playerName = i == 0 ? match.entry_1_player_name : match.entry_2_player_name;
             int picksEventId = isNext ? match.event - 1 : match.event;
             team.picks = GetPicks(team.id, picksEventId);
