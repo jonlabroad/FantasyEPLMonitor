@@ -3,8 +3,8 @@ package client;
 import cache.FootballerDataCache;
 import client.Request.EPLRequestGenerator;
 import client.Request.IRequestExecutor;
+import data.LegacyMatchInfo;
 import data.eplapi.*;
-import data.MatchInfo;
 import data.Score;
 import data.Team;
 import com.mashape.unirest.http.exceptions.UnirestException;
@@ -25,9 +25,15 @@ public class EPLClient
         initialize(executor);
     }
 
-    public Standings getStandings(int leagueId) throws IOException, UnirestException {
-        HttpRequest request = _generator.GenerateLeagueH2hStandingsRequest(leagueId);
-        return _executor.Execute(request, Standings.class);
+    public Standings getStandings(int leagueId) {
+        try {
+            HttpRequest request = _generator.GenerateLeagueH2hStandingsRequest(leagueId);
+            return _executor.Execute(request, Standings.class);
+        }
+        catch(Exception ex) {
+            ex.printStackTrace();
+        }
+        return null;
     }
 
     public HashMap<Integer, Footballer> getFootballers() {
@@ -67,7 +73,7 @@ public class EPLClient
         readFootballerDetails(ids);
     }
 
-    public Picks getPicks(int teamId, int eventId) throws IOException, UnirestException {
+    public Picks getPicks(int teamId, int eventId) {
         HttpRequest request = _generator.GeneratePicksRequest(teamId, eventId);
         try {
             return _executor.Execute(request, Picks.class);
@@ -77,7 +83,7 @@ public class EPLClient
         }
     }
 
-    public MatchInfo getMatchInfo(int leagueId, int teamId, boolean next) throws IOException, UnirestException {
+    public LegacyMatchInfo getMatchInfo(int leagueId, int teamId, boolean next) throws IOException, UnirestException {
         Standings standings = getStandings(leagueId);
         Match match = findMatch(standings, teamId, next);
         return createMatchInfo(standings, match, next);
@@ -91,13 +97,13 @@ public class EPLClient
         return _footballerCache.footballerDetails.get(id);
     }
 
-    private MatchInfo createMatchInfo(Standings standings, Match match, boolean isNext) throws IOException, UnirestException {
-        MatchInfo matchInfo = new MatchInfo();
-        matchInfo.match = match;
+    private LegacyMatchInfo createMatchInfo(Standings standings, Match match, boolean isNext) throws IOException, UnirestException {
+        LegacyMatchInfo legacyMatchInfo = new LegacyMatchInfo();
+        legacyMatchInfo.match = match;
         for (int i = 0; i < 2; i++) {
             Team team = new Team();
             team.id = i == 0 ? match.entry_1_entry : match.entry_2_entry;
-            matchInfo.teamIds.add(team.id);
+            legacyMatchInfo.teamIds.add(team.id);
             team.name = i == 0 ? match.entry_1_name : match.entry_2_name;
             team.playerName = i == 0 ? match.entry_1_player_name : match.entry_2_player_name;
             int picksEventId = isNext ? match.event - 1 : match.event;
@@ -112,12 +118,12 @@ public class EPLClient
                 }
             }
             team.standing = findStanding(standings, team.id);
-            matchInfo.teams.put(team.id, team);
+            legacyMatchInfo.teams.put(team.id, team);
         }
-        return matchInfo;
+        return legacyMatchInfo;
     }
 
-    private Match findMatch(Standings standings, int teamId, boolean next) {
+    public Match findMatch(Standings standings, int teamId, boolean next) {
         Matches matches = next ? standings.matches_next : standings.matches_this;
         for (Match match : matches.results) {
             if (match.entry_1_entry == teamId || match.entry_2_entry == teamId) {

@@ -1,6 +1,7 @@
 import config.*;
 import dispatcher.GamedayDispatcher;
 import dispatcher.PlayerProcessorDispatcher;
+import lambda.TeamProcessorLambda;
 import org.joda.time.DateTime;
 import persistance.S3JsonWriter;
 import processor.PlayerProcessor;
@@ -10,6 +11,7 @@ import runner.PlaybackRunner;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 public class CommandLine {
@@ -42,6 +44,9 @@ public class CommandLine {
         GlobalConfig.LocalLambdas = true;
         PlayerProcessorDispatcher dispatcher = new PlayerProcessorDispatcher();
         dispatcher.dispatchAll();
+
+        TeamProcessorLambda teamProcessor = new TeamProcessorLambda();
+        teamProcessor.handleRequest(new HashMap<>(), null);
 
         //cleanRecordings();
     }

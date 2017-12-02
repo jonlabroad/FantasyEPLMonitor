@@ -1,15 +1,15 @@
 package data;
 
-import data.eplapi.Match;
-import data.eplapi.Picks;
-
-import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 
 public class MatchInfo {
-    public ArrayList<Integer> teamIds = new ArrayList<>();
-    public Match match;
-    public ArrayList<Picks> picks = new ArrayList<>();
-    public HashMap<Integer, Team> teams = new HashMap<>();
-    public ArrayList<MatchEvent> matchEvents = new ArrayList<>();
+    public int gameweek;
+    public Map<Integer, ProcessedTeam> teams = new HashMap<>();
+
+    public MatchInfo(int gw, ProcessedTeam team1, ProcessedTeam team2) {
+        gameweek = gw;
+        teams.put(team1.id, team1);
+        teams.put(team2.id, team2);
+    }
 }

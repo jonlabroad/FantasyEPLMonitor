@@ -1,7 +1,7 @@
 package persistance;
 
 import config.GlobalConfig;
-import data.MatchInfo;
+import data.LegacyMatchInfo;
 
 public class S3MatchInfoDatastore implements IMatchInfoDatastore {
 
@@ -17,19 +17,19 @@ public class S3MatchInfoDatastore implements IMatchInfoDatastore {
         init(leagueId);
     }
 
-    public MatchInfo readMatchInfo(int teamId, int eventId) {
+    public LegacyMatchInfo readMatchInfo(int teamId, int eventId) {
         return readInfo(createCurrentKey(teamId, eventId));
     }
 
-    public MatchInfo readNextMatchInfo(int teamId, int eventId) {
+    public LegacyMatchInfo readNextMatchInfo(int teamId, int eventId) {
         return readInfo(createNextKey(teamId, eventId));
     }
 
-    public void writeCurrent(int teamId, MatchInfo info) {
+    public void writeCurrent(int teamId, LegacyMatchInfo info) {
         _writer.write(createCurrentKey(teamId, info.match.event), info);
     }
 
-    public void writeNext(int teamId, MatchInfo info) {
+    public void writeNext(int teamId, LegacyMatchInfo info) {
         _writer.write(createNextKey(teamId, info.match.event), info);
     }
 
@@ -44,8 +44,8 @@ public class S3MatchInfoDatastore implements IMatchInfoDatastore {
         _leagueId = leagueId;
     }
 
-    private MatchInfo readInfo(String keyName) {
-        return _reader.read(keyName, MatchInfo.class);
+    private LegacyMatchInfo readInfo(String keyName) {
+        return _reader.read(keyName, LegacyMatchInfo.class);
     }
 
     private String createCurrentKey(int teamId, int eventId) {

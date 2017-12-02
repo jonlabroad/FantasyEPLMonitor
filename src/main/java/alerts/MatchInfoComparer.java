@@ -17,7 +17,7 @@ public class MatchInfoComparer {
         _client = client;
     }
 
-    public List<MatchEvent> Compare(MatchInfo oldInfo, MatchInfo newInfo) {
+    public List<MatchEvent> Compare(LegacyMatchInfo oldInfo, LegacyMatchInfo newInfo) {
         Map<Integer, List<MatchEvent>> diff = new HashMap<>();
         for (int teamId : newInfo.teamIds) {
             diff.put(teamId, new ArrayList<>());
@@ -35,7 +35,7 @@ public class MatchInfoComparer {
         return events;
     }
 
-    private void CompareFootballerScores(Map<Integer, List<MatchEvent>> diff, MatchInfo oldInfo, MatchInfo newInfo) {
+    private void CompareFootballerScores(Map<Integer, List<MatchEvent>> diff, LegacyMatchInfo oldInfo, LegacyMatchInfo newInfo) {
         for (int teamId : newInfo.teamIds) {
             Team team = newInfo.teams.get(teamId);
             for (Map.Entry<Integer, FootballerDetails> detailsEntry : team.footballerDetails.entrySet()) {
@@ -85,7 +85,7 @@ public class MatchInfoComparer {
         events.addAll(newEvents);
     }
 
-    private void addAutoSub(List<MatchEvent> diff, MatchInfo oldInfo, MatchInfo newInfo) {
+    private void addAutoSub(List<MatchEvent> diff, LegacyMatchInfo oldInfo, LegacyMatchInfo newInfo) {
         if (oldInfo == null || newInfo == null) {
             return;
         }
@@ -103,7 +103,7 @@ public class MatchInfoComparer {
         }
     }
 
-    private HashSet<Integer> getStarters(int teamId, MatchInfo info) {
+    private HashSet<Integer> getStarters(int teamId, LegacyMatchInfo info) {
         HashSet<Integer> starters = new HashSet<>();
         for (int i=0; i<11; i++) {
             Pick pick = info.teams.get(teamId).picks.picks[i];

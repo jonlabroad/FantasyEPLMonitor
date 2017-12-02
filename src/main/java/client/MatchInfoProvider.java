@@ -1,6 +1,6 @@
 package client;
 
-import data.MatchInfo;
+import data.LegacyMatchInfo;
 import com.mashape.unirest.http.exceptions.UnirestException;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
@@ -17,20 +17,20 @@ public class MatchInfoProvider {
         _leagueId = leagueId;
     }
 
-    public MatchInfo getCurrentMatch(int teamId) throws IOException, UnirestException {
-        MatchInfo info = _client.getMatchInfo(_leagueId, teamId, false);
+    public LegacyMatchInfo getCurrentMatch(int teamId) throws IOException, UnirestException {
+        LegacyMatchInfo info = _client.getMatchInfo(_leagueId, teamId, false);
         _cache.writeCurrentMatchInfo(info);
         return info;
     }
 
-    public MatchInfo getNextMatch(int teamId) throws IOException, UnirestException {
-        MatchInfo info = _client.getMatchInfo(_leagueId, teamId, true);
+    public LegacyMatchInfo getNextMatch(int teamId) throws IOException, UnirestException {
+        LegacyMatchInfo info = _client.getMatchInfo(_leagueId, teamId, true);
         _cache.writeNextMatchInfo(info);
         return info;
     }
 
-    public MatchInfo getMatchInfo(int teamId, int gameweek) {
-        MatchInfo info = _cache.getMatchInfo(teamId, gameweek);
+    public LegacyMatchInfo getMatchInfo(int teamId, int gameweek) {
+        LegacyMatchInfo info = _cache.getMatchInfo(teamId, gameweek);
         if (info == null) {
             System.out.println("Does not support getting arbitrary match info. Only 'current' and 'next' are available");
             throw new NotImplementedException();

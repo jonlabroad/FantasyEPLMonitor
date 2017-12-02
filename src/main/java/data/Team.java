@@ -11,8 +11,8 @@ public class Team {
     public int id;
     public String name;
     public String playerName;
-    public Picks picks;
-    public Standing standing;
+    public Picks picks = new Picks();
+    public Standing standing = new Standing();
     public Score currentPoints = new Score();
     public HashMap<Integer, Footballer> footballers = new HashMap<Integer, Footballer>();
     public HashMap<Integer, FootballerDetails> footballerDetails = new HashMap<Integer, FootballerDetails>();

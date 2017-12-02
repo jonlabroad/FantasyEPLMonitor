@@ -23,7 +23,7 @@ public class MatchEventGenerator {
         _negativeValueAllowed.add(MatchEventType.OTHER);
     }
 
-    public void Generate(MatchInfo newInfo, MatchInfo oldInfo) {
+    public void Generate(LegacyMatchInfo newInfo, LegacyMatchInfo oldInfo) {
         List<MatchEvent> diff = new MatchInfoComparer(_client).Compare(oldInfo, newInfo);
         useOldEvents(newInfo, diff);
 
@@ -39,7 +39,7 @@ public class MatchEventGenerator {
         //SendAlert(alertText);
     }
 */
-    private void useOldEvents(MatchInfo newInfo, List<MatchEvent> diff) {
+    private void useOldEvents(LegacyMatchInfo newInfo, List<MatchEvent> diff) {
         // Remove all new events that made the diff negative, if applicable
         List<MatchEvent> diffToRemove = new ArrayList<>();
         for (MatchEvent event : diff) {
@@ -54,7 +54,7 @@ public class MatchEventGenerator {
         diff.removeAll(diffToRemove);
     }
 
-    private void findAndRemoveEvent(MatchInfo newInfo, int footballerId, MatchEventType type) {
+    private void findAndRemoveEvent(LegacyMatchInfo newInfo, int footballerId, MatchEventType type) {
         MatchEvent toRemove = null;
 
         // Assumes that the last event that matches will be the current event

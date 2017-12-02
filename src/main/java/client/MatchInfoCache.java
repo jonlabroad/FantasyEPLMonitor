@@ -1,7 +1,7 @@
 package client;
 
 import client.Request.MatchInfoCacheKey;
-import data.MatchInfo;
+import data.LegacyMatchInfo;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -9,48 +9,48 @@ import java.util.HashMap;
 
 public class MatchInfoCache {
     private int _leagueId;
-    private HashMap<MatchInfoCacheKey, MatchInfo> _matchInfoCacheByGameweek = new HashMap<>();
-    private HashMap<Integer, MatchInfo> _thisMatchByTeamId = new HashMap<>();
-    private HashMap<Integer, MatchInfo> _nextMatchByTeamId = new HashMap<>();
+    private HashMap<MatchInfoCacheKey, LegacyMatchInfo> _matchInfoCacheByGameweek = new HashMap<>();
+    private HashMap<Integer, LegacyMatchInfo> _thisMatchByTeamId = new HashMap<>();
+    private HashMap<Integer, LegacyMatchInfo> _nextMatchByTeamId = new HashMap<>();
 
     public MatchInfoCache(int leagueId) {
         // This should not be constant if multiple leagues are ever supported
         _leagueId = leagueId;
     }
 
-    public MatchInfo getMatchInfo(int teamId, int gameweek) {
+    public LegacyMatchInfo getMatchInfo(int teamId, int gameweek) {
         return _matchInfoCacheByGameweek.get(createCacheKey(teamId,gameweek));
     }
 
-    public MatchInfo getCurrentMatchInfo(int teamId) {
+    public LegacyMatchInfo getCurrentMatchInfo(int teamId) {
         return _thisMatchByTeamId.get(teamId);
     }
 
-    public MatchInfo getNextMatchInfo(int teamId) {
+    public LegacyMatchInfo getNextMatchInfo(int teamId) {
         return _nextMatchByTeamId.get(teamId);
     }
 
-    public void writeMatchInfo(MatchInfo info) {
+    public void writeMatchInfo(LegacyMatchInfo info) {
         for (MatchInfoCacheKey key : createCacheKeys(info)) {
             _matchInfoCacheByGameweek.put(key, info);
         }
     }
 
-    public void writeCurrentMatchInfo(MatchInfo info) {
+    public void writeCurrentMatchInfo(LegacyMatchInfo info) {
         writeMatchInfo(info);
         for (int teamId : info.teamIds) {
             _thisMatchByTeamId.put(teamId,info);
         }
     }
 
-    public void writeNextMatchInfo(MatchInfo info) {
+    public void writeNextMatchInfo(LegacyMatchInfo info) {
         writeMatchInfo(info);
         for (int teamId : info.teamIds) {
             _nextMatchByTeamId.put(teamId, info);
         }
     }
 
-    private Collection<MatchInfoCacheKey> createCacheKeys(MatchInfo info) {
+    private Collection<MatchInfoCacheKey> createCacheKeys(LegacyMatchInfo info) {
         Collection<MatchInfoCacheKey> keys = new ArrayList<>();
         for (int teamId : info.teamIds) {
             keys.add(createCacheKey(teamId, info.match.event));

@@ -14,7 +14,7 @@ public class PlayerProcessorConfig {
     protected PlayerProcessorConfig() {
     }
 
-    public static PlayerProcessorConfig getInstance() {
+    public static synchronized PlayerProcessorConfig getInstance() {
         if(instance == null) {
             try {
                 instance = readCloud();

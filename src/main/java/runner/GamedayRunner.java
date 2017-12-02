@@ -6,7 +6,7 @@ import alerts.MatchEventGenerator;
 import config.CloudAppConfigProvider;
 import config.GlobalConfig;
 import data.MatchEvent;
-import data.MatchInfo;
+import data.LegacyMatchInfo;
 import data.Team;
 import data.TeamIdName;
 import persistance.S3MatchInfoDatastore;
@@ -16,8 +16,8 @@ import java.util.Collection;
 import java.util.HashMap;
 
 public class GamedayRunner extends CommonRunner {
-    protected MatchInfo _thisMatchInfo = null;
-    protected MatchInfo _prevThisMatchInfo = null;
+    protected LegacyMatchInfo _thisLegacyMatchInfo = null;
+    protected LegacyMatchInfo _prevThisLegacyMatchInfo = null;
     private boolean _printOnly = false;
 
     public GamedayRunner() {
@@ -32,37 +32,37 @@ public class GamedayRunner extends CommonRunner {
         preRunTasks(teamId);
 
         MatchEventGenerator matchEventGen = new MatchEventGenerator(teamId, _client, _printOnly);
-        matchEventGen.Generate(_thisMatchInfo, _prevThisMatchInfo);
+        matchEventGen.Generate(_thisLegacyMatchInfo, _prevThisLegacyMatchInfo);
 
         AlertGenerator alertGen = new AlertGenerator(teamId, new AndroidAlertSender());
-        alertGen.generateAlerts(_thisMatchInfo, _prevThisMatchInfo);
+        alertGen.generateAlerts(_thisLegacyMatchInfo, _prevThisLegacyMatchInfo);
 
-        for (Team team : _thisMatchInfo.teams.values()) {
-            new S3MatchInfoDatastore(_leagueId).writeCurrent(team.id, _thisMatchInfo);
+        for (Team team : _thisLegacyMatchInfo.teams.values()) {
+            new S3MatchInfoDatastore(_leagueId).writeCurrent(team.id, _thisLegacyMatchInfo);
             System.out.format("#%d %s (%s) %dW-%dD-%dL\n", team.standing.rank, team.name, team.playerName,
                                team.standing.matches_won, team.standing.matches_drawn, team.standing.matches_lost);
         }
 
-        HashMap<Integer, Team> teams = _thisMatchInfo.teams;
+        HashMap<Integer, Team> teams = _thisLegacyMatchInfo.teams;
         System.out.format("%d (%d) - %d (%d)\n\n",
-                    teams.get(_thisMatchInfo.teamIds.get(0)).currentPoints.startingScore,
-                    teams.get(_thisMatchInfo.teamIds.get(0)).currentPoints.subScore,
-                    teams.get(_thisMatchInfo.teamIds.get(1)).currentPoints.startingScore,
-                    teams.get(_thisMatchInfo.teamIds.get(1)).currentPoints.subScore);
+                    teams.get(_thisLegacyMatchInfo.teamIds.get(0)).currentPoints.startingScore,
+                    teams.get(_thisLegacyMatchInfo.teamIds.get(0)).currentPoints.subScore,
+                    teams.get(_thisLegacyMatchInfo.teamIds.get(1)).currentPoints.startingScore,
+                    teams.get(_thisLegacyMatchInfo.teamIds.get(1)).currentPoints.subScore);
         System.out.println();
 
         boolean writeConfig = false;
         if (!GlobalConfig.CloudAppConfig.AvailableTeams.containsKey(teamId)) {
             TeamIdName teamIdName = new TeamIdName();
             teamIdName.teamId = teamId;
-            teamIdName.teamName = _thisMatchInfo.teams.get(teamId).name;
-            teamIdName.teamOwner = _thisMatchInfo.teams.get(teamId).playerName;
+            teamIdName.teamName = _thisLegacyMatchInfo.teams.get(teamId).name;
+            teamIdName.teamOwner = _thisLegacyMatchInfo.teams.get(teamId).playerName;
             GlobalConfig.CloudAppConfig.AvailableTeams.put(teamId, teamIdName);
             writeConfig = true;
         }
 
-        if (GlobalConfig.CloudAppConfig.CurrentGameWeek != _thisMatchInfo.match.event) {
-            GlobalConfig.CloudAppConfig.CurrentGameWeek = _thisMatchInfo.match.event;
+        if (GlobalConfig.CloudAppConfig.CurrentGameWeek != _thisLegacyMatchInfo.match.event) {
+            GlobalConfig.CloudAppConfig.CurrentGameWeek = _thisLegacyMatchInfo.match.event;
             writeConfig = true;
         }
 
@@ -73,19 +73,19 @@ public class GamedayRunner extends CommonRunner {
 
     private void preRunTasks(int teamId) {
         try {
-            _thisMatchInfo = _matchInfoProvider.getCurrentMatch(teamId);
+            _thisLegacyMatchInfo = _matchInfoProvider.getCurrentMatch(teamId);
             if (!_forceUpdate) {
-                _prevThisMatchInfo = _matchInfoDatastore.readMatchInfo(teamId, _thisMatchInfo.match.event);
+                _prevThisLegacyMatchInfo = _matchInfoDatastore.readMatchInfo(teamId, _thisLegacyMatchInfo.match.event);
 
                 // Update this match info with previous events. This should probably be done elsewhere
-                if (_prevThisMatchInfo != null) {
-                    ArrayList<MatchEvent> thisMatchEvents = _thisMatchInfo.matchEvents;
-                    _thisMatchInfo.matchEvents = new ArrayList<>();
-                    for (MatchEvent event : _prevThisMatchInfo.matchEvents) {
-                        _thisMatchInfo.matchEvents.add(event);
+                if (_prevThisLegacyMatchInfo != null) {
+                    ArrayList<MatchEvent> thisMatchEvents = _thisLegacyMatchInfo.matchEvents;
+                    _thisLegacyMatchInfo.matchEvents = new ArrayList<>();
+                    for (MatchEvent event : _prevThisLegacyMatchInfo.matchEvents) {
+                        _thisLegacyMatchInfo.matchEvents.add(event);
                     }
                     for (MatchEvent event : thisMatchEvents) {
-                        _thisMatchInfo.matchEvents.add(event);
+                        _thisLegacyMatchInfo.matchEvents.add(event);
                     }
                 }
             }
