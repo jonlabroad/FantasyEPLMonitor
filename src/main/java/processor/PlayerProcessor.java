@@ -2,6 +2,7 @@ package processor;
 
 import client.EPLClient;
 import client.EPLClientFactory;
+import com.google.gson.Gson;
 import com.mashape.unirest.http.exceptions.UnirestException;
 import config.PlayerProcessorConfig;
 import data.eplapi.Footballer;
@@ -22,8 +23,9 @@ public class PlayerProcessor {
     }
 
     public PlayerProcessor(int start, int end) {
-        initialize(EPLClientFactory.createHttpClient(PlayerProcessorConfig.getInstance().record,
-                PlayerProcessorConfig.getInstance().recorderSequence));
+        PlayerProcessorConfig config = PlayerProcessorConfig.getInstance();
+        System.out.format("Using configuration: %s\n", new Gson().toJson(config));
+        initialize(EPLClientFactory.createHttpClient(config.record, config.recorderSequence));
         _playerStart = start;
         _playerEnd = end;
     }

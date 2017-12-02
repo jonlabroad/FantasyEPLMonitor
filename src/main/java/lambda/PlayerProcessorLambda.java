@@ -3,6 +3,7 @@ package lambda;
 import com.amazonaws.services.lambda.runtime.Context;
 import com.amazonaws.services.lambda.runtime.RequestHandler;
 import com.mashape.unirest.http.exceptions.UnirestException;
+import config.PlayerProcessorConfig;
 import processor.PlayerProcessor;
 
 import java.io.IOException;
@@ -12,6 +13,7 @@ public class PlayerProcessorLambda implements RequestHandler<Map<String, Object>
     public Void handleRequest(Map<String, Object> params, Context context) {
         Integer[] range = readPlayerRange(params);
         PlayerProcessor processor;
+        PlayerProcessorConfig.getInstance().refresh(); // There appears to be caching going on (objs not unloaded from mem)
         if (range == null) {
             processor = new PlayerProcessor();
         }

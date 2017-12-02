@@ -27,11 +27,12 @@ public class GlobalConfig {
 
     public static final int NumberFootballersToProcessPerLambda = 50;
 
+    public static boolean LocalLambdas = false;
     public static boolean TestMode = false;
     public static boolean PlaybackMode = false;
     public static int PlaybackGameweek = 10;
     public static int CurrentPlaybackSequence = 0;
-    public static boolean Record = true;
+    public static boolean Record = false;
 
     public static Map<String, DeviceConfig> DeviceConfig = new DeviceConfigurator().readAllConfig();
 }

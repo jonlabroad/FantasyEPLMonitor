@@ -39,6 +39,7 @@ public class CommandLine {
 
         //writePlayerProcessorConfig();
 
+        GlobalConfig.LocalLambdas = true;
         PlayerProcessorDispatcher dispatcher = new PlayerProcessorDispatcher();
         dispatcher.dispatchAll();
 

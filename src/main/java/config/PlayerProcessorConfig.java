@@ -1,5 +1,6 @@
 package config;
 
+import com.google.gson.Gson;
 import persistance.S3JsonReader;
 import persistance.S3JsonWriter;
 
@@ -28,11 +29,18 @@ public class PlayerProcessorConfig {
 
     private static PlayerProcessorConfig readCloud() {
         S3JsonReader reader = new S3JsonReader();
+        System.out.format("Reading %s %s\n", GlobalConfig.S3Bucket, ConfigKey);
         return reader.read(ConfigKey, PlayerProcessorConfig.class);
     }
 
     public void write() {
         S3JsonWriter writer = new S3JsonWriter();
+        System.out.format("Writing config: %s\n", new Gson().toJson(this));
         writer.write(ConfigKey, this);
+    }
+
+    public PlayerProcessorConfig refresh() {
+        instance = readCloud();
+        return instance;
     }
 }

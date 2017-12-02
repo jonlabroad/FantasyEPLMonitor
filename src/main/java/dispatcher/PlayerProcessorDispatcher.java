@@ -20,7 +20,9 @@ public class PlayerProcessorDispatcher {
 
         DateTime start = DateTime.now();
         for (int i = 1; i < 600; i += GlobalConfig.NumberFootballersToProcessPerLambda) {
-            SinglePlayerProcessorDispatcher dispatcher = new SinglePlayerProcessorDispatcher(i, i + GlobalConfig.NumberFootballersToProcessPerLambda - 1);
+            SinglePlayerProcessorDispatcher dispatcher = new SinglePlayerProcessorDispatcher(i,
+                    i + GlobalConfig.NumberFootballersToProcessPerLambda - 1,
+                    GlobalConfig.LocalLambdas);
             Runnable dispatchRunnable = () -> dispatcher.dispatch();
             futures.add(executor.submit(dispatchRunnable));
         }
@@ -42,6 +44,7 @@ public class PlayerProcessorDispatcher {
 
     private void setSequenceId() {
         PlayerProcessorConfig config = PlayerProcessorConfig.getInstance();
+        config = config.refresh();
         config.recorderSequence++;
         config.write();
     }
