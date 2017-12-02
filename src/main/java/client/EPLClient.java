@@ -58,6 +58,7 @@ public class EPLClient
 
     private MatchInfo CreateMatchInfo(Standings standings, Match match, boolean isNext) throws IOException, UnirestException {
         MatchInfo matchInfo = new MatchInfo();
+        adjustIfOtherTeamIsAverage(match);
         matchInfo.match = match;
         for (int i = 0; i < 2; i++) {
             Team team = new Team();
@@ -66,7 +67,7 @@ public class EPLClient
             team.name = i == 0 ? match.entry_1_name : match.entry_2_name;
 
             if (team.name.contains("Boom Sauce")) {
-                team.name = "Boom Sauce Sucks";
+                team.name = "Boom Sauce";
             }
 
             team.playerName = i == 0 ? match.entry_1_player_name : match.entry_2_player_name;
@@ -106,6 +107,17 @@ public class EPLClient
             }
         }
         return null;
+    }
+
+    private void adjustIfOtherTeamIsAverage(Match match) {
+        boolean team1IsAverage = match.entry_1_name.equalsIgnoreCase("AVERAGE");
+        boolean team2IsAverage = match.entry_2_name.equalsIgnoreCase("AVERAGE");
+        if (team1IsAverage) {
+            match.entry_1_entry = match.entry_2_entry;
+        }
+        if (team2IsAverage) {
+            match.entry_2_entry = match.entry_1_entry;
+        }
     }
 
     private void initialize(IRequestExecutor executor) throws IOException {
