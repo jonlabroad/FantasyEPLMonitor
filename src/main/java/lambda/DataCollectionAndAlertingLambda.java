@@ -37,7 +37,7 @@ public class DataCollectionAndAlertingLambda implements RequestHandler<Map<Strin
             return teamIdsList;
         }
         catch (Exception ex) {
-            ex.printStackTrace();
+            System.out.println("No team ids found in the Lambda parameters");
             return new ArrayList<>();
 
         }
