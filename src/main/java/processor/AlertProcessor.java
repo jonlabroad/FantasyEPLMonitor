@@ -49,9 +49,9 @@ public class AlertProcessor {
 
         // Loop through events and find any that have been posted since last processing time
         int numRecentEvents = 0;
-        List<MatchEvent> allEvents = info.getAllEventsSorted();
+        info.mergeEvents();
         DateTime lastPollDate = util.Date.fromString(_config.LastProcessTime);
-        for (MatchEvent event : allEvents) {
+        for (MatchEvent event : info.allEvents) {
             DateTime eventDate = util.Date.fromString(event.dateTime);
             if (eventDate.compareTo(lastPollDate) > 0) {
                 System.out.format("Found new event: %s %s\n", event.footballerName, event.type.toString());

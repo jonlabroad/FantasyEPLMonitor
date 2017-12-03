@@ -8,6 +8,7 @@ import java.util.Map;
 public class MatchInfo {
     public int gameweek;
     public Map<Integer, ProcessedTeam> teams = new HashMap<>();
+    public List<MatchEvent> allEvents = new ArrayList<>();
 
     public MatchInfo(int gw, ProcessedTeam team1, ProcessedTeam team2) {
         gameweek = gw;
@@ -15,12 +16,10 @@ public class MatchInfo {
         teams.put(team2.id, team2);
     }
 
-    public List<MatchEvent> getAllEventsSorted() {
-        List<MatchEvent> allEvents = new ArrayList<>();
+    public void mergeEvents() {
         for (ProcessedTeam team : teams.values()) {
             allEvents.addAll(team.events);
         }
         allEvents.sort(new MatchEventSortComparator());
-        return allEvents;
     }
 }
