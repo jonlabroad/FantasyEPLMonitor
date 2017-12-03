@@ -4,6 +4,7 @@ import client.EPLClient;
 import client.EPLClientFactory;
 import com.google.gson.Gson;
 import com.mashape.unirest.http.exceptions.UnirestException;
+import config.GlobalConfig;
 import config.PlayerProcessorConfig;
 import data.eplapi.Footballer;
 import data.eplapi.FootballerDetails;
@@ -43,7 +44,7 @@ public class PlayerProcessor {
         for(int id : players) {
             Footballer footballer = footballers.get(id);
             FootballerDetails detail = details.get(id);
-            SinglePlayerProcessor processor = new SinglePlayerProcessor(footballer, detail);
+            SinglePlayerProcessor processor = new SinglePlayerProcessor(GlobalConfig.CloudAppConfig.CurrentGameWeek, footballer, detail);
             processor.process();
         }
     }

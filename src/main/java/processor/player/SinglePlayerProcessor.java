@@ -9,13 +9,15 @@ import data.eplapi.FootballerScoreDetailElement;
 import java.util.List;
 
 public class SinglePlayerProcessor {
+    int _gameweek;
     Footballer _footballer;
     FootballerDetails _currentDetails;
     ProcessedPlayer _previousData;
 
-    public SinglePlayerProcessor(Footballer footballer, FootballerDetails currentData) {
+    public SinglePlayerProcessor(int gameweek, Footballer footballer, FootballerDetails currentData) {
         _footballer = footballer;
         _currentDetails = currentData;
+        _gameweek = gameweek;
 
         PlayerReader reader = new PlayerReader();
         _previousData = reader.read(footballer.id);
@@ -32,7 +34,7 @@ public class SinglePlayerProcessor {
         addNewEvents(currentPlayerData.events, diff, _footballer, getScoreExplain(_currentDetails));
 
         PlayerWriter writer = new PlayerWriter();
-        writer.write(currentPlayerData);
+        writer.write(_gameweek, currentPlayerData);
 
         return currentPlayerData;
     }

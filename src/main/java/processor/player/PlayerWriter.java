@@ -7,12 +7,12 @@ import persistance.S3JsonWriter;
 public class PlayerWriter {
     private S3JsonWriter _writer = new S3JsonWriter();
 
-    public void write(ProcessedPlayer player) {
-        String key = createKey(player);
+    public void write(int gameweek, ProcessedPlayer player) {
+        String key = createKey(gameweek, player);
         _writer.write(key, player);
     }
 
-    private String createKey(ProcessedPlayer player) {
-        return String.format("%s/%d/player.json", GlobalConfig.PlayerDataRoot, player.rawData.footballer.id);
+    private String createKey(int gameweek, ProcessedPlayer player) {
+        return String.format("%s/%d/%d/player.json", GlobalConfig.PlayerDataRoot, gameweek, player.rawData.footballer.id);
     }
 }
