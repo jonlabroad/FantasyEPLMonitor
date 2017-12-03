@@ -39,8 +39,7 @@ public class ScoreNotification extends Notification {
     }
 
     private String timeToString(DateTime time) {
-        DateTimeFormatter fmt = DateTimeFormat.forPattern("MM-dd HH:mm");
-        return fmt.print(time);
+        return util.Date.toString(time);
     }
 
     @Override

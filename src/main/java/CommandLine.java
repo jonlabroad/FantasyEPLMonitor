@@ -47,11 +47,11 @@ public class CommandLine {
         //PlayerProcessorDispatcher dispatcher = new PlayerProcessorDispatcher();
         //dispatcher.dispatchAll();
 
-        TeamProcessorLambda teamProcessor = new TeamProcessorLambda();
-        teamProcessor.handleRequest(new HashMap<>(), null);
+        //TeamProcessorLambda teamProcessor = new TeamProcessorLambda();
+        //teamProcessor.handleRequest(new HashMap<>(), null);
 
-        //AlertProcessorLambda alertProcessorLambda = new AlertProcessorLambda();
-        //alertProcessorLambda.handleRequest(new HashMap<>(), null);
+        AlertProcessorLambda alertProcessorLambda = new AlertProcessorLambda();
+        alertProcessorLambda.handleRequest(new HashMap<>(), null);
 
         //cleanRecordings();
     }

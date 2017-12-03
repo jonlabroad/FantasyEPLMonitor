@@ -74,8 +74,7 @@ public class PlayerEventGenerator {
     }
 
     private static String timeToString(DateTime time) {
-        DateTimeFormatter fmt = DateTimeFormat.forPattern("MM-dd HH:mm");
-        return fmt.print(time);
+        return util.Date.toString(time);
     }
 
     private void printMatchEvents(List<MatchEvent> events) {
