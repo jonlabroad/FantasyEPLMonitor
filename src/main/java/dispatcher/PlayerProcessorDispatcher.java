@@ -2,8 +2,10 @@ package dispatcher;
 
 import config.GlobalConfig;
 import config.PlayerProcessorConfig;
+import lambda.AwsLambdaInvoker;
 import org.joda.time.DateTime;
 
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.ExecutionException;
@@ -40,6 +42,11 @@ public class PlayerProcessorDispatcher {
         }
         DateTime end = DateTime.now();
         System.out.format("Player processing took %f sec\n", (end.getMillis() - start.getMillis())/1000.0);
+
+        System.out.println("Dispatching TeamProcessor (async)");
+        AwsLambdaInvoker invoker = new AwsLambdaInvoker();
+        invoker.invoke("EPLFantasyTeamProcessor", new HashMap<>(), true);
+        System.out.println("Done");
     }
 
     private void setSequenceId() {
