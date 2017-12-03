@@ -43,6 +43,8 @@ public class TeamProcessor {
             writeLegacyMatchInfo(teamIdsToProcess, match);
             writeMatchInfo(match);
         }
+
+        new AlertProcessor(_leagueId, new HashSet<>()).process();
     }
 
     public void processTeams(Collection<Integer> teamIds, Standings standings, Match match) {
