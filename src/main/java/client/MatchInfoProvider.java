@@ -41,7 +41,9 @@ public class MatchInfoProvider implements IMatchInfoDatastore {
             }
 
             MatchInfo info = readInfo(key);
-            matchInfos.add(info);
+            if (info != null) {
+                matchInfos.add(info);
+            }
         }
         return matchInfos;
     }

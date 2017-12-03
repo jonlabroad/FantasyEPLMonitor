@@ -15,10 +15,15 @@ import java.util.stream.Collectors;
 
 public class S3JsonReader extends SimpleS3Provider {
     public <T> T read(String keyName, Class<T> cls) {
-        if (_client.doesObjectExist(_bucketName, keyName)) {
-            S3Object s3Obj = _client.getObject(_bucketName, keyName);
-            String json = readObject(s3Obj);
-            return new Gson().fromJson(json, cls);
+        try {
+            if (_client.doesObjectExist(_bucketName, keyName)) {
+                S3Object s3Obj = _client.getObject(_bucketName, keyName);
+                String json = readObject(s3Obj);
+                return new Gson().fromJson(json, cls);
+            }
+        }
+        catch (Exception ex) {
+            System.out.format("Cloud not read %s\n", keyName);
         }
         return null;
     }
