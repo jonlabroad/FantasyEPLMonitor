@@ -1,5 +1,6 @@
 package processor.player;
 
+import config.GlobalConfig;
 import data.MatchEvent;
 import data.ProcessedPlayer;
 import data.eplapi.Footballer;
@@ -20,7 +21,7 @@ public class SinglePlayerProcessor {
         _gameweek = gameweek;
 
         PlayerReader reader = new PlayerReader();
-        _previousData = reader.read(footballer.id);
+        _previousData = reader.read(GlobalConfig.CloudAppConfig.CurrentGameWeek, footballer.id);
     }
 
     public ProcessedPlayer process() {

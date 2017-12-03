@@ -2,6 +2,7 @@ package processor.team;
 
 import client.EPLClient;
 import client.ScoreCalculator;
+import config.GlobalConfig;
 import data.*;
 import data.eplapi.*;
 import processor.player.PlayerReader;
@@ -66,7 +67,7 @@ public class SingleTeamProcessor {
     }
 
     private ProcessedPlayer readProcessedPlayer(int footballerId) {
-        return _playerReader.read(footballerId);
+        return _playerReader.read(GlobalConfig.CloudAppConfig.CurrentGameWeek, footballerId);
     }
 
     private Standing findStanding(Standings standings) {
