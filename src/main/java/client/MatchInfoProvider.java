@@ -1,40 +1,62 @@
 package client;
 
-import data.LegacyMatchInfo;
-import com.mashape.unirest.http.exceptions.UnirestException;
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
+import config.GlobalConfig;
+import data.MatchInfo;
+import persistance.IMatchInfoDatastore;
+import persistance.S3JsonReader;
+import persistance.S3JsonWriter;
 
-import java.io.IOException;
+import java.util.*;
 
-public class MatchInfoProvider {
-    int _leagueId;
-    EPLClient _client;
-    MatchInfoCache _cache;
+public class MatchInfoProvider implements IMatchInfoDatastore {
+        private S3JsonReader _reader;
+        private S3JsonWriter _writer;
+        private static final String KEY_PATH_FORMAT = "%s/%d/%d/%d";
+        private static final String CURRENT_KEY_FORMAT = KEY_PATH_FORMAT + "/" + "MatchInfo";
 
-    public MatchInfoProvider(int leagueId, EPLClient client) {
-        _cache = new MatchInfoCache(leagueId);
-        _client = client;
+        private int _leagueId;
+
+    public MatchInfoProvider(int leagueId) {
+        init(leagueId);
+    }
+
+    public MatchInfo readCurrent(int teamId, int eventId) {
+        return readInfo(createCurrentKey(teamId, eventId));
+    }
+
+    public void writeCurrent(int teamId, MatchInfo info) {
+        _writer.write(createCurrentKey(teamId, info.gameweek), info);
+    }
+
+    public void delete(int teamId, int eventId) {
+        _writer.delete(createCurrentKey(teamId, eventId));
+    }
+
+    public List<MatchInfo> readAll() {
+        Collection<String> keys = _reader.getKeys(String.format("data/%d", _leagueId));
+        List<MatchInfo> matchInfos = new ArrayList<>();
+        for (String key : keys) {
+            if (!key.endsWith("/MatchInfo")) {
+                continue;
+            }
+
+            MatchInfo info = readInfo(key);
+            matchInfos.add(info);
+        }
+        return matchInfos;
+    }
+
+    private void init(int leagueId) {
+        _reader = new S3JsonReader();
+        _writer = new S3JsonWriter();
         _leagueId = leagueId;
     }
 
-    public LegacyMatchInfo getCurrentMatch(int teamId) throws IOException, UnirestException {
-        LegacyMatchInfo info = _client.getMatchInfo(_leagueId, teamId, false);
-        _cache.writeCurrentMatchInfo(info);
-        return info;
+    private MatchInfo readInfo(String keyName) {
+        return _reader.read(keyName, MatchInfo.class);
     }
 
-    public LegacyMatchInfo getNextMatch(int teamId) throws IOException, UnirestException {
-        LegacyMatchInfo info = _client.getMatchInfo(_leagueId, teamId, true);
-        _cache.writeNextMatchInfo(info);
-        return info;
-    }
-
-    public LegacyMatchInfo getMatchInfo(int teamId, int gameweek) {
-        LegacyMatchInfo info = _cache.getMatchInfo(teamId, gameweek);
-        if (info == null) {
-            System.out.println("Does not support getting arbitrary match info. Only 'current' and 'next' are available");
-            throw new NotImplementedException();
-        }
-        return info;
+    private String createCurrentKey(int teamId, int eventId) {
+        return String.format(CURRENT_KEY_FORMAT, GlobalConfig.MatchInfoRoot, _leagueId, teamId, eventId);
     }
 }

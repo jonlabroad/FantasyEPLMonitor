@@ -1,6 +1,6 @@
 package runner;
 
-import alerts.AlertGenerator;
+import alerts.LegacyAlertGenerator;
 import alerts.AndroidAlertSender;
 import alerts.MatchEventGenerator;
 import config.CloudAppConfigProvider;
@@ -34,7 +34,7 @@ public class GamedayRunner extends CommonRunner {
         MatchEventGenerator matchEventGen = new MatchEventGenerator(teamId, _client, _printOnly);
         matchEventGen.Generate(_thisLegacyMatchInfo, _prevThisLegacyMatchInfo);
 
-        AlertGenerator alertGen = new AlertGenerator(teamId, new AndroidAlertSender());
+        LegacyAlertGenerator alertGen = new LegacyAlertGenerator(teamId, new AndroidAlertSender());
         alertGen.generateAlerts(_thisLegacyMatchInfo, _prevThisLegacyMatchInfo);
 
         for (Team team : _thisLegacyMatchInfo.teams.values()) {

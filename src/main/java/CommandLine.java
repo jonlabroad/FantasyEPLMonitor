@@ -1,6 +1,7 @@
 import config.*;
 import dispatcher.GamedayDispatcher;
 import dispatcher.PlayerProcessorDispatcher;
+import lambda.AlertProcessorLambda;
 import lambda.TeamProcessorLambda;
 import org.joda.time.DateTime;
 import persistance.S3JsonWriter;
@@ -42,11 +43,15 @@ public class CommandLine {
         //writePlayerProcessorConfig();
 
         GlobalConfig.LocalLambdas = true;
-        PlayerProcessorDispatcher dispatcher = new PlayerProcessorDispatcher();
-        dispatcher.dispatchAll();
+        GlobalConfig.TestMode = true;
+        //PlayerProcessorDispatcher dispatcher = new PlayerProcessorDispatcher();
+        //dispatcher.dispatchAll();
 
         TeamProcessorLambda teamProcessor = new TeamProcessorLambda();
         teamProcessor.handleRequest(new HashMap<>(), null);
+
+        //AlertProcessorLambda alertProcessorLambda = new AlertProcessorLambda();
+        //alertProcessorLambda.handleRequest(new HashMap<>(), null);
 
         //cleanRecordings();
     }

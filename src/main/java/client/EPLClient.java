@@ -19,7 +19,7 @@ public class EPLClient
     private EPLRequestGenerator _generator;
     private IRequestExecutor _executor;
     private FootballerDataCache _footballerCache;
-    private HashMap<Integer, MatchInfoProvider> _matchInfoProviderByLeague = new HashMap<>();
+    private HashMap<Integer, LegacyMatchInfoProvider> _matchInfoProviderByLeague = new HashMap<>();
 
     public EPLClient(IRequestExecutor executor) throws IOException {
         initialize(executor);

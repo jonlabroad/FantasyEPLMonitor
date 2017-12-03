@@ -1,11 +1,9 @@
 package persistance;
 
 
-import data.LegacyMatchInfo;
+import data.MatchInfo;
 
 public interface IMatchInfoDatastore {
-    LegacyMatchInfo readMatchInfo(int teamId, int eventId);
-    LegacyMatchInfo readNextMatchInfo(int teamId, int eventId);
-    void writeCurrent(int teamId, LegacyMatchInfo info);
-    void writeNext(int teamId, LegacyMatchInfo info);
+    MatchInfo readCurrent(int teamId, int eventId);
+    void writeCurrent(int teamId, MatchInfo info);
 }

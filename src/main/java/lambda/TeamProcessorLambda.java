@@ -3,6 +3,7 @@ package lambda;
 import com.amazonaws.services.lambda.runtime.Context;
 import com.amazonaws.services.lambda.runtime.RequestHandler;
 import com.google.gson.Gson;
+import config.GlobalConfig;
 import processor.TeamProcessor;
 
 import java.util.*;
@@ -12,8 +13,13 @@ public class TeamProcessorLambda implements RequestHandler<Map<String, Object>, 
         List<Integer> teams = readTeamIds(params);
         if (teams == null) {
             teams = new ArrayList<>();
-            teams.add(1326527);
-            teams.add(2365803);
+            if (!GlobalConfig.TestMode) {
+                teams.add(1326527);
+                teams.add(2365803);
+            }
+            else {
+                teams.add(2365803);
+            }
         }
 
         int leagueId = 31187;

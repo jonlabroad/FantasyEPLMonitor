@@ -34,7 +34,7 @@ public class S3JsonReader extends SimpleS3Provider {
 
     public Collection<String> getKeys(String path) {
         Set<String> keys = new HashSet<>();
-        ObjectListing result = _client.listObjects(path);
+        ObjectListing result = _client.listObjects(_bucketName, path);
         List<S3ObjectSummary> summaries = result.getObjectSummaries();
         for (S3ObjectSummary summary : summaries) {
             keys.add(summary.getKey());

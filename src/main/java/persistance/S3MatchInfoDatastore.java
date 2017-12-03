@@ -3,12 +3,12 @@ package persistance;
 import config.GlobalConfig;
 import data.LegacyMatchInfo;
 
-public class S3MatchInfoDatastore implements IMatchInfoDatastore {
+public class S3MatchInfoDatastore implements ILegacyMatchInfoDatastore {
 
     private S3JsonReader _reader;
     private S3JsonWriter _writer;
     private static final String KEY_PATH_FORMAT = "%s/%d/%d/%d";
-    private static final String CURRENT_KEY_FORMAT = KEY_PATH_FORMAT + "/" + "MatchInfo";
+    private static final String CURRENT_KEY_FORMAT = KEY_PATH_FORMAT + "/" + "LegacyMatchInfo";
     private static final String NEXT_KEY_FORMAT = KEY_PATH_FORMAT + "/" + "ScoutingReport";
 
     private int _leagueId;

@@ -1,21 +1,18 @@
 package runner;
 
-import cache.FootballerDataCache;
 import client.EPLClient;
 import client.EPLClientFactory;
-import client.MatchInfoProvider;
+import client.LegacyMatchInfoProvider;
 import config.DeviceConfig;
 import config.GlobalConfig;
 import persistance.S3MatchInfoDatastore;
-import com.mashape.unirest.http.exceptions.UnirestException;
 
-import java.io.IOException;
 import java.util.Collection;
 import java.util.HashSet;
 
 public abstract class CommonRunner {
     protected EPLClient _client;
-    protected MatchInfoProvider _matchInfoProvider;
+    protected LegacyMatchInfoProvider _matchInfoProvider;
     protected S3MatchInfoDatastore _matchInfoDatastore;
 
     protected HashSet<Integer> _teamIds = new HashSet<>();
@@ -48,7 +45,7 @@ public abstract class CommonRunner {
     public void run() {
         _client = null;
         _client = EPLClientFactory.createClient();
-        _matchInfoProvider = new MatchInfoProvider(_leagueId, _client);
+        _matchInfoProvider = new LegacyMatchInfoProvider(_leagueId, _client);
 
         _matchInfoDatastore = new S3MatchInfoDatastore(_leagueId);
 
