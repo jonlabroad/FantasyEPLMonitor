@@ -102,6 +102,7 @@ public class TeamProcessor {
 
     private void writeMatchInfo(Match match) {
         MatchInfo info = createMatchInfo(match);
+        info.mergeEvents();
         for (int id : info.teams.keySet()) {
             new MatchInfoProvider(_leagueId).writeCurrent(id, info);
         }

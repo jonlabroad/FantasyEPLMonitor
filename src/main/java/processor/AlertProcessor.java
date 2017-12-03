@@ -49,7 +49,6 @@ public class AlertProcessor {
 
         // Loop through events and find any that have been posted since last processing time
         int numRecentEvents = 0;
-        info.mergeEvents();
         DateTime lastPollDate = util.Date.fromString(_config.LastProcessTime);
         for (MatchEvent event : info.allEvents) {
             DateTime eventDate = util.Date.fromString(event.dateTime);
