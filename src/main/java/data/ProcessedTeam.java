@@ -20,4 +20,13 @@ public class ProcessedTeam {
         events = eventList;
         standing = stand;
     }
+
+    public ProcessedPick getPick(int id) {
+        for (ProcessedPick pick : picks) {
+            if (pick.footballer.rawData.footballer.id == id) {
+                return pick;
+            }
+        }
+        return null;
+    }
 }

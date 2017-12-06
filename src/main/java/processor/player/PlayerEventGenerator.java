@@ -5,8 +5,6 @@ import data.MatchEventType;
 import data.eplapi.Footballer;
 import data.eplapi.FootballerScoreDetailElement;
 import org.joda.time.DateTime;
-import org.joda.time.format.DateTimeFormat;
-import org.joda.time.format.DateTimeFormatter;
 
 import java.util.ArrayList;
 import java.util.List;
