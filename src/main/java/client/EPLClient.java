@@ -45,6 +45,15 @@ public class EPLClient
         return _footballerCache.footballers;
     }
 
+    public BootstrapStatic getBootstrapStatic() {
+        if (_footballerCache.bootstrapStatic == null) {
+            HttpRequest request = _generator.GenerateBootstrapStaticRequest();
+            BootstrapStatic bootstrap = _executor.Execute(request, BootstrapStatic.class);
+            _footballerCache.bootstrapStatic = bootstrap;
+        }
+        return _footballerCache.bootstrapStatic;
+    }
+
     public FootballerDetails readFootballerDetails(int footballerId) throws IOException, UnirestException {
         HttpRequest request = _generator.GenerateFootballerDetailRequest(footballerId);
         FootballerDetails details = _executor.Execute(request, FootballerDetails.class);

@@ -5,6 +5,7 @@ import java.util.Map;
 public class GlobalConfig {
     public static final String EplBaseUrl = "https://fantasy.premierleague.com/drf";
     public static final String FootballersPath = "/bootstrap";
+    public static final String BootstrapStaticPath = "/bootstrap-static";
     public static final String EntryPath = "/entry/{ENTRY_ID}";
     public static final String EventPath = EntryPath + "/event/{EVENT_ID}";
     public static final String PicksPath = EventPath + "/picks";

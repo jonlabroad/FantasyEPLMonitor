@@ -14,6 +14,10 @@ public class EPLRequestGenerator {
         return Build(GlobalConfig.FootballersPath);
     }
 
+    public HttpRequest GenerateBootstrapStaticRequest() {
+        return Build(GlobalConfig.BootstrapStaticPath);
+    }
+
     public HttpRequest GeneratePicksRequest(int teamId, int eventId) {
         String resolvedUrl = VariableSubstitutor.Substitute(GlobalConfig.PicksPath, teamId, eventId);
         return Build(resolvedUrl);
