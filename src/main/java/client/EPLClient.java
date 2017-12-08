@@ -3,7 +3,6 @@ package client;
 import cache.FootballerDataCache;
 import client.Request.EPLRequestGenerator;
 import client.Request.IRequestExecutor;
-import data.LegacyMatchInfo;
 import data.eplapi.*;
 import data.Score;
 import data.Team;
@@ -91,44 +90,12 @@ public class EPLClient
         }
     }
 
-    public LegacyMatchInfo getMatchInfo(int leagueId, int teamId, boolean next) throws IOException, UnirestException {
-        Standings standings = getStandings(leagueId);
-        Match match = findMatch(standings, teamId, next);
-        return createMatchInfo(standings, match, next);
-    }
-
     private HashMap<Integer, Footballer> getCachedFootballers() {
         return _footballerCache.footballers;
     }
 
     private FootballerDetails getCachedDetails(int id) {
         return _footballerCache.footballerDetails.get(id);
-    }
-
-    private LegacyMatchInfo createMatchInfo(Standings standings, Match match, boolean isNext) throws IOException, UnirestException {
-        LegacyMatchInfo legacyMatchInfo = new LegacyMatchInfo();
-        legacyMatchInfo.match = match;
-        for (int i = 0; i < 2; i++) {
-            Team team = new Team();
-            team.id = i == 0 ? match.entry_1_entry : match.entry_2_entry;
-            legacyMatchInfo.teamIds.add(team.id);
-            team.name = i == 0 ? match.entry_1_name : match.entry_2_name;
-            team.playerName = i == 0 ? match.entry_1_player_name : match.entry_2_player_name;
-            int picksEventId = isNext ? match.event - 1 : match.event;
-            team.picks = getPicks(team.id, picksEventId);
-            if (team.picks != null) {
-                readFootballerDetails(team.picks);
-                team.currentPoints = !isNext ? new ScoreCalculator().Calculate(team.picks, _footballerCache.footballers, _footballerCache.footballerDetails) : new Score();
-                team.footballerDetails = new HashMap<>();
-                for (Pick pick : team.picks.picks) {
-                    FootballerDetails details = _footballerCache.footballerDetails.get(pick.element);
-                    team.footballerDetails.put(pick.element, details);
-                }
-            }
-            team.standing = findStanding(standings, team.id);
-            legacyMatchInfo.teams.put(team.id, team);
-        }
-        return legacyMatchInfo;
     }
 
     public Match findMatch(Standings standings, int teamId, boolean next) {

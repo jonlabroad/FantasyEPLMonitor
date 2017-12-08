@@ -7,22 +7,6 @@ import java.io.IOException;
 
 public class CommandLine {
     public static void main(String[] args) throws IOException, UnirestException, InterruptedException {
-        //PregameRunner pregame = new PregameRunner();
-        //pregame.run();
-
-        //GlobalConfig.TestMode = true;
-        //GlobalConfig.Record = false;
-        //GamedayRunner runner = new GamedayRunner();
-        //runner.run();
-
-        //List<Integer> teamIds = new ArrayList<>();
-        //teamIds.add(2365803);
-        //PlaybackRunner runner = new PlaybackRunner(teamIds);
-        //runner.run();
-
-        //GamedayDispatcher dispatcher = new GamedayDispatcher();
-        //dispatcher.dispatch();
-
         //DateTime start = DateTime.now();
         //PlayerProcessor processor = new PlayerProcessor(1, 50);
         //processor.process();
