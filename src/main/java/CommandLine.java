@@ -1,19 +1,9 @@
 import config.*;
-import dispatcher.GamedayDispatcher;
 import dispatcher.PlayerProcessorDispatcher;
-import lambda.AlertProcessorLambda;
-import lambda.TeamProcessorLambda;
-import org.joda.time.DateTime;
 import persistance.S3JsonWriter;
-import processor.PlayerProcessor;
-import runner.GamedayRunner;
 import com.mashape.unirest.http.exceptions.UnirestException;
-import runner.PlaybackRunner;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
 
 public class CommandLine {
     public static void main(String[] args) throws IOException, UnirestException, InterruptedException {

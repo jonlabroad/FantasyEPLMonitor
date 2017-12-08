@@ -54,7 +54,7 @@ public class PlayerEventGenerator {
         return events;
     }
 
-    private static MatchEvent createMatchEvent(DateTime time, MatchEventType type, Footballer footballer, int number, int scoreDiff) {
+    public static MatchEvent createMatchEvent(DateTime time, MatchEventType type, Footballer footballer, int number, int scoreDiff) {
         MatchEvent event = new MatchEvent();
         event.type = type;
         if (footballer != null) {

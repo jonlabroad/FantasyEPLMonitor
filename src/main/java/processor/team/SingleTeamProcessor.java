@@ -38,8 +38,10 @@ public class SingleTeamProcessor {
 
         // Merge all the events into a single stream
         List<MatchEvent> events = mergeEvents(processedPicks);
-
         ProcessedTeam team = new ProcessedTeam(_teamId, findStanding(_standings), processedPicks, score, events);
+        List<MatchEvent> autosubs = new AutosubDetector().detectAutoSubs(null, team.picks);
+        team.setAutosubs(autosubs);
+
         return team;
     }
 
