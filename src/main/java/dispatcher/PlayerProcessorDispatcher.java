@@ -2,6 +2,7 @@ package dispatcher;
 
 import client.EPLClient;
 import client.EPLClientFactory;
+import config.CloudAppConfigProvider;
 import config.GlobalConfig;
 import config.PlayerProcessorConfig;
 import data.eplapi.BootstrapStatic;
@@ -31,6 +32,12 @@ public class PlayerProcessorDispatcher {
         if (!isTimeToPoll()) {
             System.out.println("It's not time yet! Quiting...");
             return;
+        }
+
+        Event currentEvent = getCurrentEvent();
+        if (currentEvent.id != GlobalConfig.CloudAppConfig.CurrentGameWeek) {
+            GlobalConfig.CloudAppConfig.CurrentGameWeek = currentEvent.id;
+            new CloudAppConfigProvider().write(GlobalConfig.CloudAppConfig);
         }
 
         Set<Future> futures = new HashSet<>();
