@@ -1,31 +1,31 @@
 import config.*;
-import dispatcher.GamedayDispatcher;
+import dispatcher.PlayerProcessorDispatcher;
 import persistance.S3JsonWriter;
-import runner.GamedayRunner;
 import com.mashape.unirest.http.exceptions.UnirestException;
-import runner.PlaybackRunner;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
 public class CommandLine {
     public static void main(String[] args) throws IOException, UnirestException, InterruptedException {
-        //PregameRunner pregame = new PregameRunner();
-        //pregame.run();
+        //DateTime start = DateTime.now();
+        //PlayerProcessor processor = new PlayerProcessor(1, 50);
+        //processor.process();
+        //DateTime stop = DateTime.now();
+        //double diffSec = (stop.getMillis() - start.getMillis())/1000;
+        //System.out.format("Player processing took %.1f seconds\n", diffSec);
 
-        //GlobalConfig.TestMode = true;
-        //GlobalConfig.Record = false;
-        //GamedayRunner runner = new GamedayRunner();
-        //runner.run();
+        //writePlayerProcessorConfig();
 
-        //List<Integer> teamIds = new ArrayList<>();
-        //teamIds.add(2365803);
-        //PlaybackRunner runner = new PlaybackRunner(teamIds);
-        //runner.run();
+        GlobalConfig.LocalLambdas = true;
+        GlobalConfig.TestMode = false;
+        PlayerProcessorDispatcher dispatcher = new PlayerProcessorDispatcher();
+        dispatcher.dispatchAll();
 
-        GamedayDispatcher dispatcher = new GamedayDispatcher();
-        dispatcher.dispatch();
+        //TeamProcessorLambda teamProcessor = new TeamProcessorLambda();
+        //teamProcessor.handleRequest(new HashMap<>(), null);
+
+        //AlertProcessorLambda alertProcessorLambda = new AlertProcessorLambda();
+        //alertProcessorLambda.handleRequest(new HashMap<>(), null);
 
         //cleanRecordings();
     }
@@ -47,6 +47,13 @@ public class CommandLine {
         CloudAppConfig config = new CloudAppConfig();
         config.CurrentGameWeek = 10;
         new CloudAppConfigProvider().write(config);
+    }
+
+    private static void writePlayerProcessorConfig() {
+        PlayerProcessorConfig config = PlayerProcessorConfig.getInstance();
+        config.record = true;
+        config.recorderSequence = 0;
+        config.write();
     }
 
     private static void cleanRecordings() {

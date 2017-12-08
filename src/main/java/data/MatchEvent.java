@@ -8,11 +8,6 @@ public class MatchEvent {
     public String footballerName;
     public int pointDifference;
     public int number;
-    public int teamId;
-
-    public boolean appliesToBothTeams() {
-        return teamId < 0;
-    }
 
     @Override
     public boolean equals(Object otherObj) {

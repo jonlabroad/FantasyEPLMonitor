@@ -16,7 +16,16 @@ public class EPLClientFactory {
 
     public static EPLClient createHttpClient() {
         try {
-            return new EPLClient(new RequestExecutor(GlobalConfig.Record));
+            return new EPLClient(new RequestExecutor(false, 0));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public static EPLClient createHttpClient(boolean record, int currentSequence) {
+        try {
+            return new EPLClient(new RequestExecutor(record, currentSequence));
         } catch (IOException e) {
             e.printStackTrace();
         }
