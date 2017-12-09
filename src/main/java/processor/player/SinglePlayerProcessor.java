@@ -1,5 +1,6 @@
 package processor.player;
 
+import client.DataFilter;
 import config.GlobalConfig;
 import data.MatchEvent;
 import data.ProcessedPlayer;
@@ -32,6 +33,7 @@ public class SinglePlayerProcessor {
 
         ProcessedPlayer currentPlayerData = new ProcessedPlayer(_footballer, _currentDetails, _previousData);
         FootballerScoreDetailElement diff = getPlayerDiff();
+        new DataFilter(_currentDetails, _previousData.rawData.details, diff).filter();
         addNewEvents(currentPlayerData.events, diff, _footballer, getScoreExplain(_currentDetails));
 
         PlayerWriter writer = new PlayerWriter();

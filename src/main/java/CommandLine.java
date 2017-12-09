@@ -3,6 +3,8 @@ import dispatcher.PlayerProcessorDispatcher;
 import lambda.TeamProcessorLambda;
 import persistance.S3JsonWriter;
 import com.mashape.unirest.http.exceptions.UnirestException;
+import processor.PlayerProcessor;
+import processor.player.SinglePlayerProcessor;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -23,11 +25,14 @@ public class CommandLine {
         //PlayerProcessorDispatcher dispatcher = new PlayerProcessorDispatcher();
         //dispatcher.dispatchAll();
 
-        TeamProcessorLambda teamProcessor = new TeamProcessorLambda();
-        teamProcessor.handleRequest(new HashMap<>(), null);
+        //TeamProcessorLambda teamProcessor = new TeamProcessorLambda();
+        //teamProcessor.handleRequest(new HashMap<>(), null);
 
         //AlertProcessorLambda alertProcessorLambda = new AlertProcessorLambda();
         //alertProcessorLambda.handleRequest(new HashMap<>(), null);
+
+        PlayerProcessor processor = new PlayerProcessor(472, 473);
+        processor.process();
 
         //cleanRecordings();
     }
