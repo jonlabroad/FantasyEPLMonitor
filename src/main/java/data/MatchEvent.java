@@ -9,6 +9,18 @@ public class MatchEvent {
     public int pointDifference;
     public int number;
 
+    public MatchEvent() {};
+
+    public MatchEvent(MatchEvent other) {
+        dateTime = other.dateTime;
+        type = other.type;
+        typeString = other.typeString;
+        footballerId = other.footballerId;
+        footballerName = other.footballerName;
+        pointDifference = other.pointDifference;
+        number = other.number;
+    }
+
     @Override
     public boolean equals(Object otherObj) {
         MatchEvent other = (MatchEvent) otherObj;

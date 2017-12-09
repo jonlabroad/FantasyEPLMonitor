@@ -1,9 +1,11 @@
 import config.*;
 import dispatcher.PlayerProcessorDispatcher;
+import lambda.TeamProcessorLambda;
 import persistance.S3JsonWriter;
 import com.mashape.unirest.http.exceptions.UnirestException;
 
 import java.io.IOException;
+import java.util.HashMap;
 
 public class CommandLine {
     public static void main(String[] args) throws IOException, UnirestException, InterruptedException {
@@ -17,12 +19,12 @@ public class CommandLine {
         //writePlayerProcessorConfig();
 
         GlobalConfig.LocalLambdas = true;
-        GlobalConfig.TestMode = false;
-        PlayerProcessorDispatcher dispatcher = new PlayerProcessorDispatcher();
-        dispatcher.dispatchAll();
+        GlobalConfig.TestMode = true;
+        //PlayerProcessorDispatcher dispatcher = new PlayerProcessorDispatcher();
+        //dispatcher.dispatchAll();
 
-        //TeamProcessorLambda teamProcessor = new TeamProcessorLambda();
-        //teamProcessor.handleRequest(new HashMap<>(), null);
+        TeamProcessorLambda teamProcessor = new TeamProcessorLambda();
+        teamProcessor.handleRequest(new HashMap<>(), null);
 
         //AlertProcessorLambda alertProcessorLambda = new AlertProcessorLambda();
         //alertProcessorLambda.handleRequest(new HashMap<>(), null);
