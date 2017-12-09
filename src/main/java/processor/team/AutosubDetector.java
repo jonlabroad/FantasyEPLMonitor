@@ -9,8 +9,8 @@ import processor.player.PlayerEventGenerator;
 import java.util.*;
 
 public class AutosubDetector {
-    Set<Integer> startingPositions;
-    Set<Integer> subPositions;
+    Set<Integer> startingPositions = new HashSet<>();
+    Set<Integer> subPositions = new HashSet<>();
 
     public AutosubDetector()  {
         for (int i = 1; i <= 11; i++) {
