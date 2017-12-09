@@ -11,10 +11,10 @@ public class ProcessedTeam {
     public Score score;
     public Standing standing;
 
-    public List<MatchEvent> events;
-    public List<MatchEvent> autosubs = new ArrayList<>();
+    public List<TeamMatchEvent> events;
+    public List<TeamMatchEvent> autosubs = new ArrayList<>();
 
-    public ProcessedTeam(int teamId, Standing stand, ArrayList<ProcessedPick> processedPicks, Score s, List<MatchEvent> eventList) {
+    public ProcessedTeam(int teamId, Standing stand, ArrayList<ProcessedPick> processedPicks, Score s, List<TeamMatchEvent> eventList) {
         id = teamId;
         picks = processedPicks;
         score = s;
@@ -31,7 +31,7 @@ public class ProcessedTeam {
         return null;
     }
 
-    public void setAutosubs(List<MatchEvent> events) {
+    public void setAutosubs(List<TeamMatchEvent> events) {
         autosubs = events;
     }
 }

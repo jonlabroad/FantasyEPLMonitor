@@ -37,9 +37,9 @@ public class SingleTeamProcessor {
         Score score = new ScoreCalculator().calculate(processedPicks);
 
         // Merge all the events into a single stream
-        List<MatchEvent> events = mergeEvents(processedPicks);
+        List<TeamMatchEvent> events = mergeEvents(processedPicks);
         ProcessedTeam team = new ProcessedTeam(_teamId, findStanding(_standings), processedPicks, score, events);
-        List<MatchEvent> autosubs = new AutosubDetector().detectAutoSubs(null, team.picks);
+        List<TeamMatchEvent> autosubs = new AutosubDetector().detectAutoSubs(_teamId, null, team.picks);
         team.setAutosubs(autosubs);
 
         return team;
@@ -60,10 +60,13 @@ public class SingleTeamProcessor {
         return processedPicks;
     }
 
-    List<MatchEvent> mergeEvents(ArrayList<ProcessedPick> picks) {
-        List<MatchEvent> events = new ArrayList<>();
+    List<TeamMatchEvent> mergeEvents(ArrayList<ProcessedPick> picks) {
+        List<TeamMatchEvent> events = new ArrayList<>();
         for (ProcessedPick pick : picks) {
-            events.addAll(pick.footballer.events);
+            for (MatchEvent event : pick.footballer.events) {
+                TeamMatchEvent tEvent = new TeamMatchEvent(_teamId, pick.isCaptain(), pick.getMultiplier(), event);
+                events.add(tEvent);
+            }
         }
         return events;
     }

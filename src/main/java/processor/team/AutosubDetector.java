@@ -3,6 +3,7 @@ package processor.team;
 import data.MatchEvent;
 import data.MatchEventType;
 import data.ProcessedPick;
+import data.TeamMatchEvent;
 import org.joda.time.DateTime;
 import processor.player.PlayerEventGenerator;
 
@@ -21,8 +22,8 @@ public class AutosubDetector {
         }
     }
 
-    public List<MatchEvent> detectAutoSubs(List<ProcessedPick> oldPicks, List<ProcessedPick> newPicks) {
-        List<MatchEvent> subEvents = new ArrayList<>();
+    public List<TeamMatchEvent> detectAutoSubs(int teamId, List<ProcessedPick> oldPicks, List<ProcessedPick> newPicks) {
+        List<TeamMatchEvent> subEvents = new ArrayList<>();
         if (oldPicks == null || newPicks == null) {
             return subEvents;
         }
@@ -36,7 +37,8 @@ public class AutosubDetector {
                         newPick.footballer.rawData.footballer,
                         1,
                         0);
-                subEvents.add(event);
+                TeamMatchEvent tEvent = new TeamMatchEvent(teamId, newPick.isCaptain(), newPick.getMultiplier(), event);
+                subEvents.add(tEvent);
             }
         }
         return subEvents;
