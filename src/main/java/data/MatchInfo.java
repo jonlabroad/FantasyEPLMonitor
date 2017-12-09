@@ -18,11 +18,7 @@ public class MatchInfo {
 
     public void mergeEvents() {
         for (ProcessedTeam team : teams.values()) {
-            for (MatchEvent event : team.events) {
-                ProcessedPick pick = team.getPick(event.footballerId);
-                TeamMatchEvent tEvent = new TeamMatchEvent(team.id, pick.isCaptain(), pick.getMultiplier(), event);
-                allEvents.add(tEvent);
-            }
+            allEvents.addAll(team.events);
         }
         allEvents.sort(new MatchEventSortComparator());
     }

@@ -15,6 +15,7 @@ public class MatchEventDeduplicator {
                 ProcessedPick team1Pick = team1.getPick(team1Event.footballerId);
                 ProcessedPick team2Pick = team2.getPick(team2Event.footballerId);
                 if (team1Pick.equals(team2Pick)) {
+                    System.out.format("Found identical event: %s %s\n", team1Event.footballerName, team1Event.type.toString());
                     team1Event.teamId = -1;
                     team2.events.remove(team2Event);
                 }
