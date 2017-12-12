@@ -23,7 +23,7 @@ public class S3JsonReader extends SimpleS3Provider {
             }
         }
         catch (Exception ex) {
-            System.out.format("Cloud not read %s\n", keyName);
+            System.out.format("Could not read %s\n", keyName);
         }
         return null;
     }
