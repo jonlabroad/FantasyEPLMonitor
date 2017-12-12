@@ -21,7 +21,7 @@ public class CommandLine {
         //writePlayerProcessorConfig();
 
         GlobalConfig.LocalLambdas = true;
-        GlobalConfig.TestMode = true;
+        GlobalConfig.TestMode = false;
         //PlayerProcessorDispatcher dispatcher = new PlayerProcessorDispatcher();
         //dispatcher.dispatchAll();
 

@@ -114,7 +114,7 @@ public class PlayerProcessorDispatcher {
     }
 
     private DateTimeFormatter getDateFormatter() {
-        return DateTimeFormat.forPattern("YYYY-MM-dd'T'hh:mm:ss'Z'").withZone(DateTimeZone.forID("Europe/London"));
+        return DateTimeFormat.forPattern("YYYY-MM-dd'T'HH:mm:ss'Z'").withZone(DateTimeZone.forID("Europe/London"));
     }
 
     private void setSequenceId() {
