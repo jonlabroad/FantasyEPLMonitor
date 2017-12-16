@@ -19,7 +19,15 @@ public class DataFilter {
         if (_previousExplain == null || _currentExplain == null || _diff == null) {
             return;
         }
-        removeBackwardsMinutes();
+        ignoreOlderData();
+    }
+
+    public void ignoreOlderData() {
+        if (_diff.minutes.value < 0) {
+            System.out.format("Found older data. Min played diff: %d\n", _diff.minutes.value);
+            _currentExplain = _previousExplain;
+            _diff = _currentExplain.Compare(_currentExplain);
+        }
     }
 
     private void removeBackwardsMinutes() {
