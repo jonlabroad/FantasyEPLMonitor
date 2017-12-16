@@ -4,6 +4,7 @@ import client.DataFilter;
 import config.GlobalConfig;
 import data.MatchEvent;
 import data.ProcessedPlayer;
+import data.ProcessedPlayerCollection;
 import data.eplapi.Footballer;
 import data.eplapi.FootballerDetails;
 import data.eplapi.FootballerScoreDetailElement;
@@ -15,14 +16,15 @@ public class SinglePlayerProcessor {
     Footballer _footballer;
     FootballerDetails _currentDetails;
     ProcessedPlayer _previousData;
+    ProcessedPlayerProvider _playerProvider;
 
-    public SinglePlayerProcessor(int gameweek, Footballer footballer, FootballerDetails currentData) {
+    public SinglePlayerProcessor(ProcessedPlayerProvider playerProvider, int gameweek, Footballer footballer, FootballerDetails currentData) {
         _footballer = footballer;
         _currentDetails = currentData;
         _gameweek = gameweek;
 
-        PlayerReader reader = new PlayerReader();
-        _previousData = reader.read(GlobalConfig.CloudAppConfig.CurrentGameWeek, footballer.id);
+        _playerProvider = playerProvider;
+        _previousData = _playerProvider.getPlayer(footballer.id);
     }
 
     public ProcessedPlayer process() {
@@ -37,9 +39,6 @@ public class SinglePlayerProcessor {
             new DataFilter(_currentDetails, _previousData.rawData.details, diff).filter();
         }
         addNewEvents(currentPlayerData.events, diff, _footballer, getScoreExplain(_currentDetails));
-
-        PlayerWriter writer = new PlayerWriter();
-        writer.write(_gameweek, currentPlayerData);
 
         return currentPlayerData;
     }

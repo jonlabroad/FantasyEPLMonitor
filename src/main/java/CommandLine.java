@@ -21,12 +21,12 @@ public class CommandLine {
         //writePlayerProcessorConfig();
 
         GlobalConfig.LocalLambdas = true;
-        GlobalConfig.TestMode = false;
-        PlayerProcessorDispatcher dispatcher = new PlayerProcessorDispatcher();
-        dispatcher.dispatchAll();
+        GlobalConfig.TestMode = true;
+        //PlayerProcessorDispatcher dispatcher = new PlayerProcessorDispatcher();
+        //dispatcher.dispatchAll();
 
-        //TeamProcessorLambda teamProcessor = new TeamProcessorLambda();
-        //teamProcessor.handleRequest(new HashMap<>(), null);
+        TeamProcessorLambda teamProcessor = new TeamProcessorLambda();
+        teamProcessor.handleRequest(new HashMap<>(), null);
 
         //AlertProcessorLambda alertProcessorLambda = new AlertProcessorLambda();
         //alertProcessorLambda.handleRequest(new HashMap<>(), null);

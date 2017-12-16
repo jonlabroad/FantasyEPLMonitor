@@ -6,6 +6,7 @@ import client.MatchInfoProvider;
 import data.*;
 import data.eplapi.Match;
 import data.eplapi.Standings;
+import processor.player.ProcessedPlayerProvider;
 import processor.team.MatchEventDeduplicator;
 import processor.team.SingleTeamProcessor;
 
@@ -49,10 +50,11 @@ public class TeamProcessor {
     }
 
     public void processTeams(Collection<Integer> teamIds, Standings standings, Match match) {
+        ProcessedPlayerProvider playerProvider = new ProcessedPlayerProvider();
         for (int teamToProcess : teamIds) {
             if (!_teamsProcessed.containsKey(teamToProcess)) {
                 System.out.format("Processing team %d\n", teamToProcess);
-                SingleTeamProcessor processor = new SingleTeamProcessor(teamToProcess, _leagueId, standings, match, _client);
+                SingleTeamProcessor processor = new SingleTeamProcessor(playerProvider, teamToProcess, _leagueId, standings, match, _client);
                 ProcessedTeam processedTeam = processor.process();
                 _teamsProcessed.put(teamToProcess, processedTeam);
             }

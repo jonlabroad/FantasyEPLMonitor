@@ -6,8 +6,11 @@ import com.google.gson.Gson;
 import com.mashape.unirest.http.exceptions.UnirestException;
 import config.GlobalConfig;
 import config.PlayerProcessorConfig;
+import data.ProcessedPlayer;
+import data.ProcessedPlayerCollection;
 import data.eplapi.Footballer;
 import data.eplapi.FootballerDetails;
+import processor.player.ProcessedPlayerProvider;
 import processor.player.SinglePlayerProcessor;
 
 import java.io.IOException;
@@ -41,12 +44,16 @@ public class PlayerProcessor {
         Set<Integer> players = getFootballersToProcess(footballers);
         HashMap<Integer, FootballerDetails> details = getDetails(players);
 
-        for(int id : players) {
+        ProcessedPlayerProvider provider = new ProcessedPlayerProvider();
+        ProcessedPlayerCollection playerCollection = new ProcessedPlayerCollection();
+        for (int id : players) {
             Footballer footballer = footballers.get(id);
             FootballerDetails detail = details.get(id);
-            SinglePlayerProcessor processor = new SinglePlayerProcessor(GlobalConfig.CloudAppConfig.CurrentGameWeek, footballer, detail);
-            processor.process();
+            SinglePlayerProcessor processor = new SinglePlayerProcessor(provider, GlobalConfig.CloudAppConfig.CurrentGameWeek, footballer, detail);
+            ProcessedPlayer player = processor.process();
+            playerCollection.players.put(id, player);
         }
+        provider.writePlayers(playerCollection);
     }
 
     private Set<Integer> getFootballersToProcess(HashMap<Integer, Footballer> footballers) {

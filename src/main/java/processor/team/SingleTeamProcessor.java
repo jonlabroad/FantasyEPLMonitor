@@ -2,10 +2,9 @@ package processor.team;
 
 import client.EPLClient;
 import client.ScoreCalculator;
-import config.GlobalConfig;
 import data.*;
 import data.eplapi.*;
-import processor.player.PlayerReader;
+import processor.player.ProcessedPlayerProvider;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,16 +15,15 @@ public class SingleTeamProcessor {
     Standings _standings;
     Match _match;
     EPLClient _client;
+    ProcessedPlayerProvider _playerProvider;
 
-    PlayerReader _playerReader;
-
-    public SingleTeamProcessor(int teamId, int leagueId, Standings standings, Match match, EPLClient client) {
+    public SingleTeamProcessor(ProcessedPlayerProvider provider, int teamId, int leagueId, Standings standings, Match match, EPLClient client) {
         _teamId = teamId;
         _leagueId = leagueId;
         _standings = standings;
         _match = match;
 
-        _playerReader = new PlayerReader();
+        _playerProvider = provider;
         _client = client;
     }
 
@@ -72,7 +70,7 @@ public class SingleTeamProcessor {
     }
 
     private ProcessedPlayer readProcessedPlayer(int footballerId) {
-        return _playerReader.read(GlobalConfig.CloudAppConfig.CurrentGameWeek, footballerId);
+        return _playerProvider.getPlayer(footballerId);
     }
 
     private Standing findStanding(Standings standings) {
