@@ -15,7 +15,7 @@ public class FootballerScoreDetailElement {
     public ScoreExplain own_goals = new ScoreExplain();
 
 
-    public FootballerScoreDetailElement Compare(FootballerScoreDetailElement other) {
+    public FootballerScoreDetailElement compare(FootballerScoreDetailElement other) {
         if (other == null) {
             return this;
         }

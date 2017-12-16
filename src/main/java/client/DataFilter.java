@@ -5,32 +5,39 @@ import data.eplapi.FootballerDetails;
 import data.eplapi.FootballerScoreDetailElement;
 
 public class DataFilter {
+    FootballerDetails _currentDetails = null;
+    FootballerDetails _previousDetails = null;
+
     FootballerScoreDetailElement _currentExplain;
     FootballerScoreDetailElement _previousExplain;
     FootballerScoreDetailElement _diff;
 
     public DataFilter(FootballerDetails currentDetails, FootballerDetails previousDetails, FootballerScoreDetailElement diff) {
+        _previousDetails = previousDetails;
+        _currentDetails = currentDetails;
         _currentExplain = getExplain(currentDetails);
         _previousExplain = getExplain(previousDetails);
         _diff = diff;
     }
 
-    public void filter() {
+    public FootballerScoreDetailElement filter() {
         if (_previousExplain == null || _currentExplain == null || _diff == null) {
-            return;
+            return _diff;
         }
-        ignoreOlderData();
+        FootballerScoreDetailElement newDiff = ignoreOlderData();
+        return newDiff;
     }
 
-    public void ignoreOlderData() {
+    public FootballerScoreDetailElement ignoreOlderData() {
         if (_diff.minutes.value < 0 && _diff.minutes.value > -45) {
             System.out.format("Found older data. (%d -> %d) Min played diff: %d\n",
                     _previousExplain.minutes.value,
-                    _currentExplain.minutes,
+                    _currentExplain.minutes.value,
                     _diff.minutes.value);
-            _currentExplain = _previousExplain;
-            _diff = _currentExplain.Compare(_currentExplain);
+            _currentDetails.explain[0].explain = _previousExplain;
+            return _currentExplain.compare(_currentExplain);
         }
+        return _diff;
     }
 
     private void removeBackwardsMinutes() {

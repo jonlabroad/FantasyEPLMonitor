@@ -1,10 +1,8 @@
 package processor.player;
 
 import client.DataFilter;
-import config.GlobalConfig;
 import data.MatchEvent;
 import data.ProcessedPlayer;
-import data.ProcessedPlayerCollection;
 import data.eplapi.Footballer;
 import data.eplapi.FootballerDetails;
 import data.eplapi.FootballerScoreDetailElement;
@@ -36,7 +34,7 @@ public class SinglePlayerProcessor {
         ProcessedPlayer currentPlayerData = new ProcessedPlayer(_footballer, _currentDetails, _previousData);
         FootballerScoreDetailElement diff = getPlayerDiff();
         if (_previousData != null) {
-            new DataFilter(_currentDetails, _previousData.rawData.details, diff).filter();
+            diff = new DataFilter(_currentDetails, _previousData.rawData.details, diff).filter();
         }
         addNewEvents(currentPlayerData.events, diff, _footballer, getScoreExplain(_currentDetails));
 
@@ -44,7 +42,7 @@ public class SinglePlayerProcessor {
     }
 
     private FootballerScoreDetailElement getPlayerDiff() {
-        return getScoreExplain(_currentDetails).Compare(getScoreExplain(_previousData != null ? _previousData.rawData.details : null));
+        return getScoreExplain(_currentDetails).compare(getScoreExplain(_previousData != null ? _previousData.rawData.details : null));
     }
 
     private static void addNewEvents(List<MatchEvent> diff, FootballerScoreDetailElement detailsDiff, Footballer footballer, FootballerScoreDetailElement currentDetail) {
