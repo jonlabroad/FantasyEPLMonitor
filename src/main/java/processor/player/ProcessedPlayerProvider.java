@@ -3,10 +3,10 @@ package processor.player;
 import config.GlobalConfig;
 import data.ProcessedPlayer;
 import data.ProcessedPlayerCollection;
-import javafx.util.Pair;
 import persistance.S3JsonReader;
 import persistance.S3JsonWriter;
 
+import java.util.ArrayList;
 import java.util.Collections;
 
 public class ProcessedPlayerProvider {
@@ -46,15 +46,16 @@ public class ProcessedPlayerProvider {
     }
 
     public void writePlayers(ProcessedPlayerCollection players) {
-        Pair<Integer, Integer> minMax = getMinMaxIds(players);
-        String pathName = getPathName(minMax.getKey(), minMax.getValue());
+        int[] minMax = getMinMaxIds(players);
+        String pathName = getPathName(minMax[0], minMax[1]);
         _writer.write(pathName, players);
     }
 
-    private Pair<Integer, Integer> getMinMaxIds(ProcessedPlayerCollection players) {
-        int min = Collections.min(players.players.keySet());
-        int max = Collections.max(players.players.keySet());
-        return new Pair<>(min, max);
+    private int[] getMinMaxIds(ProcessedPlayerCollection players) {
+        int[] minMax = new int[2];
+        minMax[0] = Collections.min(players.players.keySet());
+        minMax[1] = Collections.max(players.players.keySet());
+        return minMax;
     }
 
     private String getPathName(int min, int max) {
