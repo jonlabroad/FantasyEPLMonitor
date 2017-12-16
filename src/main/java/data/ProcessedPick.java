@@ -1,14 +1,17 @@
 package data;
 
+import client.ScoreCalculator;
 import data.eplapi.Pick;
 
 public class ProcessedPick {
     public ProcessedPlayer footballer;
     public Pick pick;
+    public int score = 0;
 
     public ProcessedPick(ProcessedPlayer player, Pick p) {
         footballer = player;
         pick = p;
+        score = new ScoreCalculator().calculateFootballerScore(player.rawData.details) * pick.multiplier;
     }
 
     public boolean equals(ProcessedPick o) {

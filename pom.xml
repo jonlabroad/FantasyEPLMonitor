@@ -6,7 +6,24 @@
 
     <groupId>org.jonlabroad</groupId>
     <artifactId>FantasyEPLMonitor</artifactId>
-    <version>0.5-SNAPSHOT</version>
+    <version>1.2.1</version>
+
+    <distributionManagement>
+        <snapshotRepository>
+            <id>repo.jdl.com</id>
+            <url>s3://repo.jdl.com/snapshot</url>
+        </snapshotRepository>
+        <repository>
+            <id>repo.jdl.com</id>
+            <url>s3://repo.jdl.com/release</url>
+        </repository>
+    </distributionManagement>
+    <repositories>
+        <repository>
+            <id>repo.jdl.com</id>
+            <url>s3://repo.jdl.com/release</url>
+        </repository>
+    </repositories>
 
     <dependencyManagement>
         <dependencies>
@@ -83,5 +100,12 @@
                 </configuration>
             </plugin>
         </plugins>
+        <extensions>
+            <extension>
+                <groupId>org.kuali.maven.wagons</groupId>
+                <artifactId>maven-s3-wagon</artifactId>
+                <version>1.2.1</version>
+            </extension>
+        </extensions>
     </build>
 </project>

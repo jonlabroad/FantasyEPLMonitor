@@ -18,7 +18,17 @@ public class TeamProcessor {
     private List<Integer> _teams;
     private int _leagueId;
 
+    private boolean _isApiRequest = false;
+
     private Map<Integer, ProcessedTeam> _teamsProcessed = new HashMap<>();
+
+    public TeamProcessor(List<Integer> teams, int leagueId, boolean apiRequest) {
+        _teams = teams;
+        _leagueId = leagueId;
+        _isApiRequest = apiRequest;
+
+        _client = EPLClientFactory.createClient();
+    }
 
     public TeamProcessor(List<Integer> teams, int leagueId) {
         _teams = teams;
@@ -27,9 +37,8 @@ public class TeamProcessor {
         _client = EPLClientFactory.createClient();
     }
 
-    public void process() {
+    public Map<Integer, ProcessedTeam> process() {
         Standings standings = _client.getStandings(_leagueId);
-
         for (int teamId : _teams) {
             Match match = _client.findMatch(standings, teamId, false);
             int otherTeamId = teamId == match.entry_1_entry ? match.entry_2_entry : match.entry_1_entry;
@@ -43,10 +52,15 @@ public class TeamProcessor {
             ProcessedTeam team1 = _teamsProcessed.get(teamId);
             ProcessedTeam team2 = _teamsProcessed.get(otherTeamId);
             new MatchEventDeduplicator().deduplicate(team1, team2);
-            writeMatchInfo(match);
+            if (!_isApiRequest) {
+                writeMatchInfo(match);
+            }
         }
 
-        new AlertProcessor(_leagueId, new HashSet<>()).process();
+        if (!_isApiRequest) {
+            new AlertProcessor(_leagueId, new HashSet<>()).process();
+        }
+        return _teamsProcessed;
     }
 
     public void processTeams(Collection<Integer> teamIds, Standings standings, Match match) {

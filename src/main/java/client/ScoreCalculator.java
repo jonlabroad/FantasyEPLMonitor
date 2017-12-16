@@ -19,23 +19,8 @@ public class ScoreCalculator {
             boolean isSub = i >= 11;
             ProcessedPick processedPick = processedPicks.get(i);
             Pick pick = processedPick.pick;
-            Footballer footballer = processedPick.footballer.rawData.footballer;
             FootballerDetails detail = processedPick.footballer.rawData.details;
-            int thisScore = 0;
-            Field[] fields = FootballerScoreDetailElement.class.getFields();
-            for (FootballerScoreDetail scoreDetail : detail.explain) {
-                for (Field field : fields) {
-                    try {
-                        ScoreExplain explain = (ScoreExplain) field.get(scoreDetail.explain);
-                        if (explain.points > 0 || explain.value > 0) {
-                            //System.out.format("%s %s %d %d\n", footballer.web_name, field.getName(), explain.value, explain.points);
-                        }
-                        thisScore += explain.points * pick.multiplier;
-                    } catch (IllegalAccessException e) {
-                        e.printStackTrace();
-                    }
-                }
-            }
+            int thisScore = calculateFootballerScore(detail) * pick.multiplier;
             if (!isSub) {
                 score.startingScore += thisScore;
             }
@@ -54,26 +39,28 @@ public class ScoreCalculator {
             Pick pick = picks.picks[i];
             Footballer footballer = footballers.get(pick.element);
             FootballerDetails detail = details.get(pick.element);
-            int thisScore = 0;
-            Field[] fields = FootballerScoreDetailElement.class.getFields();
-            for (FootballerScoreDetail scoreDetail : detail.explain) {
-                for (Field field : fields) {
-                    try {
-                        ScoreExplain explain = (ScoreExplain) field.get(scoreDetail.explain);
-                        if (explain.points > 0 || explain.value > 0) {
-                            //System.out.format("%s %s %d %d\n", footballer.web_name, field.getName(), explain.value, explain.points);
-                        }
-                        thisScore += explain.points * pick.multiplier;
-                    } catch (IllegalAccessException e) {
-                        e.printStackTrace();
-                    }
-                }
-            }
+            int thisScore = calculateFootballerScore(detail) * pick.multiplier;
             if (!isSub) {
                 score.startingScore += thisScore;
             }
             else {
                 score.subScore += thisScore;
+            }
+        }
+        return score;
+    }
+
+    public int calculateFootballerScore(FootballerDetails detail) {
+        int score = 0;
+        Field[] fields = FootballerScoreDetailElement.class.getFields();
+        for (FootballerScoreDetail scoreDetail : detail.explain) {
+            for (Field field : fields) {
+                try {
+                    ScoreExplain explain = (ScoreExplain) field.get(scoreDetail.explain);
+                    score += explain.points;
+                } catch (IllegalAccessException e) {
+                    e.printStackTrace();
+                }
             }
         }
         return score;
