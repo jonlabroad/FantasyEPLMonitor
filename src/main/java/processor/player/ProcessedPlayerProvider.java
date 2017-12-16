@@ -6,7 +6,6 @@ import data.ProcessedPlayerCollection;
 import persistance.S3JsonReader;
 import persistance.S3JsonWriter;
 
-import java.util.ArrayList;
 import java.util.Collections;
 
 public class ProcessedPlayerProvider {

@@ -24,7 +24,10 @@ public class DataFilter {
 
     public void ignoreOlderData() {
         if (_diff.minutes.value < 0 && _diff.minutes.value > -45) {
-            System.out.format("Found older data. Min played diff: %d\n", _diff.minutes.value);
+            System.out.format("Found older data. (%d -> %d) Min played diff: %d\n",
+                    _previousExplain.minutes.value,
+                    _currentExplain.minutes,
+                    _diff.minutes.value);
             _currentExplain = _previousExplain;
             _diff = _currentExplain.Compare(_currentExplain);
         }
