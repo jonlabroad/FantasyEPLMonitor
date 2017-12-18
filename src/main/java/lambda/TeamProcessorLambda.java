@@ -4,12 +4,13 @@ import com.amazonaws.services.lambda.runtime.Context;
 import com.amazonaws.services.lambda.runtime.RequestHandler;
 import com.google.gson.Gson;
 import config.GlobalConfig;
+import data.ProcessedTeam;
 import processor.TeamProcessor;
 
 import java.util.*;
 
-public class TeamProcessorLambda implements RequestHandler<Map<String, Object>, Void> {
-    public Void handleRequest(Map<String, Object> params, Context context) {
+public class TeamProcessorLambda implements RequestHandler<Map<String, Object>, String> {
+    public String handleRequest(Map<String, Object> params, Context context) {
         List<Integer> teams = readTeamIds(params);
         if (teams == null) {
             teams = new ArrayList<>();
@@ -27,8 +28,8 @@ public class TeamProcessorLambda implements RequestHandler<Map<String, Object>, 
         int leagueId = 31187;
 
         TeamProcessor processor = new TeamProcessor(teams, leagueId);
-        processor.process();
-        return null;
+        Map<Integer, ProcessedTeam> processedTeams = processor.process();
+        return new Gson().toJson(processedTeams);
     }
 
     private List<Integer> readTeamIds(Map<String, Object> params) {
