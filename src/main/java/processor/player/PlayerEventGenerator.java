@@ -35,8 +35,8 @@ public class PlayerEventGenerator {
         if (detailsDiff.red_cards.value != 0) {
             events.add(createMatchEvent(time, MatchEventType.RED_CARD, footballer, detailsDiff.red_cards.value, detailsDiff.red_cards.points));
         }
-        if (detailsDiff.penalty_misses.value != 0) {
-            events.add(createMatchEvent(time, MatchEventType.PENALTY_MISS, footballer, detailsDiff.penalty_misses.value, detailsDiff.penalty_misses.points));
+        if (detailsDiff.penalties_missed.value != 0) {
+            events.add(createMatchEvent(time, MatchEventType.PENALTY_MISS, footballer, detailsDiff.penalties_missed.value, detailsDiff.penalties_missed.points));
         }
         if (detailsDiff.goals_conceded.value != 0) {
             events.add(createMatchEvent(time, MatchEventType.GOALS_CONCEDED, footballer, detailsDiff.goals_conceded.value, detailsDiff.goals_conceded.points));
@@ -44,8 +44,8 @@ public class PlayerEventGenerator {
         if (detailsDiff.saves.value != 0) {
             events.add(createMatchEvent(time, MatchEventType.SAVES, footballer, detailsDiff.saves.value, detailsDiff.saves.points));
         }
-        if (detailsDiff.penalty_saves.value != 0) {
-            events.add(createMatchEvent(time, MatchEventType.PENALTY_SAVES, footballer, detailsDiff.penalty_saves.value, detailsDiff.penalty_saves.points));
+        if (detailsDiff.penalties_saved.value != 0) {
+            events.add(createMatchEvent(time, MatchEventType.PENALTY_SAVES, footballer, detailsDiff.penalties_saved.value, detailsDiff.penalties_saved.points));
         }
         if (detailsDiff.own_goals.value != 0) {
             events.add(createMatchEvent(time, MatchEventType.OWN_GOALS, footballer, detailsDiff.own_goals.value, detailsDiff.own_goals.points));
