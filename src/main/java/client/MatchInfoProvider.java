@@ -25,7 +25,7 @@ public class MatchInfoProvider implements IMatchInfoDatastore {
     }
 
     public void writeCurrent(int teamId, MatchInfo info) {
-        _writer.write(createCurrentKey(teamId, info.gameweek), info);
+        _writer.write(createCurrentKey(teamId, info.gameweek), info, true);
     }
 
     public void delete(int teamId, int eventId) {
