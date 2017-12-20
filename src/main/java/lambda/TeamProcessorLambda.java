@@ -15,10 +15,6 @@ public class TeamProcessorLambda implements RequestHandler<Map<String, Object>, 
         if (teams == null) {
             teams = new ArrayList<>();
             if (!GlobalConfig.TestMode) {
-                teams.add(1326527);
-                teams.add(2365803);
-                teams.add(3303381);
-
             }
             else {
                 teams.add(2365803);

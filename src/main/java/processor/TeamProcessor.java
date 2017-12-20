@@ -5,6 +5,7 @@ import client.EPLClientFactory;
 import client.MatchInfoProvider;
 import data.*;
 import data.eplapi.Match;
+import data.eplapi.Standing;
 import data.eplapi.Standings;
 import processor.player.ProcessedPlayerProvider;
 import processor.team.MatchEventDeduplicator;
@@ -39,6 +40,11 @@ public class TeamProcessor {
 
     public Map<Integer, ProcessedTeam> process() {
         Standings standings = _client.getStandings(_leagueId);
+
+        if (_teams.isEmpty()) {
+            _teams = getTeamsInLeague(standings);
+        }
+
         for (int teamId : _teams) {
             Match match = _client.findMatch(standings, teamId, false);
             int otherTeamId = teamId == match.entry_1_entry ? match.entry_2_entry : match.entry_1_entry;
@@ -85,5 +91,15 @@ public class TeamProcessor {
         for (int id : info.teams.keySet()) {
             new MatchInfoProvider(_leagueId).writeCurrent(id, info);
         }
+    }
+
+    private List<Integer> getTeamsInLeague(Standings standings) {
+        List<Integer> teams = new ArrayList<>();
+        for (Standing standing : standings.standings.results) {
+            if (standing.entry > 0) {
+                teams.add(standing.entry);
+            }
+        }
+        return teams;
     }
 }
