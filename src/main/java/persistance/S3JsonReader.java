@@ -3,6 +3,7 @@ package persistance;
 import com.amazonaws.services.s3.model.ObjectListing;
 import com.amazonaws.services.s3.model.S3Object;
 import com.amazonaws.services.s3.model.S3ObjectSummary;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 
 import java.io.BufferedReader;
@@ -20,6 +21,7 @@ public class S3JsonReader extends SimpleS3Provider {
                 S3Object s3Obj = _client.getObject(_bucketName, keyName);
                 String json = readObject(s3Obj);
                 return new Gson().fromJson(json, cls);
+                //return new ObjectMapper().readValue(json, cls);
             }
         }
         catch (Exception ex) {

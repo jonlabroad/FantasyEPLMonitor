@@ -7,8 +7,8 @@ import dispatcher.PlayerProcessorDispatcher;
 import java.util.HashMap;
 import java.util.Map;
 
-public class PlayerProcessorDispatcherLambda implements RequestHandler<Map<String, Object>, Void> {
-    public Void handleRequest(Map<String, Object> params, Context context) {
+public class PlayerProcessorDispatcherLambda implements RequestHandler<Map<String, Object>, String> {
+    public String handleRequest(Map<String, Object> params, Context context) {
         PlayerProcessorDispatcher dispatcher = new PlayerProcessorDispatcher();
         dispatcher.dispatchAll();
 

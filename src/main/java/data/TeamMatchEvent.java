@@ -5,6 +5,8 @@ public class TeamMatchEvent extends MatchEvent {
     public boolean isCaptain;
     public int multiplier;
 
+    public TeamMatchEvent() {}
+
     public TeamMatchEvent(int team, boolean isCpt, int mult, MatchEvent event) {
         super(event);
         teamId = team;

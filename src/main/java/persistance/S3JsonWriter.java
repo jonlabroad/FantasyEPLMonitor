@@ -1,6 +1,10 @@
 package persistance;
 
 import com.amazonaws.services.s3.model.CannedAccessControlList;
+import com.fasterxml.jackson.core.JsonFactory;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.ObjectWriter;
 import com.google.gson.Gson;
 
 public class S3JsonWriter extends SimpleS3Provider {
@@ -25,5 +29,13 @@ public class S3JsonWriter extends SimpleS3Provider {
 
     private <T> String toJson(T data) {
         return new Gson().toJson(data);
+/*
+        try {
+            return new ObjectMapper().writeValueAsString(data);
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+        }
+        return null;
+*/
     }
 }

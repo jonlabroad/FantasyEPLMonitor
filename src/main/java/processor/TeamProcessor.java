@@ -7,6 +7,7 @@ import data.*;
 import data.eplapi.Match;
 import data.eplapi.Standing;
 import data.eplapi.Standings;
+import persistance.S3JsonWriter;
 import processor.player.ProcessedPlayerProvider;
 import processor.team.MatchEventDeduplicator;
 import processor.team.SingleTeamProcessor;
@@ -40,6 +41,8 @@ public class TeamProcessor {
 
     public Map<Integer, ProcessedTeam> process() {
         Standings standings = _client.getStandings(_leagueId);
+
+        new S3JsonWriter().write(String.format("data/%d/api/leagues-h2h-standings", _leagueId), standings, true);
 
         if (_teams.isEmpty()) {
             _teams = getTeamsInLeague(standings);

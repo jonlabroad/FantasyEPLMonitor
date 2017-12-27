@@ -8,6 +8,8 @@ public class ProcessedPick {
     public Pick pick;
     public int score = 0;
 
+    public ProcessedPick() {}
+
     public ProcessedPick(ProcessedPlayer player, Pick p) {
         footballer = player;
         pick = p;

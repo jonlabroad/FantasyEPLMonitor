@@ -8,10 +8,10 @@ public class FootballerScoreDetailElement {
     public ScoreExplain assists = new ScoreExplain();
     public ScoreExplain yellow_cards = new ScoreExplain();
     public ScoreExplain red_cards = new ScoreExplain();
-    public ScoreExplain penalties_missed = new ScoreExplain(); // No idea if this is correct yet
+    public ScoreExplain penalties_missed = new ScoreExplain();
     public ScoreExplain goals_conceded = new ScoreExplain();
     public ScoreExplain saves = new ScoreExplain();
-    public ScoreExplain penalties_saved = new ScoreExplain(); // D not know if this is correct
+    public ScoreExplain penalties_saved = new ScoreExplain();
     public ScoreExplain own_goals = new ScoreExplain();
 
 

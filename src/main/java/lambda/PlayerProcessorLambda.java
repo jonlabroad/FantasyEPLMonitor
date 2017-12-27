@@ -9,8 +9,8 @@ import processor.PlayerProcessor;
 import java.io.IOException;
 import java.util.Map;
 
-public class PlayerProcessorLambda implements RequestHandler<Map<String, Object>, Void> {
-    public Void handleRequest(Map<String, Object> params, Context context) {
+public class PlayerProcessorLambda implements RequestHandler<Map<String, Object>, String> {
+    public String handleRequest(Map<String, Object> params, Context context) {
         Integer[] range = readPlayerRange(params);
         PlayerProcessor processor;
         PlayerProcessorConfig.getInstance().refresh(); // There appears to be caching going on (objs not unloaded from mem)

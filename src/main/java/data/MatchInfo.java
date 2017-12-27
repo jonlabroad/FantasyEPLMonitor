@@ -10,6 +10,8 @@ public class MatchInfo {
     public Map<Integer, ProcessedTeam> teams = new HashMap<>();
     public List<TeamMatchEvent> allEvents = new ArrayList<>();
 
+    public MatchInfo() {}
+
     public MatchInfo(int gw, ProcessedTeam team1, ProcessedTeam team2) {
         gameweek = gw;
         teams.put(team1.id, team1);

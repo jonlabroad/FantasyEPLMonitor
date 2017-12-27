@@ -8,6 +8,8 @@ import config.PlayerProcessorConfig;
 import data.eplapi.BootstrapStatic;
 import data.eplapi.Event;
 import lambda.AwsLambdaInvoker;
+import lambda.ILambdaInvoker;
+import lambda.LocalAwsLambdaInvoker;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.joda.time.format.DateTimeFormat;
@@ -69,7 +71,7 @@ public class PlayerProcessorDispatcher {
         System.out.format("Player processing took %f sec\n", (end.getMillis() - start.getMillis())/1000.0);
 
         System.out.println("Dispatching TeamProcessor (async)");
-        AwsLambdaInvoker invoker = new AwsLambdaInvoker();
+        ILambdaInvoker invoker = GlobalConfig.LocalLambdas ? new LocalAwsLambdaInvoker() : new AwsLambdaInvoker();
         invoker.invoke("EPLFantasyTeamProcessor", new HashMap<>(), true);
         System.out.println("Done");
         executor.shutdown();

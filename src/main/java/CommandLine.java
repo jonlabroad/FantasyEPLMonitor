@@ -1,13 +1,19 @@
+import com.google.gson.Gson;
 import config.*;
+import data.ProcessedPlayerCollection;
 import dispatcher.PlayerProcessorDispatcher;
 import lambda.TeamProcessorLambda;
+import org.apache.commons.io.Charsets;
 import persistance.S3JsonWriter;
 import com.mashape.unirest.http.exceptions.UnirestException;
 import processor.PlayerProcessor;
 import processor.player.SinglePlayerProcessor;
 
 import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.HashMap;
+import java.util.List;
 
 public class CommandLine {
     public static void main(String[] args) throws IOException, UnirestException, InterruptedException {
@@ -20,13 +26,15 @@ public class CommandLine {
 
         //writePlayerProcessorConfig();
 
+        //firminoTest();
+
         GlobalConfig.LocalLambdas = true;
         GlobalConfig.TestMode = false;
-        //PlayerProcessorDispatcher dispatcher = new PlayerProcessorDispatcher();
-        //dispatcher.dispatchAll();
+        PlayerProcessorDispatcher dispatcher = new PlayerProcessorDispatcher();
+        dispatcher.dispatchAll();
 
-        TeamProcessorLambda teamProcessor = new TeamProcessorLambda();
-        teamProcessor.handleRequest(new HashMap<>(), null);
+        //TeamProcessorLambda teamProcessor = new TeamProcessorLambda();
+        //teamProcessor.handleRequest(new HashMap<>(), null);
 
         //AlertProcessorLambda alertProcessorLambda = new AlertProcessorLambda();
         //alertProcessorLambda.handleRequest(new HashMap<>(), null);
@@ -35,6 +43,19 @@ public class CommandLine {
         //processor.process();
 
         //cleanRecordings();
+    }
+
+    private static void firminoTest() {
+        List<String> lines = null;
+        try {
+            lines = java.nio.file.Files.readAllLines(Paths.get("firminotest.txt"));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        String allData = String.join("", lines);
+        ProcessedPlayerCollection test = new Gson().fromJson(allData, ProcessedPlayerCollection.class);
+        System.out.println(test.players.get(235).rawData.details.explain[0].explain.bonus.points);
+
     }
 
     private static void writeConfig() {
