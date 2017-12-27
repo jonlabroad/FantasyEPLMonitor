@@ -72,6 +72,7 @@ public class PlayerProcessorDispatcher {
         AwsLambdaInvoker invoker = new AwsLambdaInvoker();
         invoker.invoke("EPLFantasyTeamProcessor", new HashMap<>(), true);
         System.out.println("Done");
+        executor.shutdown();
     }
 
     private boolean isTimeToPoll() {
