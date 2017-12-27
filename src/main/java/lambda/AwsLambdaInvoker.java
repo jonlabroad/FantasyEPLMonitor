@@ -15,7 +15,7 @@ public class AwsLambdaInvoker implements ILambdaInvoker {
     public void invoke(String lambdaName, Map<String, Object> params, boolean async) {
         AWSLambda lambda = AWSLambdaClientBuilder.defaultClient();
         InvokeRequest request = new InvokeRequest();
-        request.setInvocationType(InvocationType.RequestResponse);
+        request.setInvocationType(async ? InvocationType.Event : InvocationType.RequestResponse);
         request.setFunctionName(lambdaName);
         String payload = new Gson().toJson(params);
         request.setPayload(payload);
