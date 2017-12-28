@@ -11,6 +11,9 @@ public class ProcessedPlayer {
     public FullFootballerData rawData = new FullFootballerData();
     public List<MatchEvent> events = new ArrayList<>();
 
+    public boolean isCurrentlyPlaying = false;
+    public boolean isDonePlaying = false;
+
     public ProcessedPlayer() {}
 
     public ProcessedPlayer(Footballer footballer, FootballerScoreDetailElement explains, ProcessedPlayer oldData) {

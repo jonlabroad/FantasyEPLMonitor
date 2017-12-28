@@ -3,9 +3,9 @@ package processor.player;
 import client.DataFilter;
 import data.MatchEvent;
 import data.ProcessedPlayer;
-import data.eplapi.Footballer;
-import data.eplapi.FootballerDetails;
-import data.eplapi.FootballerScoreDetailElement;
+import data.eplapi.*;
+import org.joda.time.DateTime;
+import util.Date;
 
 import java.util.List;
 
@@ -13,12 +13,14 @@ public class SinglePlayerProcessor {
     int _gameweek;
     Footballer _footballer;
     FootballerScoreDetailElement _currentExplains;
+    Live _currentLiveData;
     ProcessedPlayer _previousData;
     ProcessedPlayerProvider _playerProvider;
 
-    public SinglePlayerProcessor(ProcessedPlayerProvider playerProvider, int gameweek, Footballer footballer, FootballerScoreDetailElement explains) {
+    public SinglePlayerProcessor(ProcessedPlayerProvider playerProvider, int gameweek, Footballer footballer, FootballerScoreDetailElement explains, Live liveData) {
         _footballer = footballer;
         _currentExplains = explains;
+        _currentLiveData = liveData;
         _gameweek = gameweek;
 
         _playerProvider = playerProvider;
@@ -32,6 +34,7 @@ public class SinglePlayerProcessor {
         }
 
         ProcessedPlayer currentPlayerData = new ProcessedPlayer(_footballer, _currentExplains, _previousData);
+        determineFixtureStatus(currentPlayerData);
         FootballerScoreDetailElement diff = getPlayerDiff();
         if (_previousData != null) {
             diff = new DataFilter(_currentExplains, _previousData.rawData.explains, diff).filter();
@@ -49,5 +52,29 @@ public class SinglePlayerProcessor {
         PlayerEventGenerator generator = new PlayerEventGenerator();
         List<MatchEvent> newEvents = generator.createNewEvents(detailsDiff, footballer, currentDetail);
         diff.addAll(newEvents);
+    }
+
+    private void determineFixtureStatus(ProcessedPlayer player) {
+        player.isCurrentlyPlaying = false;
+        player.isDonePlaying = false;
+        int realTeamId = _footballer.team;
+        for (Fixture fixture : _currentLiveData.fixtures) {
+            if (fixture.team_a == realTeamId || fixture.team_h == realTeamId) {
+                if (isFixtureInProgress(fixture)) {
+                    player.isCurrentlyPlaying = true;
+                }
+                else if (isFixtureComplete(fixture)) {
+                    player.isDonePlaying = true;
+                }
+            }
+        }
+    }
+
+    private boolean isFixtureInProgress(Fixture fixture) {
+        return !fixture.finished && fixture.started;
+    }
+
+    private boolean isFixtureComplete(Fixture fixture) {
+        return fixture.finished;
     }
 }

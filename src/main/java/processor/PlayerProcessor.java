@@ -51,7 +51,8 @@ public class PlayerProcessor {
         for (int id : players) {
             Footballer footballer = footballers.get(id);
             FootballerScoreDetailElement explain = explains.get(id);
-            SinglePlayerProcessor processor = new SinglePlayerProcessor(provider, GlobalConfig.CloudAppConfig.CurrentGameWeek, footballer, explain);
+            Live liveData = _client.getLiveData(GlobalConfig.CloudAppConfig.CurrentGameWeek);
+            SinglePlayerProcessor processor = new SinglePlayerProcessor(provider, GlobalConfig.CloudAppConfig.CurrentGameWeek, footballer, explain, liveData);
             ProcessedPlayer player = processor.process();
             playerCollection.players.put(id, player);
         }
