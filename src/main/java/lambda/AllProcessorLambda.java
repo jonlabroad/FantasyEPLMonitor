@@ -30,6 +30,7 @@ public class AllProcessorLambda implements RequestHandler<Map<String, Object>, S
             return "No polling to do";
         }
 
+        DateTime start = DateTime.now();
         Event currentEvent = getCurrentEvent();
         if (currentEvent.id != GlobalConfig.CloudAppConfig.CurrentGameWeek) {
             GlobalConfig.CloudAppConfig.CurrentGameWeek = currentEvent.id;
@@ -44,6 +45,10 @@ public class AllProcessorLambda implements RequestHandler<Map<String, Object>, S
         } catch (Exception e) {
             e.printStackTrace();
         }
+
+        DateTime end = DateTime.now();
+        System.out.format("Processing took %f sec\n", (end.getMillis() - start.getMillis())/1000.0);
+
         return null;
     }
 
