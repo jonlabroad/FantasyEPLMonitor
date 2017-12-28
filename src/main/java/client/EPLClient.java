@@ -52,6 +52,14 @@ public class EPLClient
         return _footballerCache.bootstrapStatic;
     }
 
+    public Entry getEntry(int teamId) {
+        if (!_footballerCache.entries.containsKey(teamId)) {
+            Entry data = readEntry(teamId);
+            _footballerCache.entries.put(teamId, data);
+        }
+        return _footballerCache.entries.get(teamId);
+    }
+
     public Live getLiveData(int eventId) {
         if (!_footballerCache.liveData.containsKey(eventId)) {
             Live data = readLiveEventData(eventId);
@@ -92,6 +100,13 @@ public class EPLClient
         HttpRequest request = _generator.GenerateLiveDataRequest(eventId);
         Live live = _executor.Execute(request, Live.class);
         return live;
+    }
+
+    public Entry readEntry(int teamId) {
+        HttpRequest request = _generator.GenerateEntryRequest(teamId);
+        EntryData data = _executor.Execute(request, EntryData.class);
+        data.entry.parseKit();
+        return data.entry;
     }
 
     public Picks getPicks(int teamId, int eventId) {

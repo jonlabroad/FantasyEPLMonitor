@@ -1,9 +1,6 @@
 package cache;
 
-import data.eplapi.BootstrapStatic;
-import data.eplapi.Footballer;
-import data.eplapi.FootballerDetails;
-import data.eplapi.Live;
+import data.eplapi.*;
 
 import java.util.HashMap;
 
@@ -11,11 +8,14 @@ public class FootballerDataCache {
     public HashMap<Integer, Footballer> footballers = new HashMap<Integer, Footballer>();
     public HashMap<Integer, FootballerDetails> footballerDetails = new HashMap<Integer, FootballerDetails>();
     public HashMap<Integer, Live> liveData = new HashMap<>();
+    public HashMap<Integer, Entry> entries = new HashMap<>();
     public BootstrapStatic bootstrapStatic = null;
 
     public void clear() {
         footballers.clear();
         footballerDetails.clear();
+        entries.clear();
+        liveData.clear();
         bootstrapStatic = null;
     }
 
