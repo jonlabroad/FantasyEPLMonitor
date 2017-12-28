@@ -92,6 +92,7 @@ public class TeamProcessor {
         MatchInfo info = createMatchInfo(match);
         info.mergeEvents();
         for (int id : info.teams.keySet()) {
+            System.out.format("Writing data for %d: %s\n", id, _teamsProcessed.get(id).standing.entry_name);
             new MatchInfoProvider(_leagueId).writeCurrent(id, info);
         }
     }

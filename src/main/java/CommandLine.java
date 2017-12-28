@@ -34,14 +34,14 @@ public class CommandLine {
         GlobalConfig.LocalLambdas = true;
         GlobalConfig.TestMode = false;
 
-        AllProcessorLambda allProcessor = new AllProcessorLambda();
-        allProcessor.handleRequest(new HashMap<>(), null);
+        //AllProcessorLambda allProcessor = new AllProcessorLambda();
+        //allProcessor.handleRequest(new HashMap<>(), null);
 
         //PlayerProcessorDispatcher dispatcher = new PlayerProcessorDispatcher();
         //dispatcher.dispatchAll();
 
-        //TeamProcessorLambda teamProcessor = new TeamProcessorLambda();
-        //teamProcessor.handleRequest(new HashMap<>(), null);
+        TeamProcessorLambda teamProcessor = new TeamProcessorLambda();
+        teamProcessor.handleRequest(new HashMap<>(), null);
 
         //AlertProcessorLambda alertProcessorLambda = new AlertProcessorLambda();
         //alertProcessorLambda.handleRequest(new HashMap<>(), null);
