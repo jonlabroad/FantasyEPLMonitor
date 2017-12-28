@@ -103,10 +103,13 @@ public class EPLClient
     }
 
     public Entry readEntry(int teamId) {
-        HttpRequest request = _generator.GenerateEntryRequest(teamId);
-        EntryData data = _executor.Execute(request, EntryData.class);
-        data.entry.parseKit();
-        return data.entry;
+        if (teamId > 0) {
+            HttpRequest request = _generator.GenerateEntryRequest(teamId);
+            EntryData data = _executor.Execute(request, EntryData.class);
+            data.entry.parseKit();
+            return data.entry;
+        }
+        return null;
     }
 
     public Picks getPicks(int teamId, int eventId) {

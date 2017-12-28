@@ -32,7 +32,7 @@ public class CommandLine {
         //writePlayerProcessorConfig();
 
         GlobalConfig.LocalLambdas = true;
-        GlobalConfig.TestMode = true;
+        GlobalConfig.TestMode = false;
 
         //AllProcessorLambda allProcessor = new AllProcessorLambda();
         //allProcessor.handleRequest(new HashMap<>(), null);
