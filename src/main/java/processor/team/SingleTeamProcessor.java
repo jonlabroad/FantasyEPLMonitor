@@ -52,10 +52,6 @@ public class SingleTeamProcessor {
 
         for (Pick pick : picks.picks) {
             ProcessedPlayer processedPlayer = readProcessedPlayer(pick.element);
-            if (processedPlayer.rawData.footballer.id == 235 || processedPlayer.rawData.footballer.id == 247) {
-                System.out.format("%s %d\n", processedPlayer.rawData.footballer.web_name, processedPlayer.rawData.explains.minutes.value);
-                System.out.format("%s %d\n", processedPlayer.rawData.footballer.web_name, processedPlayer.rawData.explains.bonus.points);
-            }
             ProcessedPick processedPick = new ProcessedPick(processedPlayer, pick);
             processedPicks.add(processedPick);
         }
