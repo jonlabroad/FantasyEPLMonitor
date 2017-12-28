@@ -46,7 +46,7 @@ public class CommandLine {
         //AlertProcessorLambda alertProcessorLambda = new AlertProcessorLambda();
         //alertProcessorLambda.handleRequest(new HashMap<>(), null);
 
-        //PlayerProcessor processor = new PlayerProcessor(472, 473);
+        //PlayerProcessor processor = new PlayerProcessor();
         //processor.process();
 
         //cleanRecordings();

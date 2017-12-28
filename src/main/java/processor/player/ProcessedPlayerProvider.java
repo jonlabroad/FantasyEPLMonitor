@@ -58,7 +58,10 @@ public class ProcessedPlayerProvider {
     }
 
     private String getPathName(int min, int max) {
-        return String.format("%s/%d_%d/%s", _basePath, min, max, FILENAME);
+        if (GlobalConfig.BinPlayerData) {
+            return String.format("%s/%d_%d/%s", _basePath, min, max, FILENAME);
+        }
+        return String.format("%s/0/%s", _basePath, FILENAME);
     }
 
     private String getBasePath() {
