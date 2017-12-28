@@ -10,6 +10,8 @@ import data.ProcessedPlayer;
 import data.ProcessedPlayerCollection;
 import data.eplapi.Footballer;
 import data.eplapi.FootballerDetails;
+import data.eplapi.FootballerScoreDetailElement;
+import data.eplapi.Live;
 import processor.player.ProcessedPlayerProvider;
 import processor.player.SinglePlayerProcessor;
 
@@ -42,14 +44,14 @@ public class PlayerProcessor {
         // Get all the footballer data required
         HashMap<Integer, Footballer> footballers = getFootballers();
         Set<Integer> players = getFootballersToProcess(footballers);
-        HashMap<Integer, FootballerDetails> details = getDetails(players);
+        HashMap<Integer, FootballerScoreDetailElement> explains = getLiveExplains(players);
 
         ProcessedPlayerProvider provider = new ProcessedPlayerProvider();
         ProcessedPlayerCollection playerCollection = new ProcessedPlayerCollection();
         for (int id : players) {
             Footballer footballer = footballers.get(id);
-            FootballerDetails detail = details.get(id);
-            SinglePlayerProcessor processor = new SinglePlayerProcessor(provider, GlobalConfig.CloudAppConfig.CurrentGameWeek, footballer, detail);
+            FootballerScoreDetailElement explain = explains.get(id);
+            SinglePlayerProcessor processor = new SinglePlayerProcessor(provider, GlobalConfig.CloudAppConfig.CurrentGameWeek, footballer, explain);
             ProcessedPlayer player = processor.process();
             playerCollection.players.put(id, player);
         }
@@ -87,6 +89,15 @@ public class PlayerProcessor {
 
     private HashMap<Integer, FootballerDetails> getDetails(Set<Integer> ids) throws IOException, UnirestException {
         return _client.getFootballerDetails(ids);
+    }
+
+    private HashMap<Integer, FootballerScoreDetailElement> getLiveExplains(Set<Integer> ids) throws IOException, UnirestException {
+        HashMap<Integer, FootballerScoreDetailElement> explains = new HashMap<>();
+        Live liveData = _client.getLiveData(GlobalConfig.CloudAppConfig.CurrentGameWeek);
+        for (int id : ids) {
+            explains.put(id, liveData.elements.get(id).getExplain());
+        }
+        return explains;
     }
 
     private void initialize(EPLClient client) {

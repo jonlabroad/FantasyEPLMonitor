@@ -52,6 +52,14 @@ public class EPLClient
         return _footballerCache.bootstrapStatic;
     }
 
+    public Live getLiveData(int eventId) {
+        if (!_footballerCache.liveData.containsKey(eventId)) {
+            Live data = readLiveEventData(eventId);
+            _footballerCache.liveData.put(eventId, data);
+        }
+        return _footballerCache.liveData.get(eventId);
+    }
+
     public FootballerDetails readFootballerDetails(int footballerId) throws IOException, UnirestException {
         HttpRequest request = _generator.GenerateFootballerDetailRequest(footballerId);
         FootballerDetails details = _executor.Execute(request, FootballerDetails.class);
@@ -80,6 +88,12 @@ public class EPLClient
         readFootballerDetails(ids);
     }
 
+    public Live readLiveEventData(int eventId) {
+        HttpRequest request = _generator.GenerateLiveDataRequest(eventId);
+        Live live = _executor.Execute(request, Live.class);
+        return live;
+    }
+
     public Picks getPicks(int teamId, int eventId) {
         HttpRequest request = _generator.GeneratePicksRequest(teamId, eventId);
         try {
@@ -96,6 +110,10 @@ public class EPLClient
 
     private FootballerDetails getCachedDetails(int id) {
         return _footballerCache.footballerDetails.get(id);
+    }
+
+    private Live getCachedLiveData(int eventId) {
+        return _footballerCache.liveData.get(eventId);
     }
 
     public Match findMatch(Standings standings, int teamId, boolean next) {

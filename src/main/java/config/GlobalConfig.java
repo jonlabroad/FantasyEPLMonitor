@@ -11,6 +11,7 @@ public class GlobalConfig {
     public static final String PicksPath = EventPath + "/picks";
     public static final String LeagueH2hPath = "/leagues-h2h-standings/{LEAGUE_ID}";
     public static final String FootballerDetailsPath = "/element-summary/{FOOTBALLER_ID}";
+    public static final String LivePath = "/event/{EVENT_ID}/live";
 
     // LegacyMatchInfo
     public static String MatchInfoRoot = "data";
@@ -26,7 +27,7 @@ public class GlobalConfig {
     public static final String RECORDER_BASE_PATH = "recorder";
     public static final String RECORDER_PATH_FMT = RECORDER_BASE_PATH + "/%d/%d/%s";
 
-    public static final int NumberFootballersToProcessPerLambda = 150;
+    public static final int NumberFootballersToProcessPerLambda = 600;
 
     public static boolean LocalLambdas = false;
     public static boolean TestMode = false;

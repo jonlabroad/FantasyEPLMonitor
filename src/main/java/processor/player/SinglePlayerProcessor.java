@@ -12,13 +12,13 @@ import java.util.List;
 public class SinglePlayerProcessor {
     int _gameweek;
     Footballer _footballer;
-    FootballerDetails _currentDetails;
+    FootballerScoreDetailElement _currentExplains;
     ProcessedPlayer _previousData;
     ProcessedPlayerProvider _playerProvider;
 
-    public SinglePlayerProcessor(ProcessedPlayerProvider playerProvider, int gameweek, Footballer footballer, FootballerDetails currentData) {
+    public SinglePlayerProcessor(ProcessedPlayerProvider playerProvider, int gameweek, Footballer footballer, FootballerScoreDetailElement explains) {
         _footballer = footballer;
-        _currentDetails = currentData;
+        _currentExplains = explains;
         _gameweek = gameweek;
 
         _playerProvider = playerProvider;
@@ -26,35 +26,28 @@ public class SinglePlayerProcessor {
     }
 
     public ProcessedPlayer process() {
-        if (_currentDetails == null) {
+        if (_currentExplains == null) {
             System.out.format("No details: %s\n", _footballer.web_name);
             return _previousData;
         }
 
-        ProcessedPlayer currentPlayerData = new ProcessedPlayer(_footballer, _currentDetails, _previousData);
+        ProcessedPlayer currentPlayerData = new ProcessedPlayer(_footballer, _currentExplains, _previousData);
         FootballerScoreDetailElement diff = getPlayerDiff();
         if (_previousData != null) {
-            diff = new DataFilter(_currentDetails, _previousData.rawData.details, diff).filter();
+            diff = new DataFilter(_currentExplains, _previousData.rawData.explains, diff).filter();
         }
-        addNewEvents(currentPlayerData.events, diff, _footballer, getScoreExplain(_currentDetails));
+        addNewEvents(currentPlayerData.events, diff, _footballer, _currentExplains);
 
         return currentPlayerData;
     }
 
     private FootballerScoreDetailElement getPlayerDiff() {
-        return getScoreExplain(_currentDetails).compare(getScoreExplain(_previousData != null ? _previousData.rawData.details : null));
+        return _currentExplains.compare(_previousData != null ? _previousData.rawData.explains : null);
     }
 
     private static void addNewEvents(List<MatchEvent> diff, FootballerScoreDetailElement detailsDiff, Footballer footballer, FootballerScoreDetailElement currentDetail) {
         PlayerEventGenerator generator = new PlayerEventGenerator();
         List<MatchEvent> newEvents = generator.createNewEvents(detailsDiff, footballer, currentDetail);
         diff.addAll(newEvents);
-    }
-
-    private FootballerScoreDetailElement getScoreExplain(FootballerDetails details) {
-        if (details == null) {
-            return null;
-        }
-        return details.explain[0].explain;
     }
 }

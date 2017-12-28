@@ -5,18 +5,13 @@ import data.eplapi.FootballerDetails;
 import data.eplapi.FootballerScoreDetailElement;
 
 public class DataFilter {
-    FootballerDetails _currentDetails = null;
-    FootballerDetails _previousDetails = null;
-
     FootballerScoreDetailElement _currentExplain;
     FootballerScoreDetailElement _previousExplain;
     FootballerScoreDetailElement _diff;
 
-    public DataFilter(FootballerDetails currentDetails, FootballerDetails previousDetails, FootballerScoreDetailElement diff) {
-        _previousDetails = previousDetails;
-        _currentDetails = currentDetails;
-        _currentExplain = getExplain(currentDetails);
-        _previousExplain = getExplain(previousDetails);
+    public DataFilter(FootballerScoreDetailElement currentExplain, FootballerScoreDetailElement previousExplain, FootballerScoreDetailElement diff) {
+        _currentExplain = currentExplain;
+        _previousExplain = previousExplain;
         _diff = diff;
     }
 
@@ -34,7 +29,7 @@ public class DataFilter {
                     _previousExplain.minutes.value,
                     _currentExplain.minutes.value,
                     _diff.minutes.value);
-            _currentDetails.explain[0].explain = _previousExplain;
+            _currentExplain.set(_previousExplain);
             return _currentExplain.compare(_currentExplain);
         }
         return _diff;

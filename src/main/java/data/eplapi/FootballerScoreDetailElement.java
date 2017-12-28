@@ -27,4 +27,19 @@ public class FootballerScoreDetailElement {
         diff.assists = assists.diff(other.assists);
         return diff;
     }
+
+    public void set(FootballerScoreDetailElement other) {
+        minutes = other.minutes;
+        goals_scored = other.goals_scored;
+        bonus = other.bonus;
+        clean_sheets = other.clean_sheets;
+        assists = other.assists;
+        yellow_cards = other.yellow_cards;
+        red_cards = other.red_cards;
+        penalties_missed = other.penalties_missed;
+        goals_conceded = other.goals_conceded;
+        saves = other.saves;
+        penalties_saved = other.penalties_saved;
+        own_goals = other.own_goals;
+    }
 }

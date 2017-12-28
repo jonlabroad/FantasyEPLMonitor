@@ -19,8 +19,8 @@ public class ScoreCalculator {
             boolean isSub = i >= 11;
             ProcessedPick processedPick = processedPicks.get(i);
             Pick pick = processedPick.pick;
-            FootballerDetails detail = processedPick.footballer.rawData.details;
-            int thisScore = calculateFootballerScore(detail) * pick.multiplier;
+            FootballerScoreDetailElement explains = processedPick.footballer.rawData.explains;
+            int thisScore = calculateFootballerScore(explains) * pick.multiplier;
             if (!isSub) {
                 score.startingScore += thisScore;
             }
@@ -31,15 +31,15 @@ public class ScoreCalculator {
         return score;
     }
 
-    public Score Calculate(Picks picks, Map<Integer, Footballer> footballers, Map<Integer, FootballerDetails> details) throws IOException, UnirestException {
+    public Score Calculate(Picks picks, Map<Integer, Footballer> footballers, Map<Integer, FootballerScoreDetailElement> explains) throws IOException, UnirestException {
         // Find the footballers and tally the current score
         Score score = new Score();
         for (int i = 0; i < picks.picks.length; i++) {
             boolean isSub = i >= 11;
             Pick pick = picks.picks[i];
             Footballer footballer = footballers.get(pick.element);
-            FootballerDetails detail = details.get(pick.element);
-            int thisScore = calculateFootballerScore(detail) * pick.multiplier;
+            FootballerScoreDetailElement explain = explains.get(pick.element);
+            int thisScore = calculateFootballerScore(explain) * pick.multiplier;
             if (!isSub) {
                 score.startingScore += thisScore;
             }
@@ -50,17 +50,15 @@ public class ScoreCalculator {
         return score;
     }
 
-    public int calculateFootballerScore(FootballerDetails detail) {
+    public int calculateFootballerScore(FootballerScoreDetailElement explains) {
         int score = 0;
         Field[] fields = FootballerScoreDetailElement.class.getFields();
-        for (FootballerScoreDetail scoreDetail : detail.explain) {
-            for (Field field : fields) {
-                try {
-                    ScoreExplain explain = (ScoreExplain) field.get(scoreDetail.explain);
-                    score += explain.points;
-                } catch (IllegalAccessException e) {
-                    e.printStackTrace();
-                }
+        for (Field field : fields) {
+            try {
+                ScoreExplain explain = (ScoreExplain) field.get(explains);
+                score += explain.points;
+            } catch (IllegalAccessException e) {
+                   e.printStackTrace();
             }
         }
         return score;

@@ -1,5 +1,6 @@
 package client.Request;
 
+import com.sun.org.apache.xpath.internal.operations.Variable;
 import config.GlobalConfig;
 import com.mashape.unirest.http.Unirest;
 import com.mashape.unirest.request.HttpRequest;
@@ -16,6 +17,11 @@ public class EPLRequestGenerator {
 
     public HttpRequest GenerateBootstrapStaticRequest() {
         return Build(GlobalConfig.BootstrapStaticPath);
+    }
+
+    public HttpRequest GenerateLiveDataRequest(int eventId) {
+        String resolvedUrl = VariableSubstitutor.Substitute(GlobalConfig.LivePath, 0, eventId);
+        return Build(resolvedUrl);
     }
 
     public HttpRequest GeneratePicksRequest(int teamId, int eventId) {

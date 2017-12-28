@@ -1,7 +1,12 @@
+import client.EPLClient;
+import client.EPLClientFactory;
 import com.google.gson.Gson;
 import config.*;
 import data.ProcessedPlayerCollection;
+import data.eplapi.FootballerScoreDetailElement;
+import data.eplapi.Live;
 import dispatcher.PlayerProcessorDispatcher;
+import lambda.AllProcessorLambda;
 import lambda.TeamProcessorLambda;
 import org.apache.commons.io.Charsets;
 import persistance.S3JsonWriter;
@@ -26,12 +31,14 @@ public class CommandLine {
 
         //writePlayerProcessorConfig();
 
-        //firminoTest();
-
         GlobalConfig.LocalLambdas = true;
         GlobalConfig.TestMode = false;
-        PlayerProcessorDispatcher dispatcher = new PlayerProcessorDispatcher();
-        dispatcher.dispatchAll();
+
+        AllProcessorLambda allProcessor = new AllProcessorLambda();
+        allProcessor.handleRequest(new HashMap<>(), null);
+
+        //PlayerProcessorDispatcher dispatcher = new PlayerProcessorDispatcher();
+        //dispatcher.dispatchAll();
 
         //TeamProcessorLambda teamProcessor = new TeamProcessorLambda();
         //teamProcessor.handleRequest(new HashMap<>(), null);
@@ -45,17 +52,11 @@ public class CommandLine {
         //cleanRecordings();
     }
 
-    private static void firminoTest() {
-        List<String> lines = null;
-        try {
-            lines = java.nio.file.Files.readAllLines(Paths.get("firminotest.txt"));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        String allData = String.join("", lines);
-        ProcessedPlayerCollection test = new Gson().fromJson(allData, ProcessedPlayerCollection.class);
-        System.out.println(test.players.get(235).rawData.details.explain[0].explain.bonus.points);
-
+    private static Live readLiveData() {
+        EPLClient client = EPLClientFactory.createHttpClient();
+        Live data = client.readLiveEventData(20);
+        FootballerScoreDetailElement explains = data.elements.get(245).getExplain();
+        return data;
     }
 
     private static void writeConfig() {

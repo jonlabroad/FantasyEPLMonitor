@@ -2,6 +2,7 @@ package data;
 
 import data.eplapi.Footballer;
 import data.eplapi.FootballerDetails;
+import data.eplapi.FootballerScoreDetailElement;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,9 +13,9 @@ public class ProcessedPlayer {
 
     public ProcessedPlayer() {}
 
-    public ProcessedPlayer(Footballer footballer, FootballerDetails details, ProcessedPlayer oldData) {
+    public ProcessedPlayer(Footballer footballer, FootballerScoreDetailElement explains, ProcessedPlayer oldData) {
         rawData.footballer = footballer;
-        rawData.details = details;
+        rawData.explains = explains;
         if (oldData != null) {
             events.addAll(oldData.events);
         }
