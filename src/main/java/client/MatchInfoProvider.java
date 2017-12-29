@@ -13,6 +13,7 @@ public class MatchInfoProvider implements IMatchInfoDatastore {
         private S3JsonWriter _writer;
         private static final String KEY_PATH_FORMAT = "%s/%d/%d/%d";
         private static final String CURRENT_KEY_FORMAT = KEY_PATH_FORMAT + "/" + "MatchInfo";
+        private static final String CUP_KEY_FORMAT = "%s/cup/%d/%d" + "/" + "MatchInfo";
 
         private int _leagueId;
 
@@ -26,6 +27,10 @@ public class MatchInfoProvider implements IMatchInfoDatastore {
 
     public void writeCurrent(int teamId, MatchInfo info) {
         _writer.write(createCurrentKey(teamId, info.gameweek), info, true);
+    }
+
+    public void writeCup(int teamId, MatchInfo cup) {
+        _writer.write(createCupKey(teamId, cup.gameweek), cup, true);
     }
 
     public void delete(int teamId, int eventId) {
@@ -60,5 +65,9 @@ public class MatchInfoProvider implements IMatchInfoDatastore {
 
     private String createCurrentKey(int teamId, int eventId) {
         return String.format(CURRENT_KEY_FORMAT, GlobalConfig.MatchInfoRoot, _leagueId, teamId, eventId);
+    }
+
+    private String createCupKey(int teamId, int eventId) {
+        return String.format(CUP_KEY_FORMAT, GlobalConfig.MatchInfoRoot, teamId, eventId);
     }
 }

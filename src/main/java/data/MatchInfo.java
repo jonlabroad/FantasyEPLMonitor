@@ -1,14 +1,14 @@
 package data;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import processor.team.DifferentialFinder;
+
+import java.util.*;
 
 public class MatchInfo {
     public int gameweek;
     public Map<Integer, ProcessedTeam> teams = new HashMap<>();
     public List<TeamMatchEvent> allEvents = new ArrayList<>();
+    public HashSet<Integer> differentials = new HashSet<Integer>();
 
     public MatchInfo() {}
 
@@ -16,6 +16,7 @@ public class MatchInfo {
         gameweek = gw;
         teams.put(team1.id, team1);
         teams.put(team2.id, team2);
+        differentials = new DifferentialFinder(team1, team2).find();
     }
 
     public void mergeEvents() {

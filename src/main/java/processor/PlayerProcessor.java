@@ -8,10 +8,7 @@ import config.GlobalConfig;
 import config.PlayerProcessorConfig;
 import data.ProcessedPlayer;
 import data.ProcessedPlayerCollection;
-import data.eplapi.Footballer;
-import data.eplapi.FootballerDetails;
-import data.eplapi.FootballerScoreDetailElement;
-import data.eplapi.Live;
+import data.eplapi.*;
 import processor.player.ProcessedPlayerProvider;
 import processor.player.SinglePlayerProcessor;
 
@@ -96,7 +93,10 @@ public class PlayerProcessor {
         HashMap<Integer, FootballerScoreDetailElement> explains = new HashMap<>();
         Live liveData = _client.getLiveData(GlobalConfig.CloudAppConfig.CurrentGameWeek);
         for (int id : ids) {
-            explains.put(id, liveData.elements.get(id).getExplain());
+            LiveElement element = liveData.elements.get(id);
+            if (element != null) {
+                explains.put(id, liveData.elements.get(id).getExplain());
+            }
         }
         return explains;
     }

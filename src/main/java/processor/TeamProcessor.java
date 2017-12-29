@@ -3,6 +3,7 @@ package processor;
 import client.EPLClient;
 import client.EPLClientFactory;
 import client.MatchInfoProvider;
+import config.GlobalConfig;
 import data.*;
 import data.eplapi.Match;
 import data.eplapi.Standing;
@@ -15,14 +16,14 @@ import processor.team.SingleTeamProcessor;
 import java.util.*;
 
 public class TeamProcessor {
-    private EPLClient _client;
+    protected EPLClient _client;
 
-    private List<Integer> _teams;
-    private int _leagueId;
+    protected List<Integer> _teams;
+    protected int _leagueId;
 
-    private boolean _isApiRequest = false;
+    protected boolean _isApiRequest = false;
 
-    private Map<Integer, ProcessedTeam> _teamsProcessed = new HashMap<>();
+    protected Map<Integer, ProcessedTeam> _teamsProcessed = new HashMap<>();
 
     public TeamProcessor(List<Integer> teams, int leagueId, boolean apiRequest) {
         _teams = teams;
@@ -49,6 +50,7 @@ public class TeamProcessor {
         }
 
         for (int teamId : _teams) {
+            //Match match = _client.findMatch(_leagueId, teamId, GlobalConfig.CloudAppConfig.CurrentGameWeek);
             Match match = _client.findMatch(standings, teamId, false);
             int otherTeamId = teamId == match.entry_1_entry ? match.entry_2_entry : match.entry_1_entry;
 
@@ -84,20 +86,20 @@ public class TeamProcessor {
         }
     }
 
-    private MatchInfo createMatchInfo(Match match) {
+    protected MatchInfo createMatchInfo(Match match) {
         return new MatchInfo(match.event, _teamsProcessed.get(match.entry_1_entry), _teamsProcessed.get(match.entry_2_entry));
     }
 
-    private void writeMatchInfo(Match match) {
+    protected void writeMatchInfo(Match match) {
         MatchInfo info = createMatchInfo(match);
         info.mergeEvents();
         for (int id : info.teams.keySet()) {
-            System.out.format("Writing data for %d: %s\n", id, _teamsProcessed.get(id).standing.entry_name);
+            System.out.format("Writing data for %d\n", id);
             new MatchInfoProvider(_leagueId).writeCurrent(id, info);
         }
     }
 
-    private List<Integer> getTeamsInLeague(Standings standings) {
+    protected List<Integer> getTeamsInLeague(Standings standings) {
         List<Integer> teams = new ArrayList<>();
         for (Standing standing : standings.standings.results) {
             if (standing.entry > 0) {

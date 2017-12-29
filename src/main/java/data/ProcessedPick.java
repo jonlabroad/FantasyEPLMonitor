@@ -13,7 +13,9 @@ public class ProcessedPick {
     public ProcessedPick(ProcessedPlayer player, Pick p) {
         footballer = player;
         pick = p;
-        score = new ScoreCalculator().calculateFootballerScore(player.rawData.explains) * pick.multiplier;
+        if (player.rawData.explains != null) {
+            score = new ScoreCalculator().calculateFootballerScore(player.rawData.explains) * pick.multiplier;
+        }
     }
 
     public boolean equals(ProcessedPick o) {

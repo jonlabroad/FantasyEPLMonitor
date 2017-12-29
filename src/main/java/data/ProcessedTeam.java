@@ -1,6 +1,7 @@
 package data;
 
 import data.eplapi.Entry;
+import data.eplapi.EntryData;
 import data.eplapi.Standing;
 
 import java.util.ArrayList;
@@ -11,14 +12,14 @@ public class ProcessedTeam {
     public ArrayList<ProcessedPick> picks;
     public Score score;
     public Standing standing;
-    public Entry entry;
+    public EntryData entry;
 
     public List<TeamMatchEvent> events;
     public List<TeamMatchEvent> autosubs = new ArrayList<>();
 
     public ProcessedTeam() {}
 
-    public ProcessedTeam(int teamId, Entry ent, Standing stand, ArrayList<ProcessedPick> processedPicks, Score s, List<TeamMatchEvent> eventList) {
+    public ProcessedTeam(int teamId, EntryData ent, Standing stand, ArrayList<ProcessedPick> processedPicks, Score s, List<TeamMatchEvent> eventList) {
         id = teamId;
         picks = processedPicks;
         score = s;

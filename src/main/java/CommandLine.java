@@ -11,12 +11,14 @@ import lambda.TeamProcessorLambda;
 import org.apache.commons.io.Charsets;
 import persistance.S3JsonWriter;
 import com.mashape.unirest.http.exceptions.UnirestException;
+import processor.CupProcessor;
 import processor.PlayerProcessor;
 import processor.player.SinglePlayerProcessor;
 
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -34,19 +36,22 @@ public class CommandLine {
         GlobalConfig.LocalLambdas = true;
         GlobalConfig.TestMode = false;
 
-        //AllProcessorLambda allProcessor = new AllProcessorLambda();
-        //allProcessor.handleRequest(new HashMap<>(), null);
+        AllProcessorLambda allProcessor = new AllProcessorLambda();
+        allProcessor.handleRequest(new HashMap<>(), null);
 
         //PlayerProcessorDispatcher dispatcher = new PlayerProcessorDispatcher();
         //dispatcher.dispatchAll();
 
-        TeamProcessorLambda teamProcessor = new TeamProcessorLambda();
-        teamProcessor.handleRequest(new HashMap<>(), null);
+        //TeamProcessorLambda teamProcessor = new TeamProcessorLambda();
+        //teamProcessor.handleRequest(new HashMap<>(), null);
 
         //AlertProcessorLambda alertProcessorLambda = new AlertProcessorLambda();
         //alertProcessorLambda.handleRequest(new HashMap<>(), null);
 
         //PlayerProcessor processor = new PlayerProcessor();
+        //processor.process();
+
+        //CupProcessor processor = new CupProcessor(new ArrayList<>(), 31187, false);
         //processor.process();
 
         //cleanRecordings();

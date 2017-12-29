@@ -4,6 +4,7 @@ import com.sun.org.apache.xpath.internal.operations.Variable;
 import config.GlobalConfig;
 import com.mashape.unirest.http.Unirest;
 import com.mashape.unirest.request.HttpRequest;
+import org.apache.http.impl.client.DefaultServiceUnavailableRetryStrategy;
 
 public class EPLRequestGenerator {
     public HttpRequest GenerateLeagueH2hStandingsRequest(int leagueId) {
@@ -38,6 +39,13 @@ public class EPLRequestGenerator {
         String resolvedUrl = VariableSubstitutor.SubstituteFootballerId(GlobalConfig.FootballerDetailsPath, footballerId);
         return Build(resolvedUrl);
     }
+
+    public HttpRequest GenerateLeagueH2hMatchesRequest(int leagueId, int pageNum) {
+        String resolvedUrl = VariableSubstitutor.SubstituteLeague(GlobalConfig.LeagueH2hMatchesPath, leagueId);
+        resolvedUrl = VariableSubstitutor.SubstitutePage(resolvedUrl, pageNum);
+        return Build(resolvedUrl);
+    }
+
 
     private HttpRequest Build(String path) {
         return Unirest.get(GlobalConfig.EplBaseUrl + path);

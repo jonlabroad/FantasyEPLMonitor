@@ -14,10 +14,12 @@ import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
+import processor.CupProcessor;
 import processor.PlayerProcessor;
 import processor.TeamProcessor;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -45,6 +47,9 @@ public class AllProcessorLambda implements RequestHandler<Map<String, Object>, S
         } catch (Exception e) {
             e.printStackTrace();
         }
+
+        CupProcessor processor = new CupProcessor(new ArrayList<>(), 31187, false);
+        processor.process();
 
         DateTime end = DateTime.now();
         System.out.format("Processing took %f sec\n", (end.getMillis() - start.getMillis())/1000.0);

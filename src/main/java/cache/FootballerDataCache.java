@@ -8,7 +8,8 @@ public class FootballerDataCache {
     public HashMap<Integer, Footballer> footballers = new HashMap<Integer, Footballer>();
     public HashMap<Integer, FootballerDetails> footballerDetails = new HashMap<Integer, FootballerDetails>();
     public HashMap<Integer, Live> liveData = new HashMap<>();
-    public HashMap<Integer, Entry> entries = new HashMap<>();
+    public HashMap<Integer, EntryData> entries = new HashMap<>();
+    public HashMap<Integer, HashMap<Integer, LeagueEntriesAndMatches>> leagueEntriesAndMatches = new HashMap<>();
     public BootstrapStatic bootstrapStatic = null;
 
     public void clear() {
@@ -16,6 +17,7 @@ public class FootballerDataCache {
         footballerDetails.clear();
         entries.clear();
         liveData.clear();
+        leagueEntriesAndMatches.clear();
         bootstrapStatic = null;
     }
 

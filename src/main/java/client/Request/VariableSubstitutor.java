@@ -5,6 +5,7 @@ public class VariableSubstitutor {
     private static final String EVENT_ID_STRING = "EVENT_ID";
     private static final String LEAGUE_ID_STRING = "LEAGUE_ID";
     private static final String FOOTBALLER_ID_STRING = "FOOTBALLER_ID";
+    private static final String LEAGUE_H2H_PAGE_STRING = "PAGE";
 
     public static String Substitute(String inputString, int entryId, int eventId) {
         String withEntry = SubstituteEntryId(inputString, entryId);
@@ -17,6 +18,10 @@ public class VariableSubstitutor {
 
     public static String SubstituteFootballerId(String inputString, int footballerId) {
         return Substitute(inputString, FOOTBALLER_ID_STRING, footballerId);
+    }
+
+    public static String SubstitutePage(String inputString, int pageNum) {
+        return Substitute(inputString, LEAGUE_H2H_PAGE_STRING, pageNum);
     }
 
     private static String SubstituteEventId(String inputString, int entryId) {
