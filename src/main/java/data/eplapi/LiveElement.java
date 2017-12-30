@@ -12,14 +12,16 @@ public class LiveElement {
 
     public FootballerScoreDetailElement getExplain() {
         FootballerScoreDetailElement parsed = new FootballerScoreDetailElement();
-        JsonArray explainsArray = (JsonArray) explain.get(0);
-        Gson gson = new Gson();
-        for (int i = 0; i < explainsArray.size() - 1; i++) {
-            JsonObject explainJson = (JsonObject) explainsArray.get(i);
-            for (String fieldName : explainJson.keySet()) {
-                String elementJson = explainJson.get(fieldName).toString();
-                ScoreExplain parsedExplain = gson.fromJson(elementJson, ScoreExplain.class);
-                setField(parsed, fieldName, parsedExplain);
+        if (explain.size() > 0) {
+            JsonArray explainsArray = (JsonArray) explain.get(0);
+            Gson gson = new Gson();
+            for (int i = 0; i < explainsArray.size() - 1; i++) {
+                JsonObject explainJson = (JsonObject) explainsArray.get(i);
+                for (String fieldName : explainJson.keySet()) {
+                    String elementJson = explainJson.get(fieldName).toString();
+                    ScoreExplain parsedExplain = gson.fromJson(elementJson, ScoreExplain.class);
+                    setField(parsed, fieldName, parsedExplain);
+                }
             }
         }
         return parsed;
