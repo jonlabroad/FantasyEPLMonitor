@@ -33,4 +33,9 @@ public class AllProcessorLambda implements RequestHandler<Map<String, Object>, S
         processor.process();
         return null;
     }
+
+    public static void main(String[] args) {
+        Map<String, Object> params = new HashMap<>();
+        new AllProcessorLambda().handleRequest(params, null);
+    }
 }
