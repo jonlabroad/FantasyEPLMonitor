@@ -32,7 +32,7 @@ public class GlobalConfig {
     public static final int NumberFootballersToProcessPerLambda = 600;
     public static final boolean BinPlayerData = false;
 
-    public static boolean LocalLambdas = false;
+    public static boolean LocalLambdas = true;
     public static boolean TestMode = false;
     public static boolean PlaybackMode = false;
     public static int PlaybackGameweek = 10;
