@@ -3,9 +3,7 @@ package processor;
 import client.EPLClient;
 import client.EPLClientFactory;
 import client.MatchInfoProvider;
-import data.MatchInfo;
-import data.ProcessedMatchTeam;
-import data.ProcessedTeam;
+import data.*;
 import data.eplapi.Match;
 import data.eplapi.Standing;
 import data.eplapi.Standings;
@@ -58,9 +56,9 @@ public class MatchProcessor implements IParallelizableProcess {
         ProcessedMatchTeam team1 = new ProcessedMatchTeam(pTeam1, getStanding(standings, _match.entry_1_entry));
         ProcessedMatchTeam team2 = new ProcessedMatchTeam(pTeam2, getStanding(standings, _match.entry_2_entry));
 
-        new MatchEventDeduplicator().deduplicate(team1, team2);
-
-        _result = createMatchInfo(_match, team1, team2);
+        List<TeamMatchEvent> sharedEvents = new MatchEventDeduplicator().deduplicate(team1, team2);
+        sharedEvents.sort(new MatchEventSortComparator());
+        _result = createMatchInfo(_match, sharedEvents, team1, team2);
         writeMatchInfo(_result);
     }
 
@@ -81,9 +79,8 @@ public class MatchProcessor implements IParallelizableProcess {
         return null;
     }
 
-    protected MatchInfo createMatchInfo(Match match, ProcessedMatchTeam team1, ProcessedMatchTeam team2) {
-        MatchInfo info = new MatchInfo(match.event, team1, team2);
-        info.mergeEvents();
+    protected MatchInfo createMatchInfo(Match match, List<TeamMatchEvent> events, ProcessedMatchTeam team1, ProcessedMatchTeam team2) {
+        MatchInfo info = new MatchInfo(match.event, events, team1, team2);
         return info;
     }
 

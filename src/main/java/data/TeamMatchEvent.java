@@ -7,6 +7,13 @@ public class TeamMatchEvent extends MatchEvent {
 
     public TeamMatchEvent() {}
 
+    public TeamMatchEvent(TeamMatchEvent other) {
+        super(other);
+        teamId = other.teamId;
+        isCaptain = other.isCaptain;
+        multiplier = other.multiplier;
+    }
+
     public TeamMatchEvent(int team, boolean isCpt, int mult, MatchEvent event) {
         super(event);
         teamId = team;

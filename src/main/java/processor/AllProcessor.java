@@ -32,6 +32,9 @@ public class AllProcessor {
     }
 
     public String process() {
+        // Force local lambdas
+        GlobalConfig.LocalLambdas = true;
+
         if (!isTimeToPoll()) {
             System.out.println("It's not time yet! Quiting...");
             return "No polling to do";
@@ -66,6 +69,9 @@ public class AllProcessor {
                     getAllCupMatches(processedTeams.keySet()));
             cupMatchProcessor.dispatch();
             cupMatchProcessor.join();
+
+            AlertProcessor alertProcessor = new AlertProcessor(_leagueId, processedTeams.keySet());
+            alertProcessor.process();
 
         } catch (Exception e) {
             e.printStackTrace();

@@ -12,17 +12,11 @@ public class MatchInfo {
 
     public MatchInfo() {}
 
-    public MatchInfo(int gw, ProcessedMatchTeam team1, ProcessedMatchTeam team2) {
+    public MatchInfo(int gw, List<TeamMatchEvent> events, ProcessedMatchTeam team1, ProcessedMatchTeam team2) {
         gameweek = gw;
         teams.put(team1.id, team1);
         teams.put(team2.id, team2);
+        allEvents = events;
         differentials = new DifferentialFinder(team1, team2).find();
-    }
-
-    public void mergeEvents() {
-        for (ProcessedTeam team : teams.values()) {
-            allEvents.addAll(team.events);
-        }
-        allEvents.sort(new MatchEventSortComparator());
     }
 }
