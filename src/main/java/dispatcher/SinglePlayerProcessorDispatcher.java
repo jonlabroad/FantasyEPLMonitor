@@ -4,10 +4,11 @@ import data.PlayerProcessorDispatcherList;
 import lambda.AwsLambdaInvoker;
 import lambda.ILambdaInvoker;
 import lambda.LocalAwsLambdaInvoker;
+import util.IParallelizableProcess;
 
 import java.util.Map;
 
-public class SinglePlayerProcessorDispatcher {
+public class SinglePlayerProcessorDispatcher implements IParallelizableProcess {
     public static final String LambdaName = "EPLFantasyPlayerProcessor";
 
     private int _startFootballer;
@@ -23,7 +24,12 @@ public class SinglePlayerProcessorDispatcher {
         initialize(start, end, local);
     }
 
-    public void dispatch() {
+    @Override
+    public void process() {
+        dispatch();
+    }
+
+    private void dispatch() {
         Map<String, Object> params = generatePayload(_startFootballer, _stopFootballer).toLambdaParams();
         _lambdaInvoker.invoke(LambdaName, params, false);
     }

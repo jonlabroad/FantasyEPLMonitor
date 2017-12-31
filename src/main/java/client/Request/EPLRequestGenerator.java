@@ -30,6 +30,11 @@ public class EPLRequestGenerator {
         return Build(resolvedUrl);
     }
 
+    public HttpRequest GenerateHistoryRequest(int teamId) {
+        String resolvedUrl = VariableSubstitutor.Substitute(GlobalConfig.HistoryPath, teamId, 0);
+        return Build(resolvedUrl);
+    }
+
     public HttpRequest GeneratePicksRequest(int teamId, int eventId) {
         String resolvedUrl = VariableSubstitutor.Substitute(GlobalConfig.PicksPath, teamId, eventId);
         return Build(resolvedUrl);

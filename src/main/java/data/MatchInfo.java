@@ -6,13 +6,13 @@ import java.util.*;
 
 public class MatchInfo {
     public int gameweek;
-    public Map<Integer, ProcessedTeam> teams = new HashMap<>();
+    public Map<Integer, ProcessedMatchTeam> teams = new HashMap<>();
     public List<TeamMatchEvent> allEvents = new ArrayList<>();
     public HashSet<Integer> differentials = new HashSet<Integer>();
 
     public MatchInfo() {}
 
-    public MatchInfo(int gw, ProcessedTeam team1, ProcessedTeam team2) {
+    public MatchInfo(int gw, ProcessedMatchTeam team1, ProcessedMatchTeam team2) {
         gameweek = gw;
         teams.put(team1.id, team1);
         teams.put(team2.id, team2);

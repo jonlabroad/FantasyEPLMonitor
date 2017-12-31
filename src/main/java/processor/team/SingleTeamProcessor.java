@@ -5,29 +5,27 @@ import client.ScoreCalculator;
 import data.*;
 import data.eplapi.*;
 import processor.player.ProcessedPlayerProvider;
+import util.IParallelizableProcess;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class SingleTeamProcessor {
+public class SingleTeamProcessor implements IParallelizableProcess {
     private int _teamId;
-    private int _leagueId;
-    Standings _standings;
-    Match _match;
+    int _gameweek;
     EPLClient _client;
     ProcessedPlayerProvider _playerProvider;
+    ProcessedTeam _processedTeam = null;
 
-    public SingleTeamProcessor(ProcessedPlayerProvider provider, int teamId, int leagueId, Standings standings, Match match, EPLClient client) {
+    public SingleTeamProcessor(ProcessedPlayerProvider provider, int teamId, int gameweek, EPLClient client) {
         _teamId = teamId;
-        _leagueId = leagueId;
-        _standings = standings;
-        _match = match;
+        _gameweek = gameweek;
 
         _playerProvider = provider;
         _client = client;
     }
 
-    public ProcessedTeam process() {
+    public void process() {
         // Collect the player information
         ArrayList<ProcessedPick> processedPicks = getPlayersForTeam();
 
@@ -37,16 +35,24 @@ public class SingleTeamProcessor {
         // Merge all the events into a single stream
         List<TeamMatchEvent> events = mergeEvents(processedPicks);
         EntryData entry = _client.getEntry(_teamId);
-        ProcessedTeam team = new ProcessedTeam(_teamId, entry, findStanding(_standings), processedPicks, score, events);
+        ProcessedTeam team = new ProcessedTeam(_teamId, entry, processedPicks, score, events);
         List<TeamMatchEvent> autosubs = new AutosubDetector().detectAutoSubs(_teamId, null, team.picks);
         team.setAutosubs(autosubs);
 
-        return team;
+        _processedTeam = team;
+    }
+
+    public ProcessedTeam getResult() {
+        return _processedTeam;
+    }
+
+    public int getId() {
+        return _teamId;
     }
 
     public ArrayList<ProcessedPick> getPlayersForTeam() {
         ArrayList<ProcessedPick> processedPicks = new ArrayList<>();
-        Picks picks = _client.getPicks(_teamId, _match.event);
+        Picks picks = _client.getPicks(_teamId, _gameweek);
         if (picks == null) {
             return processedPicks;
         }
@@ -74,6 +80,7 @@ public class SingleTeamProcessor {
         return _playerProvider.getPlayer(footballerId);
     }
 
+    // TODO move this to match processing, not team processing
     private Standing findStanding(Standings standings) {
         if (standings == null) {
             return null;

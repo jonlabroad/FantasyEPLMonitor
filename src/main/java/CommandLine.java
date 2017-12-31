@@ -1,26 +1,19 @@
 import client.EPLClient;
 import client.EPLClientFactory;
-import com.google.gson.Gson;
 import config.*;
-import data.ProcessedPlayerCollection;
+import data.ProcessedLeagueFixtureList;
 import data.eplapi.FootballerScoreDetailElement;
+import data.eplapi.LeagueEntriesAndMatches;
 import data.eplapi.Live;
-import dispatcher.PlayerProcessorDispatcher;
+import data.eplapi.Match;
 import lambda.AllProcessorLambda;
-import lambda.TeamProcessorLambda;
-import org.apache.commons.io.Charsets;
+import persistance.S3JsonReader;
 import persistance.S3JsonWriter;
 import com.mashape.unirest.http.exceptions.UnirestException;
-import processor.CupProcessor;
-import processor.PlayerProcessor;
-import processor.player.SinglePlayerProcessor;
 
 import java.io.IOException;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 
 public class CommandLine {
     public static void main(String[] args) throws IOException, UnirestException, InterruptedException {
@@ -42,8 +35,14 @@ public class CommandLine {
         //PlayerProcessorDispatcher dispatcher = new PlayerProcessorDispatcher();
         //dispatcher.dispatchAll();
 
+        //PlayerProcessor processor = new PlayerProcessor();
+        //processor.process();
+
         //TeamProcessorLambda teamProcessor = new TeamProcessorLambda();
         //teamProcessor.handleRequest(new HashMap<>(), null);
+
+        //ScoutingProcessor processor = new ScoutingProcessor(31187, 2365803);
+        //processor.process();
 
         //AlertProcessorLambda alertProcessorLambda = new AlertProcessorLambda();
         //alertProcessorLambda.handleRequest(new HashMap<>(), null);
@@ -97,5 +96,22 @@ public class CommandLine {
             System.out.println(key);
             writer.delete(key);
         }
+    }
+
+    private static void processFixtures() {
+        ProcessedLeagueFixtureList processed = new ProcessedLeagueFixtureList();
+        S3JsonReader reader = new S3JsonReader();
+        for (int i = 1; i <= 13; i++) {
+            LeagueEntriesAndMatches matches = reader.read(String.format("data/31187/fixtures/leagues-entries-and-h2h-matches-31187-page-%d.json", i), LeagueEntriesAndMatches.class);
+            processed.league = matches.league;
+            for (Match match : matches.matches.results) {
+                if (!processed.matches.containsKey(match.event)) {
+                    processed.matches.put(match.event, new ArrayList<>());
+                }
+                processed.matches.get(match.event).add(match);
+            }
+        }
+        S3JsonWriter writer = new S3JsonWriter();
+        writer.write("data/31187/fixtures/fixtures.json", processed);
     }
 }

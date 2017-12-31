@@ -1,5 +1,6 @@
 package lambda;
 
+import client.EPLClientFactory;
 import com.amazonaws.services.lambda.runtime.Context;
 import com.amazonaws.services.lambda.runtime.RequestHandler;
 import dispatcher.PlayerProcessorDispatcher;
@@ -9,7 +10,7 @@ import java.util.Map;
 
 public class PlayerProcessorDispatcherLambda implements RequestHandler<Map<String, Object>, String> {
     public String handleRequest(Map<String, Object> params, Context context) {
-        PlayerProcessorDispatcher dispatcher = new PlayerProcessorDispatcher();
+        PlayerProcessorDispatcher dispatcher = new PlayerProcessorDispatcher(EPLClientFactory.createClient());
         dispatcher.dispatchAll();
 
         return null;

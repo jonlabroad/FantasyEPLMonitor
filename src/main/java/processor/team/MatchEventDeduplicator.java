@@ -9,6 +9,10 @@ import java.util.List;
 
 public class MatchEventDeduplicator {
     public void deduplicate(ProcessedTeam team1, ProcessedTeam team2) {
+        if (team1.id == team2.id) {
+            return;
+        }
+
         for (TeamMatchEvent team1Event : team1.events) {
             TeamMatchEvent team2Event = getEqualEvent(team1Event, team2.events);
             if (team2Event != null) {

@@ -14,6 +14,7 @@ import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
+import util.ParallelExecutor;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -26,8 +27,8 @@ import java.util.concurrent.Future;
 public class PlayerProcessorDispatcher {
     EPLClient _client;
 
-    public PlayerProcessorDispatcher() {
-        _client = EPLClientFactory.createClient();
+    public PlayerProcessorDispatcher(EPLClient client) {
+        _client = client != null ? client : EPLClientFactory.createClient();
     }
 
     public void dispatchAll() {
@@ -42,39 +43,23 @@ public class PlayerProcessorDispatcher {
             new CloudAppConfigProvider().write(GlobalConfig.CloudAppConfig);
         }
 
-        Set<Future> futures = new HashSet<>();
-        ExecutorService executor = Executors.newFixedThreadPool(10);
-
         setSequenceId();
 
         DateTime start = DateTime.now();
+        ParallelExecutor executor = new ParallelExecutor();
         for (int i = 1; i < 600; i += GlobalConfig.NumberFootballersToProcessPerLambda) {
             SinglePlayerProcessorDispatcher dispatcher = new SinglePlayerProcessorDispatcher(i,
                     i + GlobalConfig.NumberFootballersToProcessPerLambda - 1,
                     GlobalConfig.LocalLambdas);
-            Runnable dispatchRunnable = () -> dispatcher.dispatch();
-            futures.add(executor.submit(dispatchRunnable));
+            executor.add(dispatcher);
         }
+        executor.start();
+        executor.join();
 
-        for (Future future : futures) {
-            try {
-                System.out.format("Waiting for future...\n");
-                future.get();
-                System.out.println("Future complete");
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            } catch (ExecutionException e) {
-                e.printStackTrace();
-            }
-        }
         DateTime end = DateTime.now();
         System.out.format("Player processing took %f sec\n", (end.getMillis() - start.getMillis())/1000.0);
 
-        System.out.println("Dispatching TeamProcessor (async)");
-        ILambdaInvoker invoker = GlobalConfig.LocalLambdas ? new LocalAwsLambdaInvoker() : new AwsLambdaInvoker();
-        invoker.invoke("EPLFantasyTeamProcessor", new HashMap<>(), true);
-        System.out.println("Done");
-        executor.shutdown();
+        executor.close();
     }
 
     private boolean isTimeToPoll() {

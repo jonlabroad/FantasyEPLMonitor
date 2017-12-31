@@ -1,11 +1,12 @@
 package lambda;
 
+import client.EPLClientFactory;
 import com.amazonaws.services.lambda.runtime.Context;
 import com.amazonaws.services.lambda.runtime.RequestHandler;
 import com.google.gson.Gson;
 import config.GlobalConfig;
 import data.ProcessedTeam;
-import processor.TeamProcessor;
+import dispatcher.TeamProcessorDispatcher;
 
 import java.util.*;
 
@@ -26,8 +27,9 @@ public class TeamProcessorLambda implements RequestHandler<Map<String, Object>, 
 
         int leagueId = 31187;
 
-        TeamProcessor processor = new TeamProcessor(teams, leagueId);
-        Map<Integer, ProcessedTeam> processedTeams = processor.process();
+        TeamProcessorDispatcher processor = new TeamProcessorDispatcher(EPLClientFactory.createClient(), teams, leagueId);
+        processor.start();
+        Map<Integer, ProcessedTeam> processedTeams = processor.join();
         return new Gson().toJson(processedTeams);
     }
 

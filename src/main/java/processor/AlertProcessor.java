@@ -94,8 +94,8 @@ public class AlertProcessor {
         ArrayList<Integer> teamIds = new ArrayList<>();
         teamIds.addAll(info.teams.keySet());
 
-        ProcessedTeam team1 = info.teams.get(teamIds.get(0));
-        ProcessedTeam team2 = info.teams.get(teamIds.get(1));
+        ProcessedMatchTeam team1 = info.teams.get(teamIds.get(0));
+        ProcessedMatchTeam team2 = info.teams.get(teamIds.get(1));
 
         return String.format("%s %d - %d %s", team1.standing.entry_name, team1.score.startingScore,
                 team2.score.startingScore, team2.standing.entry_name);

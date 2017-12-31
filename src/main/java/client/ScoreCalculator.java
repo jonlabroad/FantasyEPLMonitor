@@ -57,7 +57,7 @@ public class ScoreCalculator {
             try {
                 ScoreExplain explain = (ScoreExplain) field.get(explains);
                 score += explain.points;
-            } catch (IllegalAccessException e) {
+            } catch (Exception e) {
                    e.printStackTrace();
             }
         }

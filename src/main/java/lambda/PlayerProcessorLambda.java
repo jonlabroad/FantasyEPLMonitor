@@ -20,11 +20,7 @@ public class PlayerProcessorLambda implements RequestHandler<Map<String, Object>
         else {
             processor = new PlayerProcessor(range[0], range[1]);
         }
-        try {
-            processor.process();
-        } catch (IOException | UnirestException e) {
-            e.printStackTrace();
-        }
+        processor.process();
         return null;
     }
 

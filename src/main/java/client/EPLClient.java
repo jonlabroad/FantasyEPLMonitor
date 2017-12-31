@@ -3,15 +3,16 @@ package client;
 import cache.FootballerDataCache;
 import client.Request.EPLRequestGenerator;
 import client.Request.IRequestExecutor;
+import data.ProcessedLeagueFixtureList;
 import data.eplapi.*;
 import data.Score;
 import data.Team;
 import com.mashape.unirest.http.exceptions.UnirestException;
 import com.mashape.unirest.request.HttpRequest;
+import persistance.S3JsonReader;
+
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 public class EPLClient
 {
@@ -60,9 +61,9 @@ public class EPLClient
         return _footballerCache.entries.get(teamId);
     }
 
-    public HashMap<Integer, LeagueEntriesAndMatches> getLeagueEntriesAndMatches(int leagueId) {
+    public ProcessedLeagueFixtureList getLeagueEntriesAndMatches(int leagueId) {
         if (!_footballerCache.leagueEntriesAndMatches.containsKey(leagueId)) {
-            HashMap<Integer, LeagueEntriesAndMatches> data = readLeagueH2hMatches(leagueId);
+            ProcessedLeagueFixtureList data = readLeagueH2hMatches(leagueId);
             _footballerCache.leagueEntriesAndMatches.put(leagueId, data);
         }
         return _footballerCache.leagueEntriesAndMatches.get(leagueId);
@@ -74,6 +75,23 @@ public class EPLClient
             _footballerCache.liveData.put(eventId, data);
         }
         return _footballerCache.liveData.get(eventId);
+    }
+
+    public TeamHistory getHistory(int teamId) {
+        if (!_footballerCache.history.containsKey(teamId)) {
+            TeamHistory data = readHistory(teamId);
+            _footballerCache.history.put(teamId, data);
+        }
+        return _footballerCache.history.get(teamId);
+    }
+
+    public TeamHistory readHistory(int teamId) {
+        if (teamId == 0) {
+            return null;
+        }
+        HttpRequest request = _generator.GenerateHistoryRequest(teamId);
+        TeamHistory data = _executor.Execute(request, TeamHistory.class);
+        return data;
     }
 
     public FootballerDetails readFootballerDetails(int footballerId) throws IOException, UnirestException {
@@ -120,17 +138,8 @@ public class EPLClient
         return null;
     }
 
-    public HashMap<Integer, LeagueEntriesAndMatches> readLeagueH2hMatches(int leagueId) {
-        HashMap<Integer, LeagueEntriesAndMatches> ret = new HashMap<>();
-        int pageNum = 1;
-        boolean cont = true;
-        do {
-            LeagueEntriesAndMatches matches = readLeagueH2hMatches(leagueId, pageNum);
-            ret.put(pageNum, matches);
-            pageNum++;
-            cont = matches != null && matches.matches.has_next;
-        } while(cont);
-        return ret;
+    public ProcessedLeagueFixtureList readLeagueH2hMatches(int leagueId) {
+        return new S3JsonReader().read(String.format("data/%d/fixtures/fixtures.json", leagueId), ProcessedLeagueFixtureList.class);
     }
 
     public LeagueEntriesAndMatches readLeagueH2hMatches(int leagueId, int pageNum) {
@@ -151,6 +160,17 @@ public class EPLClient
         catch (Exception ex) {
             return null;
         }
+    }
+
+    public Collection<Integer> getTeamsInLeague(int leagueId) {
+        Standings standings = getStandings(leagueId);
+        List<Integer> teams = new ArrayList<>();
+        for (Standing standing : standings.standings.results) {
+            if (standing.entry > 0) {
+                teams.add(standing.entry);
+            }
+        }
+        return teams;
     }
 
     private HashMap<Integer, Footballer> getCachedFootballers() {
@@ -175,13 +195,15 @@ public class EPLClient
         return null;
     }
 
+    public Collection<Match> findMatches(int leagueId, int gameweek) {
+        ProcessedLeagueFixtureList matchesInfo = getLeagueEntriesAndMatches(leagueId);
+        return matchesInfo.matches.get(gameweek);
+    }
+
     public Match findMatch(int leagueId, int teamId, int gameweek) {
-        HashMap<Integer, LeagueEntriesAndMatches> matches = getLeagueEntriesAndMatches(leagueId);
-        for (LeagueEntriesAndMatches match : matches.values()) {
-            for (Match m : match.matches.results) {
-                if (m.event == gameweek && (m.entry_1_entry == teamId || m.entry_2_entry == teamId)) {
-                    return m;
-                }
+        for (Match match : findMatches(leagueId, gameweek)) {
+            if (match.entry_1_entry == teamId || match.entry_2_entry == teamId) {
+                return match;
             }
         }
         return null;

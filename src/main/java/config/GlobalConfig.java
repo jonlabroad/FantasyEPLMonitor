@@ -13,6 +13,7 @@ public class GlobalConfig {
     public static final String FootballerDetailsPath = "/element-summary/{FOOTBALLER_ID}";
     public static final String LivePath = "/event/{EVENT_ID}/live";
     public static final String LeagueH2hMatchesPath = "/leagues-entries-and-h2h-matches/league/{LEAGUE_ID}?page={PAGE}";
+    public static final String HistoryPath = EntryPath + "/history";
 
     // LegacyMatchInfo
     public static String MatchInfoRoot = "data";

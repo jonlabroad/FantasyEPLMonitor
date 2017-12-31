@@ -11,11 +11,12 @@ import data.ProcessedPlayerCollection;
 import data.eplapi.*;
 import processor.player.ProcessedPlayerProvider;
 import processor.player.SinglePlayerProcessor;
+import util.IParallelizableProcess;
 
 import java.io.IOException;
 import java.util.*;
 
-public class PlayerProcessor {
+public class PlayerProcessor implements IParallelizableProcess {
 
     private EPLClient _client;
     private int _playerStart = -1;
@@ -37,23 +38,28 @@ public class PlayerProcessor {
         initialize(client);
     }
 
-    public void process() throws IOException, UnirestException {
-        // Get all the footballer data required
-        HashMap<Integer, Footballer> footballers = getFootballers();
-        Set<Integer> players = getFootballersToProcess(footballers);
-        HashMap<Integer, FootballerScoreDetailElement> explains = getLiveExplains(players);
+    public void process() {
+        try {
+            // Get all the footballer data required
+            HashMap<Integer, Footballer> footballers = getFootballers();
+            Set<Integer> players = getFootballersToProcess(footballers);
+            HashMap<Integer, FootballerScoreDetailElement> explains = getLiveExplains(players);
 
-        ProcessedPlayerProvider provider = new ProcessedPlayerProvider();
-        ProcessedPlayerCollection playerCollection = new ProcessedPlayerCollection();
-        for (int id : players) {
-            Footballer footballer = footballers.get(id);
-            FootballerScoreDetailElement explain = explains.get(id);
-            Live liveData = _client.getLiveData(GlobalConfig.CloudAppConfig.CurrentGameWeek);
-            SinglePlayerProcessor processor = new SinglePlayerProcessor(provider, GlobalConfig.CloudAppConfig.CurrentGameWeek, footballer, explain, liveData);
-            ProcessedPlayer player = processor.process();
-            playerCollection.players.put(id, player);
+            ProcessedPlayerProvider provider = new ProcessedPlayerProvider();
+            ProcessedPlayerCollection playerCollection = new ProcessedPlayerCollection();
+            for (int id : players) {
+                Footballer footballer = footballers.get(id);
+                FootballerScoreDetailElement explain = explains.get(id);
+                Live liveData = _client.getLiveData(GlobalConfig.CloudAppConfig.CurrentGameWeek);
+                SinglePlayerProcessor processor = new SinglePlayerProcessor(provider, GlobalConfig.CloudAppConfig.CurrentGameWeek, footballer, explain, liveData);
+                ProcessedPlayer player = processor.process();
+                playerCollection.players.put(id, player);
+            }
+            provider.writePlayers(playerCollection);
         }
-        provider.writePlayers(playerCollection);
+        catch (Exception ex) {
+            ex.printStackTrace();
+        }
     }
 
     private Set<Integer> getFootballersToProcess(HashMap<Integer, Footballer> footballers) {
@@ -68,15 +74,6 @@ public class PlayerProcessor {
             for (int i = _playerStart; i <= _playerEnd; i++) {
                 players.add(i);
             }
-        }
-        return players;
-    }
-
-    // For testing
-    private Set<Integer> getSmallSetOfIds() {
-        Set<Integer> players = new HashSet<>();
-        for (int i = 1; i <= 20; i++) {
-            players.add(i);
         }
         return players;
     }

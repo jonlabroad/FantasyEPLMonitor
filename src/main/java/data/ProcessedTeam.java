@@ -11,7 +11,6 @@ public class ProcessedTeam {
     public int id;
     public ArrayList<ProcessedPick> picks;
     public Score score;
-    public Standing standing;
     public EntryData entry;
 
     public List<TeamMatchEvent> events;
@@ -19,12 +18,11 @@ public class ProcessedTeam {
 
     public ProcessedTeam() {}
 
-    public ProcessedTeam(int teamId, EntryData ent, Standing stand, ArrayList<ProcessedPick> processedPicks, Score s, List<TeamMatchEvent> eventList) {
+    public ProcessedTeam(int teamId, EntryData ent, ArrayList<ProcessedPick> processedPicks, Score s, List<TeamMatchEvent> eventList) {
         id = teamId;
         picks = processedPicks;
         score = s;
         events = eventList;
-        standing = stand;
         entry = ent;
     }
 

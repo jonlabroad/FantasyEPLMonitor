@@ -29,7 +29,7 @@ public class SinglePlayerProcessor {
 
     public ProcessedPlayer process() {
         if (_currentExplains == null) {
-            System.out.format("No details: %s\n", _footballer.web_name);
+            System.out.format("No explains: %s\n", _footballer.web_name);
             return _previousData;
         }
 
