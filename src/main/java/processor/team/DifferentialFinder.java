@@ -31,6 +31,10 @@ public class DifferentialFinder {
 
         int teamNum = 0;
         for (ProcessedTeam team : teams) {
+            if (team == null || team.picks == null) {
+                continue;
+            }
+
             for (ProcessedPick pick : team.picks) {
                 if (pick.isCaptain()) {
                     captain.get(teamNum).add(pick.footballer.rawData.footballer.id);

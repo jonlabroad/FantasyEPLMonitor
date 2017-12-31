@@ -42,13 +42,13 @@ public class AllProcessor {
 
         DateTime start = DateTime.now();
         CloudConfigUpdater configUpdater = new CloudConfigUpdater(_client);
-        boolean generateScoutingReports = true;
+        boolean generateScoutingReports = false;
         if (configUpdater.update()) {
             generateScoutingReports = true;
         }
 
         PlayerProcessorConfig.getInstance().refresh(); // There appears to be caching going on (objs not unloaded from mem)
-        HashMap<Integer, ProcessedTeam> processedTeams = new HashMap<>();
+        HashMap<Integer, ProcessedTeam> processedTeams;
         try {
             PlayerProcessorDispatcher playerProcessor = new PlayerProcessorDispatcher(_client);
             playerProcessor.dispatchAll();
@@ -70,6 +70,10 @@ public class AllProcessor {
             cupMatchProcessor.dispatch();
             cupMatchProcessor.join();
 
+            if (generateScoutingReports) {
+                generateScoutingReports(processedTeams);
+            }
+
             AlertProcessor alertProcessor = new AlertProcessor(_leagueId, processedTeams.keySet());
             alertProcessor.process();
 
@@ -77,9 +81,6 @@ public class AllProcessor {
             e.printStackTrace();
         }
 
-        //if (generateScoutingReports) {
-        //    generateScoutingReports();
-        //}
 
         DateTime end = DateTime.now();
         System.out.format("Processing took %f sec\n", (end.getMillis() - start.getMillis()) / 1000.0);
@@ -128,29 +129,9 @@ public class AllProcessor {
         return false;
     }
 
-    private void generateScoutingReports() {
-        Set<Future> futures = new HashSet<>();
-        ExecutorService executor = Executors.newFixedThreadPool(10);
-
-        for (Integer teamId : _client.getTeamsInLeague(_leagueId)) {
-            //ScoutingProcessor processor = new ScoutingProcessor(_leagueId, teamId);
-            //Runnable processRunnable = () -> processor.process();
-            //futures.add(executor.submit(processRunnable));
-        }
-
-        for (Future future : futures) {
-            try {
-                System.out.format("Waiting for future...\n");
-                future.get();
-                System.out.println("Future complete");
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            } catch (ExecutionException e) {
-                e.printStackTrace();
-            }
-        }
-
-        executor.shutdown();
+    private void generateScoutingReports(HashMap<Integer, ProcessedTeam> teams) {
+        ScoutingProcessor processor = new ScoutingProcessor(_leagueId, teams);
+        processor.process();
     }
 
     private Event getCurrentEvent() {
