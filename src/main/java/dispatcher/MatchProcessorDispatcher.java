@@ -16,21 +16,23 @@ import java.util.HashMap;
 public class MatchProcessorDispatcher {
 
     protected EPLClient _client;
+    protected int _leagueId;
     protected Collection<Match> _matches = new ArrayList<>();
     protected HashMap<Integer, ProcessedTeam> _teams;
     protected Collection<MatchProcessor> _processors = new ArrayList<>();
     protected ParallelExecutor _executor;
 
-    public MatchProcessorDispatcher(EPLClient client, HashMap<Integer, ProcessedTeam> teams, Collection<Match> matches) {
+    public MatchProcessorDispatcher(EPLClient client, int leagueId, HashMap<Integer, ProcessedTeam> teams, Collection<Match> matches) {
         _client = client != null ? client : EPLClientFactory.createClient();
         _matches = matches;
         _teams = teams;
+        _leagueId = leagueId;
         _executor = new ParallelExecutor();
     }
 
     public void dispatch() {
         for (Match match : _matches) {
-            MatchProcessor processor = new MatchProcessor(_client, _teams, match);
+            MatchProcessor processor = new MatchProcessor(_client, _leagueId, _teams, match);
             _processors.add(processor);
             _executor.add(processor);
         }

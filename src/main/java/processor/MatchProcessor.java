@@ -24,9 +24,10 @@ public class MatchProcessor implements IParallelizableProcess {
 
     protected MatchInfo _result = null;
 
-    public MatchProcessor(EPLClient client, Map<Integer, ProcessedTeam> teams, Match match) {
+    public MatchProcessor(EPLClient client, int leagueId, Map<Integer, ProcessedTeam> teams, Match match) {
         _teams = teams;
         _match = match;
+        _leagueId = leagueId;
         _client = client != null ? client : EPLClientFactory.createClient();
     }
 
@@ -89,7 +90,12 @@ public class MatchProcessor implements IParallelizableProcess {
     protected void writeMatchInfo(MatchInfo info) {
         for (int id : info.teams.keySet()) {
             System.out.format("Writing data for %d\n", id);
-            new MatchInfoProvider(_leagueId).writeCurrent(id, info);
+            if (_leagueId > 0) {
+                new MatchInfoProvider(_leagueId).writeCurrent(id, info);
+            }
+            else {
+                new MatchInfoProvider(_leagueId).writeCup(id, info);
+            }
         }
     }
 }

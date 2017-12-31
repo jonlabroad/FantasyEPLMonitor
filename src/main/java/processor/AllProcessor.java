@@ -57,12 +57,12 @@ public class AllProcessor {
             teamProcessor.start();
             processedTeams = teamProcessor.join();
 
-            MatchProcessorDispatcher leagueMatchProcessor = new MatchProcessorDispatcher(_client, processedTeams,
+            MatchProcessorDispatcher leagueMatchProcessor = new MatchProcessorDispatcher(_client, _leagueId, processedTeams,
                     _client.findMatches(_leagueId, GlobalConfig.CloudAppConfig.CurrentGameWeek));
             leagueMatchProcessor.dispatch();
             leagueMatchProcessor.join();
 
-            MatchProcessorDispatcher cupMatchProcessor = new MatchProcessorDispatcher(_client, processedTeams,
+            MatchProcessorDispatcher cupMatchProcessor = new MatchProcessorDispatcher(_client, -1, processedTeams,
                     getAllCupMatches(processedTeams.keySet()));
             cupMatchProcessor.dispatch();
             cupMatchProcessor.join();
