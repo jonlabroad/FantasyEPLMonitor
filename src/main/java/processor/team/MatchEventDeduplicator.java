@@ -35,7 +35,7 @@ public class MatchEventDeduplicator {
     private TeamMatchEvent getEqualEvent(MatchEvent event, List<TeamMatchEvent> events) {
         for (TeamMatchEvent e : events) {
             MatchEvent baseEvent = e;
-            if (baseEvent.equals(event)) {
+            if (baseEvent.basicEquals(event)) {
                 return e;
             }
         }

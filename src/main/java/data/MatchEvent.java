@@ -24,6 +24,10 @@ public class MatchEvent {
     @Override
     public boolean equals(Object otherObj) {
         MatchEvent other = (MatchEvent) otherObj;
+        return  basicEquals(other);
+    }
+
+    public boolean basicEquals(MatchEvent other) {
         return  type == other.type &&
                 footballerId == other.footballerId &&
                 pointDifference == other.pointDifference &&

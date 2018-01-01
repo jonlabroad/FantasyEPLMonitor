@@ -7,7 +7,6 @@ import data.*;
 import data.eplapi.Match;
 import data.eplapi.Standing;
 import data.eplapi.Standings;
-import persistance.S3JsonWriter;
 import processor.team.MatchEventDeduplicator;
 import util.IParallelizableProcess;
 

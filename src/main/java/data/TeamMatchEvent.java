@@ -29,5 +29,4 @@ public class TeamMatchEvent extends MatchEvent {
                 isCaptain == other.isCaptain &&
                 multiplier == other.multiplier;
     }
-
 }
