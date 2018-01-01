@@ -102,11 +102,11 @@ public class AlertProcessor {
     }
 
     private String getTeamName(ProcessedMatchTeam team) {
-        String name = team.standing != null ? team.standing.entry_name : null;
-        if (name == null) {
-            return team.entry.entry.name;
+        String name = team.standing != null ? team.standing.entry_name : "";
+        if (name == null || name.isEmpty()) {
+            name = team.entry != null ? team.entry.entry.name : "";
         }
-        return "";
+        return name;
     }
 
     private String generateAlertSubtitle(int numNewEvents) {
