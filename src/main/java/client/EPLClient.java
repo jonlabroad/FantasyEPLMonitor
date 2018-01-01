@@ -166,9 +166,7 @@ public class EPLClient
         Standings standings = getStandings(leagueId);
         List<Integer> teams = new ArrayList<>();
         for (Standing standing : standings.standings.results) {
-            if (standing.entry > 0) {
-                teams.add(standing.entry);
-            }
+            teams.add(standing.entry);
         }
         return teams;
     }

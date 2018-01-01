@@ -158,7 +158,7 @@ public class AllProcessor {
 
     private ArrayList<Match> getCups(int teamId) {
         EntryData entry = _client.getEntry(teamId);
-        return entry.leagues.cup != null ? entry.leagues.cup : new ArrayList<>();
+        return (entry != null && entry.leagues.cup != null) ? entry.leagues.cup : new ArrayList<>();
     }
 
     private String formatDate(DateTime date) {

@@ -79,18 +79,4 @@ public class SingleTeamProcessor implements IParallelizableProcess {
     private ProcessedPlayer readProcessedPlayer(int footballerId) {
         return _playerProvider.getPlayer(footballerId);
     }
-
-    // TODO move this to match processing, not team processing
-    private Standing findStanding(Standings standings) {
-        if (standings == null) {
-            return null;
-        }
-
-        for (Standing standing : standings.standings.results) {
-            if (standing.entry == _teamId) {
-                return standing;
-            }
-        }
-        return null;
-    }
 }
