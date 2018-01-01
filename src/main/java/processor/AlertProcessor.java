@@ -97,8 +97,16 @@ public class AlertProcessor {
         ProcessedMatchTeam team1 = info.teams.get(teamIds.get(0));
         ProcessedMatchTeam team2 = info.teams.get(teamIds.get(1));
 
-        return String.format("%s %d - %d %s", team1.standing.entry_name, team1.score.startingScore,
-                team2.score.startingScore, team2.standing.entry_name);
+        return String.format("%s (%d) %d - %d (%d) %s", getTeamName(team1), team1.score.subScore, team1.score.startingScore,
+                team2.score.startingScore, team2.score.subScore, getTeamName(team2));
+    }
+
+    private String getTeamName(ProcessedMatchTeam team) {
+        String name = team.standing != null ? team.standing.entry_name : null;
+        if (name == null) {
+            return team.entry.entry.name;
+        }
+        return "";
     }
 
     private String generateAlertSubtitle(int numNewEvents) {

@@ -37,11 +37,8 @@ public class MatchProcessor implements IParallelizableProcess {
     }
 
     public void process() {
-        Standings standings = null;
-        if (_leagueId > 0) {
-            standings = _client.getStandings(_leagueId);
-            new S3JsonWriter().write(String.format("data/%d/api/leagues-h2h-standings", _leagueId), standings, true);
-        }
+        Standings standings = _leagueId > 0 ? _client.getStandings(_leagueId) : null;
+
         ProcessedTeam pTeam1 = _teams.get(_match.entry_1_entry);
         ProcessedTeam pTeam2 = _teams.get(_match.entry_2_entry);
 

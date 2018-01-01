@@ -21,4 +21,13 @@ public class TeamMatchEvent extends MatchEvent {
         multiplier = mult;
     }
 
+    @Override
+    public boolean equals(Object otherObj) {
+        TeamMatchEvent other = (TeamMatchEvent) otherObj;
+        return super.equals(other) &&
+                teamId == other.teamId &&
+                isCaptain == other.isCaptain &&
+                multiplier == other.multiplier;
+    }
+
 }
