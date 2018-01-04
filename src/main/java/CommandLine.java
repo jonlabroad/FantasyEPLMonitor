@@ -59,7 +59,7 @@ public class CommandLine {
     private static Live readLiveData() {
         EPLClient client = EPLClientFactory.createHttpClient();
         Live data = client.readLiveEventData(20);
-        FootballerScoreDetailElement explains = data.elements.get(245).getExplain();
+        FootballerScoreDetailElement explains = data.elements.get(245).getExplains().get(0);
         return data;
     }
 

@@ -5,24 +5,27 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
 import java.lang.reflect.Field;
+import java.util.ArrayList;
 
 public class LiveElement {
     public JsonArray explain;
     public LiveElementStats stats;
 
-    public FootballerScoreDetailElement getExplain() {
-        FootballerScoreDetailElement parsed = new FootballerScoreDetailElement();
-        if (explain.size() > 0) {
-            JsonArray explainsArray = (JsonArray) explain.get(0);
+    public ArrayList<FootballerScoreDetailElement> getExplains() {
+        ArrayList<FootballerScoreDetailElement> parsed = new ArrayList<>();
+        for (int i = 0; i < explain.size(); i++) {
+            JsonArray explainsArray = (JsonArray) explain.get(i);
             Gson gson = new Gson();
-            for (int i = 0; i < explainsArray.size() - 1; i++) {
-                JsonObject explainJson = (JsonObject) explainsArray.get(i);
+            FootballerScoreDetailElement parsedExplains = new FootballerScoreDetailElement();
+            for (int j = 0; j < explainsArray.size() - 1; j++) {
+                JsonObject explainJson = (JsonObject) explainsArray.get(j);
                 for (String fieldName : explainJson.keySet()) {
                     String elementJson = explainJson.get(fieldName).toString();
                     ScoreExplain parsedExplain = gson.fromJson(elementJson, ScoreExplain.class);
-                    setField(parsed, fieldName, parsedExplain);
+                    setField(parsedExplains, fieldName, parsedExplain);
                 }
             }
+            parsed.add(parsedExplains);
         }
         return parsed;
     }

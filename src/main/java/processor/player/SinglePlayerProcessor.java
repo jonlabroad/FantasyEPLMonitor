@@ -7,17 +7,18 @@ import data.eplapi.*;
 import org.joda.time.DateTime;
 import util.Date;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class SinglePlayerProcessor {
     int _gameweek;
     Footballer _footballer;
-    FootballerScoreDetailElement _currentExplains;
+    ArrayList<FootballerScoreDetailElement> _currentExplains;
     Live _currentLiveData;
     ProcessedPlayer _previousData;
     ProcessedPlayerProvider _playerProvider;
 
-    public SinglePlayerProcessor(ProcessedPlayerProvider playerProvider, int gameweek, Footballer footballer, FootballerScoreDetailElement explains, Live liveData) {
+    public SinglePlayerProcessor(ProcessedPlayerProvider playerProvider, int gameweek, Footballer footballer, ArrayList<FootballerScoreDetailElement> explains, Live liveData) {
         _footballer = footballer;
         _currentExplains = explains;
         _currentLiveData = liveData;
@@ -35,17 +36,24 @@ public class SinglePlayerProcessor {
 
         ProcessedPlayer currentPlayerData = new ProcessedPlayer(_footballer, _currentExplains, _previousData);
         determineFixtureStatus(currentPlayerData);
-        FootballerScoreDetailElement diff = getPlayerDiff();
-        if (_previousData != null) {
-            diff = new DataFilter(_currentExplains, _previousData.rawData.explains, diff).filter();
+        ArrayList<FootballerScoreDetailElement> prevElements = _previousData != null ?_previousData.rawData.explains : new ArrayList<>();
+        for (int i = 0; i < _currentExplains.size(); i++) {
+            FootballerScoreDetailElement currExplain = _currentExplains.get(i);
+            FootballerScoreDetailElement prevExplain = i < prevElements.size() ? prevElements.get(i) : null;
+            FootballerScoreDetailElement diff = getPlayerDiff(currExplain, prevExplain);
+
+            if (prevExplain != null) {
+                DataFilter filter = new DataFilter(currExplain, prevExplain, diff);
+                diff = filter.filter();
+            }
+            addNewEvents(currentPlayerData.events, diff, _footballer, currExplain);
         }
-        addNewEvents(currentPlayerData.events, diff, _footballer, _currentExplains);
 
         return currentPlayerData;
     }
 
-    private FootballerScoreDetailElement getPlayerDiff() {
-        return _currentExplains.compare(_previousData != null ? _previousData.rawData.explains : null);
+    private FootballerScoreDetailElement getPlayerDiff(FootballerScoreDetailElement currentExplain, FootballerScoreDetailElement prevExplain) {
+        return currentExplain.compare(prevExplain != null ? prevExplain : null);
     }
 
     private static void addNewEvents(List<MatchEvent> diff, FootballerScoreDetailElement detailsDiff, Footballer footballer, FootballerScoreDetailElement currentDetail) {

@@ -16,7 +16,7 @@ public class ProcessedPlayer {
 
     public ProcessedPlayer() {}
 
-    public ProcessedPlayer(Footballer footballer, FootballerScoreDetailElement explains, ProcessedPlayer oldData) {
+    public ProcessedPlayer(Footballer footballer, ArrayList<FootballerScoreDetailElement> explains, ProcessedPlayer oldData) {
         rawData.footballer = footballer;
         rawData.explains = explains;
         if (oldData != null) {

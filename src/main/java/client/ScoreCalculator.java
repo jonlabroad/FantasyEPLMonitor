@@ -7,6 +7,7 @@ import data.Score;
 
 import java.io.IOException;
 import java.lang.reflect.Field;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -19,46 +20,28 @@ public class ScoreCalculator {
             boolean isSub = i >= 11;
             ProcessedPick processedPick = processedPicks.get(i);
             Pick pick = processedPick.pick;
-            FootballerScoreDetailElement explains = processedPick.footballer.rawData.explains;
-            int thisScore = calculateFootballerScore(explains) * pick.multiplier;
+            ArrayList<FootballerScoreDetailElement> gwExplains = processedPick.footballer.rawData.explains;
+            int thisScore = calculateFootballerScore(gwExplains) * pick.multiplier;
             if (!isSub) {
                 score.startingScore += thisScore;
-            }
-            else {
+            } else {
                 score.subScore += thisScore;
             }
         }
         return score;
     }
 
-    public Score Calculate(Picks picks, Map<Integer, Footballer> footballers, Map<Integer, FootballerScoreDetailElement> explains) throws IOException, UnirestException {
-        // Find the footballers and tally the current score
-        Score score = new Score();
-        for (int i = 0; i < picks.picks.length; i++) {
-            boolean isSub = i >= 11;
-            Pick pick = picks.picks[i];
-            Footballer footballer = footballers.get(pick.element);
-            FootballerScoreDetailElement explain = explains.get(pick.element);
-            int thisScore = calculateFootballerScore(explain) * pick.multiplier;
-            if (!isSub) {
-                score.startingScore += thisScore;
-            }
-            else {
-                score.subScore += thisScore;
-            }
-        }
-        return score;
-    }
-
-    public int calculateFootballerScore(FootballerScoreDetailElement explains) {
+    public int calculateFootballerScore(ArrayList<FootballerScoreDetailElement> explains) {
         int score = 0;
         Field[] fields = FootballerScoreDetailElement.class.getFields();
-        for (Field field : fields) {
-            try {
-                ScoreExplain explain = (ScoreExplain) field.get(explains);
-                score += explain.points;
-            } catch (Exception e) {
-                   e.printStackTrace();
+        for (FootballerScoreDetailElement gwExplain : explains) {
+            for (Field field : fields) {
+                try {
+                    ScoreExplain explain = (ScoreExplain) field.get(gwExplain);
+                    score += explain.points;
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
         }
         return score;

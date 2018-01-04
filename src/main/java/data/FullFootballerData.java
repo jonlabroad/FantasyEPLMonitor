@@ -4,7 +4,9 @@ import data.eplapi.Footballer;
 import data.eplapi.FootballerDetails;
 import data.eplapi.FootballerScoreDetailElement;
 
+import java.util.ArrayList;
+
 public class FullFootballerData {
     public Footballer footballer;
-    public FootballerScoreDetailElement explains;
+    public ArrayList<FootballerScoreDetailElement> explains;
 }

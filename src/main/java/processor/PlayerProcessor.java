@@ -43,15 +43,15 @@ public class PlayerProcessor implements IParallelizableProcess {
             // Get all the footballer data required
             HashMap<Integer, Footballer> footballers = getFootballers();
             Set<Integer> players = getFootballersToProcess(footballers);
-            HashMap<Integer, FootballerScoreDetailElement> explains = getLiveExplains(players);
+            HashMap<Integer, ArrayList<FootballerScoreDetailElement>> explains = getLiveExplains(players);
 
             ProcessedPlayerProvider provider = new ProcessedPlayerProvider();
             ProcessedPlayerCollection playerCollection = new ProcessedPlayerCollection();
             for (int id : players) {
                 Footballer footballer = footballers.get(id);
-                FootballerScoreDetailElement explain = explains.get(id);
+                ArrayList<FootballerScoreDetailElement> gwExplains = explains.get(id);
                 Live liveData = _client.getLiveData(GlobalConfig.CloudAppConfig.CurrentGameWeek);
-                SinglePlayerProcessor processor = new SinglePlayerProcessor(provider, GlobalConfig.CloudAppConfig.CurrentGameWeek, footballer, explain, liveData);
+                SinglePlayerProcessor processor = new SinglePlayerProcessor(provider, GlobalConfig.CloudAppConfig.CurrentGameWeek, footballer, gwExplains, liveData);
                 ProcessedPlayer player = processor.process();
                 playerCollection.players.put(id, player);
             }
@@ -86,13 +86,13 @@ public class PlayerProcessor implements IParallelizableProcess {
         return _client.getFootballerDetails(ids);
     }
 
-    private HashMap<Integer, FootballerScoreDetailElement> getLiveExplains(Set<Integer> ids) throws IOException, UnirestException {
-        HashMap<Integer, FootballerScoreDetailElement> explains = new HashMap<>();
+    private HashMap<Integer, ArrayList<FootballerScoreDetailElement>> getLiveExplains(Set<Integer> ids) throws IOException, UnirestException {
+        HashMap<Integer, ArrayList<FootballerScoreDetailElement>> explains = new HashMap<>();
         Live liveData = _client.getLiveData(GlobalConfig.CloudAppConfig.CurrentGameWeek);
         for (int id : ids) {
             LiveElement element = liveData.elements.get(id);
             if (element != null) {
-                explains.put(id, liveData.elements.get(id).getExplain());
+                explains.put(id, liveData.elements.get(id).getExplains());
             }
         }
         return explains;
