@@ -3,10 +3,9 @@ package processor;
 import client.EPLClient;
 import client.EPLClientFactory;
 import client.MatchInfoProvider;
+import config.GlobalConfig;
 import data.*;
-import data.eplapi.Match;
-import data.eplapi.Standing;
-import data.eplapi.Standings;
+import data.eplapi.*;
 import processor.team.MatchEventDeduplicator;
 import util.IParallelizableProcess;
 
@@ -75,8 +74,20 @@ public class MatchProcessor implements IParallelizableProcess {
         return null;
     }
 
+    protected HashMap<Integer, Fixture> getFixtures(int gameweek) {
+        Live liveData = _client.getLiveData(gameweek);
+        if (liveData != null) {
+            return organizeFixtures(liveData);
+        }
+        return new HashMap<>();
+    }
+
+    protected HashMap<Integer, Fixture> organizeFixtures(Live liveData) {
+        return new HashMap<Integer, Fixture>(); //TODO
+    }
+
     protected MatchInfo createMatchInfo(Match match, List<TeamMatchEvent> events, ProcessedMatchTeam team1, ProcessedMatchTeam team2) {
-        MatchInfo info = new MatchInfo(match.event, events, team1, team2);
+        MatchInfo info = new MatchInfo(match.event, events, team1, team2, getFixtures(match.event));
         return info;
     }
 
