@@ -5,10 +5,7 @@ import client.EPLClientFactory;
 import config.GlobalConfig;
 import config.PlayerProcessorConfig;
 import data.ProcessedTeam;
-import data.eplapi.BootstrapStatic;
-import data.eplapi.EntryData;
-import data.eplapi.Event;
-import data.eplapi.Match;
+import data.eplapi.*;
 import dispatcher.MatchProcessorDispatcher;
 import dispatcher.PlayerProcessorDispatcher;
 import dispatcher.TeamProcessorDispatcher;
@@ -123,10 +120,16 @@ public class AllProcessor {
         System.out.format("Finished: %b\n", event.finished);
         System.out.format("Data checked: %b\n", event.data_checked);
 
-        if (currentTime.isAfter(eventStart) && (!event.finished || !event.data_checked)) {
-            return true;
+        if (!(currentTime.isAfter(eventStart) && (!event.finished || !event.data_checked))) {
+        //    return false;
         }
-        return false;
+
+        if (!isFixtureTime(event)) {
+            System.out.println("No fixtures are currently on");
+            return false;
+        }
+
+        return true;
     }
 
     private void generateScoutingReports(HashMap<Integer, ProcessedTeam> teams) {
@@ -154,6 +157,21 @@ public class AllProcessor {
             }
         }
         return null;
+    }
+
+    private boolean isFixtureTime(Event event) {
+        Live liveData = _client.getLiveData(event.id);
+        if (liveData == null) {
+            return false;
+        }
+        for(Fixture fixture : liveData.fixtures) {
+            System.out.format("%d (%d) @ (%d) %d: %s\n", fixture.team_a, fixture.team_a_score, fixture.team_h_score, fixture.team_h, fixture.kickoff_time);
+            if (fixture.started && !(fixture.finished && fixture.finished_provisional)) {
+                System.out.format("Found fixture: %d @ %d\n", fixture.team_a, fixture.team_h);
+                return true;
+            }
+        }
+        return false;
     }
 
     private ArrayList<Match> getCups(int teamId) {
