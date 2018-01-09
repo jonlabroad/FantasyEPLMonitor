@@ -164,7 +164,7 @@ public class AllProcessor {
     private boolean isFixtureTime(Event event) {
         List<Fixture> todaysFixtures = getTodaysFixtures(event);
 
-        if (allFixturesComplete(todaysFixtures) && event.finished && event.data_checked) {
+        if (allFixturesComplete(todaysFixtures)) {
             if (!GlobalConfig.CloudAppConfig.finalPollOfDayCompleted) {
                 GlobalConfig.CloudAppConfig.finalPollOfDayCompleted = true;
                 new CloudAppConfigProvider().write(GlobalConfig.CloudAppConfig);
