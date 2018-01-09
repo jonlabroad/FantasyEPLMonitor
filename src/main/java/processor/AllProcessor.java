@@ -2,6 +2,8 @@ package processor;
 
 import client.EPLClient;
 import client.EPLClientFactory;
+import config.CloudAppConfig;
+import config.CloudAppConfigProvider;
 import config.GlobalConfig;
 import config.PlayerProcessorConfig;
 import data.ProcessedTeam;
@@ -160,11 +162,20 @@ public class AllProcessor {
     }
 
     private boolean isFixtureTime(Event event) {
-        Live liveData = _client.getLiveData(event.id);
-        if (liveData == null) {
+        List<Fixture> todaysFixtures = getTodaysFixtures(event);
+
+        if (allFixturesComplete(todaysFixtures) && event.finished && event.data_checked) {
+            if (!GlobalConfig.CloudAppConfig.finalPollOfDayCompleted) {
+                GlobalConfig.CloudAppConfig.finalPollOfDayCompleted = true;
+                new CloudAppConfigProvider().write(GlobalConfig.CloudAppConfig);
+                System.out.println("All fixtures for the day are complete! Performing final poll");
+                return true;
+            }
+            System.out.println("All fixtures for the day are complete and final poll has been performed!");
             return false;
         }
-        for(Fixture fixture : liveData.fixtures) {
+
+        for(Fixture fixture : todaysFixtures) {
             System.out.format("%d (%d) @ (%d) %d: %s\n", fixture.team_a, fixture.team_a_score, fixture.team_h_score, fixture.team_h, fixture.kickoff_time);
             if (fixture.started && !(fixture.finished && fixture.finished_provisional)) {
                 System.out.format("Found fixture: %d @ %d\n", fixture.team_a, fixture.team_h);
@@ -172,6 +183,32 @@ public class AllProcessor {
             }
         }
         return false;
+    }
+
+    private boolean allFixturesComplete(List<Fixture> fixtures) {
+        boolean allComplete = false;
+        for (Fixture fixture : fixtures) {
+            allComplete &= fixture.finished && fixture.finished_provisional;
+        }
+        return allComplete;
+    }
+
+    private List<Fixture> getTodaysFixtures(Event event) {
+        Live liveData = _client.getLiveData(event.id);
+        if (liveData == null) {
+            return new ArrayList<>();
+        }
+
+        List<Fixture> retFixtures = new ArrayList<>();
+        for(Fixture fixture : liveData.fixtures) {
+            DateTime now = new DateTime();
+            DateTime kickoff = util.Date.fromApiString(fixture.kickoff_time);
+
+            if (kickoff.getDayOfMonth() == now.getDayOfMonth()) {
+                retFixtures.add(fixture);
+            }
+        }
+        return retFixtures;
     }
 
     private ArrayList<Match> getCups(int teamId) {
