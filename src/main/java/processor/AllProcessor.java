@@ -186,7 +186,7 @@ public class AllProcessor {
     }
 
     private boolean allFixturesComplete(List<Fixture> fixtures) {
-        boolean allComplete = false;
+        boolean allComplete = fixtures.size() > 0 ? true : false;
         for (Fixture fixture : fixtures) {
             allComplete &= fixture.finished && fixture.finished_provisional;
         }
