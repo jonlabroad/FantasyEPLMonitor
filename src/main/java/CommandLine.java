@@ -78,7 +78,8 @@ public class CommandLine {
 
     private static void writeCloudAppConfig() {
         CloudAppConfig config = new CloudAppConfig();
-        config.CurrentGameWeek = 10;
+        config.CurrentGameWeek = 23;
+        config.finalPollOfDayCompleted = false;
         new CloudAppConfigProvider().write(config);
     }
 

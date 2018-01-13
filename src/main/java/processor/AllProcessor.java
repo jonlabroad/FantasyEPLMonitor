@@ -122,8 +122,15 @@ public class AllProcessor {
         System.out.format("Finished: %b\n", event.finished);
         System.out.format("Data checked: %b\n", event.data_checked);
 
+        if (GlobalConfig.CloudAppConfig.day == null || util.Date.fromString(GlobalConfig.CloudAppConfig.day).getDayOfMonth() != currentTime.getDayOfMonth()) {
+            System.out.println("It's a new day!");
+            GlobalConfig.CloudAppConfig.finalPollOfDayCompleted = false;
+            GlobalConfig.CloudAppConfig.day = util.Date.toString(currentTime);
+            new CloudAppConfigProvider().write(GlobalConfig.CloudAppConfig);
+        }
+
         if (!(currentTime.isAfter(eventStart) && (!event.finished || !event.data_checked))) {
-        //    return false;
+            return false;
         }
 
         if (!isFixtureTime(event)) {
