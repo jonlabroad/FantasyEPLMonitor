@@ -89,10 +89,12 @@ public class AllProcessor {
     private void writeEventInfo() {
         int gameweek = GlobalConfig.CloudAppConfig.CurrentGameWeek;
         Live liveData = _client.getLiveData(gameweek);
+        ArrayList<Club> clubs = _client.getClubs();
 
         EventInfo eventInfo = new EventInfo();
         eventInfo.event = gameweek;
         eventInfo.fixtures = liveData.fixtures;
+        eventInfo.clubs = clubs;
         new S3JsonWriter().write(String.format("data/events/%s/EventInfo", gameweek), eventInfo, true);
     }
 

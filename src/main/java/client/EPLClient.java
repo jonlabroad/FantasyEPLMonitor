@@ -35,6 +35,16 @@ public class EPLClient
         return null;
     }
 
+    public ArrayList<Club> getClubs() {
+        ArrayList<Club> clubs = new ArrayList<>();
+        HttpRequest request = _generator.GenerateFootballersRequest();
+        Bootstrap bootstrap = _executor.Execute(request, Bootstrap.class);
+        for (Club club : bootstrap.teams) {
+            clubs.add(club);
+        }
+        return clubs;
+    }
+
     public HashMap<Integer, Footballer> getFootballers() {
         if (_footballerCache.footballers.size() <= 0) {
             HttpRequest request = _generator.GenerateFootballersRequest();

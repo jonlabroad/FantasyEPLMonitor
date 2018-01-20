@@ -5,4 +5,5 @@ package data.eplapi;
  */
 public class Bootstrap {
     public Footballer[] elements;
+    public Club[] teams;
 }
