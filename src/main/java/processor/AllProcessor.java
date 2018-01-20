@@ -93,7 +93,7 @@ public class AllProcessor {
         EventInfo eventInfo = new EventInfo();
         eventInfo.event = gameweek;
         eventInfo.fixtures = liveData.fixtures;
-        new S3JsonWriter().write(String.format("data/events/%s/EventInfo", gameweek), eventInfo);
+        new S3JsonWriter().write(String.format("data/events/%s/EventInfo", gameweek), eventInfo, true);
     }
 
     private ArrayList<Integer> getAllCupOpponents(Collection<Integer> teamIds) {
