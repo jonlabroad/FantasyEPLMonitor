@@ -1,6 +1,10 @@
 package data.eplapi;
 
-import java.util.ArrayList;
+import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
+
+import java.lang.reflect.Field;
 
 public class Fixture {
     public int id;
@@ -9,7 +13,8 @@ public class Fixture {
     public int event_day;
     public String deadline_time;
     public String deadline_time_formatted;
-    public ArrayList<EventStats> stats = new ArrayList<>();
+    public JsonArray stats;
+    public EventStats parsedStats;
     public int code;
     public String kickoff_time;
     public int team_h_score;
@@ -21,4 +26,27 @@ public class Fixture {
     public int event;
     public int team_a;
     public int team_h;
+
+    public EventStats getStats() {
+        Gson gson = new Gson();
+        EventStats parsedStats = new EventStats();
+        for (int i = 0; i < stats.size(); i++) {
+            JsonObject statObject = (JsonObject) stats.get(i);
+            for (String fieldName : statObject.keySet()) {
+                String elementJson = statObject.get(fieldName).toString();
+                HomeAwayStats parsedExplain = gson.fromJson(elementJson, HomeAwayStats.class);
+                setField(parsedStats, fieldName, parsedExplain);
+            }
+        }
+        return parsedStats;
+    }
+
+    private void setField(EventStats element, String fieldName, HomeAwayStats explain) {
+        try {
+            Field field = EventStats.class.getField(fieldName);
+            field.set(element, explain);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 }

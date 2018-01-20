@@ -2,10 +2,10 @@ package processor;
 
 import client.EPLClient;
 import client.EPLClientFactory;
-import config.CloudAppConfig;
 import config.CloudAppConfigProvider;
 import config.GlobalConfig;
 import config.PlayerProcessorConfig;
+import data.EventInfo;
 import data.ProcessedTeam;
 import data.eplapi.*;
 import dispatcher.MatchProcessorDispatcher;
@@ -13,13 +13,10 @@ import dispatcher.PlayerProcessorDispatcher;
 import dispatcher.TeamProcessorDispatcher;
 import lambda.AllProcessorLambda;
 import org.joda.time.DateTime;
+import persistance.S3JsonWriter;
 import util.CloudConfigUpdater;
 
 import java.util.*;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
 
 public class AllProcessor {
 
@@ -45,6 +42,8 @@ public class AllProcessor {
         if (configUpdater.update()) {
             generateScoutingReports = true;
         }
+
+        writeEventInfo();
 
         PlayerProcessorConfig.getInstance().refresh(); // There appears to be caching going on (objs not unloaded from mem)
         HashMap<Integer, ProcessedTeam> processedTeams;
@@ -85,6 +84,16 @@ public class AllProcessor {
         System.out.format("Processing took %f sec\n", (end.getMillis() - start.getMillis()) / 1000.0);
 
         return null;
+    }
+
+    private void writeEventInfo() {
+        int gameweek = GlobalConfig.CloudAppConfig.CurrentGameWeek;
+        Live liveData = _client.getLiveData(gameweek);
+
+        EventInfo eventInfo = new EventInfo();
+        eventInfo.event = gameweek;
+        eventInfo.fixtures = liveData.fixtures;
+        new S3JsonWriter().write(String.format("data/events/%s/EventInfo", gameweek), eventInfo);
     }
 
     private ArrayList<Integer> getAllCupOpponents(Collection<Integer> teamIds) {

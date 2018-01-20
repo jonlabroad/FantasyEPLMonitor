@@ -125,6 +125,9 @@ public class EPLClient
     public Live readLiveEventData(int eventId) {
         HttpRequest request = _generator.GenerateLiveDataRequest(eventId);
         Live live = _executor.Execute(request, Live.class);
+        for (Fixture fixture : live.fixtures) {
+            fixture.parsedStats = fixture.getStats();
+        }
         return live;
     }
 
