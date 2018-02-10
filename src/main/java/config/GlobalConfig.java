@@ -29,7 +29,7 @@ public class GlobalConfig {
     public static final String RECORDER_BASE_PATH = "recorder";
     public static final String RECORDER_PATH_FMT = RECORDER_BASE_PATH + "/%d/%d/%s";
 
-    public static final int NumberFootballersToProcessPerLambda = 600;
+    public static final int NumberFootballersToProcessPerLambda = 800;
     public static final boolean BinPlayerData = false;
 
     public static boolean LocalLambdas = true;

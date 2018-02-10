@@ -47,7 +47,7 @@ public class PlayerProcessorDispatcher {
 
         DateTime start = DateTime.now();
         ParallelExecutor executor = new ParallelExecutor();
-        for (int i = 1; i < 600; i += GlobalConfig.NumberFootballersToProcessPerLambda) {
+        for (int i = 1; i < 800; i += GlobalConfig.NumberFootballersToProcessPerLambda) {
             SinglePlayerProcessorDispatcher dispatcher = new SinglePlayerProcessorDispatcher(i,
                     i + GlobalConfig.NumberFootballersToProcessPerLambda - 1,
                     GlobalConfig.LocalLambdas);
