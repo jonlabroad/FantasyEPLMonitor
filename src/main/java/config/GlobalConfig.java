@@ -15,6 +15,9 @@ public class GlobalConfig {
     public static final String LeagueH2hMatchesPath = "/leagues-entries-and-h2h-matches/league/{LEAGUE_ID}?page={PAGE}";
     public static final String HistoryPath = EntryPath + "/history";
 
+    // Highlights
+    public static String YoutubeChannelId = "UCqZQlzSHbVJrwrn5XvzrzcA";
+
     // LegacyMatchInfo
     public static String MatchInfoRoot = "data";
 

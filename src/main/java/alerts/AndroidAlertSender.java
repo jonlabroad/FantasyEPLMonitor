@@ -52,7 +52,7 @@ public class AndroidAlertSender implements IAlertSender {
             if (endpoint.getAttributes().get("Enabled").equalsIgnoreCase("true")) {
                 System.out.format("Found enabled endpoint: %s\n", endpoint.getEndpointArn());
                 EndpointUserData userData = readUserData(endpoint.getAttributes().get("CustomUserData"));
-                System.out.format("Endpoint user id: %s, Firebase id %s\n", userData.uniqueUserId, userData.firebaseId);
+                System.out.format("Endpoint user playlistId: %s, Firebase playlistId %s\n", userData.uniqueUserId, userData.firebaseId);
                 if (devices.contains(userData.uniqueUserId)) {
                     System.out.format("Found subscribed device! %s\n", userData.uniqueUserId);
                     endpoints.add(endpoint.getEndpointArn());

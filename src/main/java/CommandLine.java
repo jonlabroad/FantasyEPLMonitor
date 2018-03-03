@@ -1,15 +1,18 @@
 import client.EPLClient;
 import client.EPLClientFactory;
+import client.Youtube.YoutubeClient;
 import config.*;
 import data.ProcessedLeagueFixtureList;
 import data.eplapi.FootballerScoreDetailElement;
 import data.eplapi.LeagueEntriesAndMatches;
 import data.eplapi.Live;
 import data.eplapi.Match;
+import data.youtube.Item;
 import lambda.AllProcessorLambda;
 import persistance.S3JsonReader;
 import persistance.S3JsonWriter;
 import com.mashape.unirest.http.exceptions.UnirestException;
+import processor.HighlightProcessor;
 
 import java.io.IOException;
 import java.util.ArrayList;

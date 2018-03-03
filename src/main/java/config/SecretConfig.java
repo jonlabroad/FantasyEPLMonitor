@@ -5,6 +5,7 @@ import java.util.HashMap;
 public class SecretConfig {
     public HashMap<Integer, User> users = new HashMap<Integer, User>();
     public String platformApplicationArn = "";
+    public String googleApiKey = "";
 
     public void AddUser(int teamId, String teamName, String phoneNumber) {
         User user = new User();

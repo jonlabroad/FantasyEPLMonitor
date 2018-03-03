@@ -48,6 +48,9 @@ public class AllProcessor {
         PlayerProcessorConfig.getInstance().refresh(); // There appears to be caching going on (objs not unloaded from mem)
         HashMap<Integer, ProcessedTeam> processedTeams;
         try {
+            HighlightProcessor highlightProcessor = new HighlightProcessor(GlobalConfig.CloudAppConfig.CurrentGameWeek);
+            highlightProcessor.process();
+
             PlayerProcessorDispatcher playerProcessor = new PlayerProcessorDispatcher(_client);
             playerProcessor.dispatchAll();
 
