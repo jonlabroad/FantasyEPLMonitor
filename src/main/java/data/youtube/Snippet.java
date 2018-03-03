@@ -1,5 +1,6 @@
 package data.youtube;
 
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
 public class Snippet {
@@ -10,4 +11,5 @@ public class Snippet {
     public JsonObject thumbnails;
     public String channelTitle;
     public String liveBroadcastContent;
+    public JsonElement resourceId;
 }
