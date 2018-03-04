@@ -32,6 +32,10 @@ public class CommandLine {
         GlobalConfig.LocalLambdas = true;
         GlobalConfig.TestMode = false;
 
+        //for (int gw=1; gw<29; gw++) {
+            //new HighlightProcessor(29).process();
+        //}
+
         AllProcessorLambda allProcessor = new AllProcessorLambda();
         allProcessor.handleRequest(new HashMap<>(), null);
 

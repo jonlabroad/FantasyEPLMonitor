@@ -18,7 +18,7 @@ public class RequestGenerator {
     }
 
     private static String createPlaylistTitle(int gameweek) {
-        return String.format("2017-2018+Premier+League+Season+Matchday+%d", gameweek);
+        return String.format("2017+2018+Premier+League+Season+Matchday+%d", gameweek);
     }
 
     private static HttpRequest build(String path) {
