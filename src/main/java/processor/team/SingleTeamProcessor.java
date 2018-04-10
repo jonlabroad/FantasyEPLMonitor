@@ -36,7 +36,7 @@ public class SingleTeamProcessor implements IParallelizableProcess {
         List<TeamMatchEvent> events = mergeEvents(processedPicks);
         EntryData entry = _client.getEntry(_teamId);
         Picks picks = _client.getPicks(_teamId, _gameweek);
-        ProcessedTeam team = new ProcessedTeam(_teamId, entry, processedPicks, score, events, picks.active_chip);
+        ProcessedTeam team = new ProcessedTeam(_teamId, entry, processedPicks, score, events, picks != null ? picks.active_chip : "");
         List<TeamMatchEvent> autosubs = new AutosubDetector().detectAutoSubs(_teamId, null, team.picks);
         team.setAutosubs(autosubs);
 
