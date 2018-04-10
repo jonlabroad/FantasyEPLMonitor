@@ -12,18 +12,23 @@ public class ProcessedTeam {
     public ArrayList<ProcessedPick> picks;
     public Score score;
     public EntryData entry;
+    public String activeChip;
 
     public List<TeamMatchEvent> events;
     public List<TeamMatchEvent> autosubs = new ArrayList<>();
 
     public ProcessedTeam() {}
 
-    public ProcessedTeam(int teamId, EntryData ent, ArrayList<ProcessedPick> processedPicks, Score s, List<TeamMatchEvent> eventList) {
+    public ProcessedTeam(int teamId, EntryData ent, ArrayList<ProcessedPick> processedPicks, Score s, List<TeamMatchEvent> eventList, String chip) {
         id = teamId;
         picks = processedPicks;
         score = s;
         events = eventList;
         entry = ent;
+        activeChip = chip;
+        if (!activeChip.isEmpty()) {
+            System.out.println(entry.entry.name + ": " + activeChip);
+        }
     }
 
     public ProcessedPick getPick(int id) {
