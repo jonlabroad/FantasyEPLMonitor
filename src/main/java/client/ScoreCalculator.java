@@ -13,11 +13,11 @@ import java.util.Map;
 
 public class ScoreCalculator {
 
-    public Score calculate(List<ProcessedPick> processedPicks) {
+    public Score calculate(List<ProcessedPick> processedPicks, boolean benchBoost) {
         // Find the footballers and tally the current score
         Score score = new Score();
         for (int i = 0; i < processedPicks.size(); i++) {
-            boolean isSub = i >= 11;
+            boolean isSub = !benchBoost && i >= 11;
             ProcessedPick processedPick = processedPicks.get(i);
             Pick pick = processedPick.pick;
             ArrayList<FootballerScoreDetailElement> gwExplains = processedPick.footballer.rawData.explains;
