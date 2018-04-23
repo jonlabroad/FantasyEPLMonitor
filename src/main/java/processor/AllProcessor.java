@@ -31,6 +31,9 @@ public class AllProcessor {
         // Force local lambdas
         GlobalConfig.LocalLambdas = true;
 
+        HighlightProcessor highlightProcessor = new HighlightProcessor(GlobalConfig.CloudAppConfig.CurrentGameWeek);
+        highlightProcessor.process();
+
         if (!isTimeToPoll()) {
             System.out.println("It's not time yet! Quiting...");
             return "No polling to do";
@@ -48,9 +51,6 @@ public class AllProcessor {
         PlayerProcessorConfig.getInstance().refresh(); // There appears to be caching going on (objs not unloaded from mem)
         HashMap<Integer, ProcessedTeam> processedTeams;
         try {
-            HighlightProcessor highlightProcessor = new HighlightProcessor(GlobalConfig.CloudAppConfig.CurrentGameWeek);
-            highlightProcessor.process();
-
             PlayerProcessorDispatcher playerProcessor = new PlayerProcessorDispatcher(_client);
             playerProcessor.dispatchAll();
 
