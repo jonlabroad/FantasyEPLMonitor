@@ -6,6 +6,8 @@ import client.MatchInfoProvider;
 import config.GlobalConfig;
 import data.*;
 import data.eplapi.*;
+import processor.scouting.H2hSimulator;
+import processor.scouting.Record;
 import processor.team.MatchEventDeduplicator;
 import util.IParallelizableProcess;
 
@@ -51,10 +53,14 @@ public class MatchProcessor implements IParallelizableProcess {
         ProcessedMatchTeam team1 = new ProcessedMatchTeam(pTeam1, getStanding(standings, _match.entry_1_entry));
         ProcessedMatchTeam team2 = new ProcessedMatchTeam(pTeam2, getStanding(standings, _match.entry_2_entry));
 
+        H2hSimulator h2hSim = new H2hSimulator(_client, _match.entry_1_entry, _match.entry_2_entry);
+        HashMap<Integer, Record> h2hResults = h2hSim.simulate();
+
         List<TeamMatchEvent> sharedEvents = new MatchEventDeduplicator().deduplicate(team1, team2);
         sharedEvents.sort(new MatchEventSortComparator());
-        _result = createMatchInfo(_match, sharedEvents, team1, team2);
+        _result = createMatchInfo(_match, sharedEvents, team1, team2, h2hResults);
         writeMatchInfo(_result);
+
     }
 
     public MatchInfo getResult() {
@@ -86,8 +92,8 @@ public class MatchProcessor implements IParallelizableProcess {
         return new HashMap<Integer, Fixture>(); //TODO
     }
 
-    protected MatchInfo createMatchInfo(Match match, List<TeamMatchEvent> events, ProcessedMatchTeam team1, ProcessedMatchTeam team2) {
-        MatchInfo info = new MatchInfo(match.event, events, team1, team2, getFixtures(match.event));
+    protected MatchInfo createMatchInfo(Match match, List<TeamMatchEvent> events, ProcessedMatchTeam team1, ProcessedMatchTeam team2, HashMap<Integer, Record> h2hSim) {
+        MatchInfo info = new MatchInfo(match.event, events, team1, team2, getFixtures(match.event), h2hSim.get(team1.id), h2hSim.get(team2.id));
         return info;
     }
 

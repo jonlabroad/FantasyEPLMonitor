@@ -45,10 +45,6 @@ public class ScoutingProcessor {
             report.gameweek = _gameweek;
             findNextMatch(team.id, report);
 
-            if (report.teams.get(0) == null || report.teams.get(1) == null) {
-                continue;
-            }
-
             processTeams(_teams, report.match, report);
             findDifferential(report);
             simulateH2h(report);
@@ -79,7 +75,7 @@ public class ScoutingProcessor {
             teams.add(team);
         }
 
-        if (report.teams.get(0) == null || report.teams.get(1) == null) {
+        if (report.teams.containsValue(null)) {
             return;
         }
         H2hSimulator simulator = new H2hSimulator(_client, teams.get(0).id, teams.get(1).id);
