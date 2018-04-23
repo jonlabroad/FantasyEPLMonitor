@@ -13,6 +13,7 @@ import dispatcher.PlayerProcessorDispatcher;
 import dispatcher.TeamProcessorDispatcher;
 import lambda.AllProcessorLambda;
 import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
 import persistance.S3JsonWriter;
 import util.CloudConfigUpdater;
 
@@ -185,7 +186,7 @@ public class AllProcessor {
     private boolean isFixtureTime(Event event) {
         List<Fixture> todaysFixtures = getTodaysFixtures(event);
 
-        if (allFixturesComplete(todaysFixtures)) {
+        if (false && allFixturesComplete(todaysFixtures)) {
             if (!GlobalConfig.CloudAppConfig.finalPollOfDayCompleted) {
                 GlobalConfig.CloudAppConfig.finalPollOfDayCompleted = true;
                 new CloudAppConfigProvider().write(GlobalConfig.CloudAppConfig);
@@ -199,7 +200,9 @@ public class AllProcessor {
         for(Fixture fixture : todaysFixtures) {
             System.out.format("%d (%d) @ (%d) %d: %s\n", fixture.team_a, fixture.team_a_score, fixture.team_h_score, fixture.team_h, fixture.kickoff_time);
             DateTime now = DateTime.now();
-            if (fixture.started && now.isBefore(util.Date.fromApiString(fixture.kickoff_time).plusHours(5))) {
+            System.out.println(now.toString());
+            System.out.println(util.Date.fromApiString(fixture.kickoff_time).plusHours(6).withZone(DateTimeZone.forID("America/New_York")));
+            if (fixture.started && now.isBefore(util.Date.fromApiString(fixture.kickoff_time).plusHours(6))) {
                 System.out.format("Found fixture: %d @ %d\n", fixture.team_a, fixture.team_h);
                 return true;
             }
