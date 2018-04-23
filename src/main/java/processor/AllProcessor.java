@@ -143,9 +143,9 @@ public class AllProcessor {
             new CloudAppConfigProvider().write(GlobalConfig.CloudAppConfig);
         }
 
-        if (!(currentTime.isAfter(eventStart) && (!event.finished || !event.data_checked))) {
-            return false;
-        }
+        //if (!(currentTime.isAfter(eventStart) && (!event.finished || !event.data_checked))) {
+        //    return false;
+        //}
 
         if (!isFixtureTime(event)) {
             System.out.println("No fixtures are currently on");
@@ -198,7 +198,8 @@ public class AllProcessor {
 
         for(Fixture fixture : todaysFixtures) {
             System.out.format("%d (%d) @ (%d) %d: %s\n", fixture.team_a, fixture.team_a_score, fixture.team_h_score, fixture.team_h, fixture.kickoff_time);
-            if (fixture.started && !(fixture.finished && fixture.finished_provisional)) {
+            DateTime now = DateTime.now();
+            if (fixture.started && now.isBefore(util.Date.fromApiString(fixture.kickoff_time).plusHours(5))) {
                 System.out.format("Found fixture: %d @ %d\n", fixture.team_a, fixture.team_h);
                 return true;
             }
