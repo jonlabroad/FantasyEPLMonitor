@@ -69,7 +69,7 @@ public class PlayerProcessor implements IParallelizableProcess {
         }
         else {
             if (_playerEnd > footballers.size() - 1) {
-                _playerEnd = footballers.size() - 1;
+                _playerEnd = footballers.size();
             }
             for (int i = _playerStart; i <= _playerEnd; i++) {
                 players.add(i);
