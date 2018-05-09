@@ -13,7 +13,7 @@ import java.util.Map;
 
 public class ScoreCalculator {
 
-    public Score calculate(List<ProcessedPick> processedPicks, boolean benchBoost) {
+    public Score calculate(Picks picks, List<ProcessedPick> processedPicks, boolean benchBoost) {
         // Find the footballers and tally the current score
         Score score = new Score();
         for (int i = 0; i < processedPicks.size(); i++) {
@@ -28,6 +28,9 @@ public class ScoreCalculator {
                 score.subScore += thisScore;
             }
         }
+
+        score.startingScore -= picks != null && picks.entry_history != null ? picks.entry_history.event_transfers_cost : 0;
+
         return score;
     }
 
