@@ -15,6 +15,7 @@ import lambda.AllProcessorLambda;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import persistance.S3JsonWriter;
+import processor.league.LeagueProcessor;
 import util.CloudConfigUpdater;
 
 import java.util.*;
@@ -50,7 +51,7 @@ public class AllProcessor {
         writeEventInfo();
 
         PlayerProcessorConfig.getInstance().refresh(); // There appears to be caching going on (objs not unloaded from mem)
-        HashMap<Integer, ProcessedTeam> processedTeams;
+        HashMap<Integer, ProcessedTeam> processedTeams = new HashMap<>();
         try {
             PlayerProcessorDispatcher playerProcessor = new PlayerProcessorDispatcher(_client);
             playerProcessor.dispatchAll();
@@ -83,6 +84,12 @@ public class AllProcessor {
             e.printStackTrace();
         }
 
+        try {
+            new LeagueProcessor(processedTeams.values(), _leagueId, GlobalConfig.CloudAppConfig.CurrentGameWeek).process();
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
 
         DateTime end = DateTime.now();
         System.out.format("Processing took %f sec\n", (end.getMillis() - start.getMillis()) / 1000.0);
