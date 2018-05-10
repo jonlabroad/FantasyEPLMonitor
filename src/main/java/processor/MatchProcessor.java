@@ -58,9 +58,7 @@ public class MatchProcessor implements IParallelizableProcess {
 
         List<TeamMatchEvent> sharedEvents = new MatchEventDeduplicator().deduplicate(team1, team2);
         sharedEvents.sort(new MatchEventSortComparator());
-        _result = createMatchInfo(_match, sharedEvents, team1, team2, h2hResults);
-        writeMatchInfo(_result);
-
+        _result = createMatchInfo(_match, sharedEvents, team1, team2, h2hResults, null);
     }
 
     public MatchInfo getResult() {
@@ -89,22 +87,22 @@ public class MatchProcessor implements IParallelizableProcess {
     }
 
     protected HashMap<Integer, Fixture> organizeFixtures(Live liveData) {
-        return new HashMap<Integer, Fixture>(); //TODO
+        return new HashMap<>(); //TODO
     }
 
-    protected MatchInfo createMatchInfo(Match match, List<TeamMatchEvent> events, ProcessedMatchTeam team1, ProcessedMatchTeam team2, HashMap<Integer, Record> h2hSim) {
-        MatchInfo info = new MatchInfo(match.event, events, team1, team2, getFixtures(match.event), h2hSim.get(team1.id), h2hSim.get(team2.id));
+    protected MatchInfo createMatchInfo(Match match, List<TeamMatchEvent> events, ProcessedMatchTeam team1, ProcessedMatchTeam team2, HashMap<Integer, Record> h2hSim, LiveStandings lStandings) {
+        MatchInfo info = new MatchInfo(match.event, events, team1, team2, getFixtures(match.event), h2hSim.get(team1.id), h2hSim.get(team2.id), null);
         return info;
     }
 
-    protected void writeMatchInfo(MatchInfo info) {
+    public static void writeMatchInfo(int leagueId, MatchInfo info) {
         for (int id : info.teams.keySet()) {
             System.out.format("Writing data for %d\n", id);
-            if (_leagueId > 0) {
-                new MatchInfoProvider(_leagueId).writeCurrent(id, info);
+            if (leagueId > 0) {
+                new MatchInfoProvider(leagueId).writeCurrent(id, info);
             }
             else {
-                new MatchInfoProvider(_leagueId).writeCup(id, info);
+                new MatchInfoProvider(leagueId).writeCup(id, info);
             }
         }
     }

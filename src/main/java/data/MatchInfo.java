@@ -14,9 +14,12 @@ public class MatchInfo {
     public HashMap<Integer, Fixture> fixtures = new HashMap<>();
     public HashMap<Integer, Record> simulatedH2h = new HashMap<>();
 
+    // The only reason this is here is because I'm lazy. It should instead be part of a league-wide structure
+    public LiveStandings liveStandings;
+
     public MatchInfo() {}
 
-    public MatchInfo(int gw, List<TeamMatchEvent> events, ProcessedMatchTeam team1, ProcessedMatchTeam team2, HashMap<Integer, Fixture> fix, Record t1H2h, Record t2H2h) {
+    public MatchInfo(int gw, List<TeamMatchEvent> events, ProcessedMatchTeam team1, ProcessedMatchTeam team2, HashMap<Integer, Fixture> fix, Record t1H2h, Record t2H2h, LiveStandings lStandings) {
         gameweek = gw;
         teams.put(team1.id, team1);
         teams.put(team2.id, team2);
@@ -26,5 +29,6 @@ public class MatchInfo {
         simulatedH2h = new HashMap<Integer, Record>();
         simulatedH2h.put(team1.id, t1H2h);
         simulatedH2h.put(team2.id, t2H2h);
+        liveStandings = lStandings;
     }
 }

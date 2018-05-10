@@ -2,6 +2,7 @@ package dispatcher;
 
 import client.EPLClient;
 import client.EPLClientFactory;
+import data.LiveStandings;
 import data.MatchInfo;
 import data.ProcessedLeagueFixtureList;
 import data.ProcessedTeam;
@@ -58,6 +59,20 @@ public class MatchProcessorDispatcher {
                 matchInfos.add(matchInfo);
             }
         }
+
+        if (_leagueId > 0) {
+            // Gross
+            LiveStandings liveStandings = new LiveStandings(matchInfos, _client.getStandings(_leagueId));
+            for (MatchInfo matchInfo : matchInfos) {
+                try {
+                    matchInfo.liveStandings = liveStandings;
+                }
+                finally {
+                    MatchProcessor.writeMatchInfo(_leagueId, matchInfo);
+                }
+            }
+        }
+
         _executor.close();
         return matchInfos;
     }
