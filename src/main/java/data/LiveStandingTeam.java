@@ -51,7 +51,7 @@ public class LiveStandingTeam implements Comparable<LiveStandingTeam> {
 
     @Override
     public int compareTo(LiveStandingTeam o) {
-        return Integer.compare(this.standing.points_total, o.standing.points_total);
+        return Integer.compare(o.standing.points_total, this.standing.points_total);
     }
 }
 
