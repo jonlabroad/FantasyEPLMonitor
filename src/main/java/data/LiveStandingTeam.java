@@ -19,7 +19,7 @@ public class LiveStandingTeam implements Comparable<LiveStandingTeam> {
 
         liveResult = "D";
         standing.matches_played++;
-        standing.points_total += team.score.startingScore;
+        standing.points_for += team.score.startingScore;
         if (team.score.startingScore > otherTeam.score.startingScore)
         {
             liveResult = "W";
@@ -54,7 +54,7 @@ public class LiveStandingTeam implements Comparable<LiveStandingTeam> {
     public int compareTo(LiveStandingTeam o) {
         int comp = Integer.compare(o.standing.points_total, this.standing.points_total);
         if (comp == 0) {
-            comp = Integer.compare(o.standing.points_for, this.standing.points_against);
+            comp = Integer.compare(o.standing.points_for, this.standing.points_for);
         }
         return comp;
     }
