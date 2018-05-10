@@ -7,7 +7,7 @@ import java.util.Collection;
 import java.util.List;
 
 public class LiveStandings {
-    List<LiveStandingTeam> liveStandings = new ArrayList<>();
+    public List<LiveStandingTeam> liveStandings = new ArrayList<>();
 
     public LiveStandings(Collection<MatchInfo> matchInfos, Standings standings)
     {

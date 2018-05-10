@@ -14,6 +14,7 @@ import util.ParallelExecutor;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 
 public class MatchProcessorDispatcher {
@@ -63,6 +64,7 @@ public class MatchProcessorDispatcher {
         if (_leagueId > 0) {
             // Gross
             LiveStandings liveStandings = new LiveStandings(matchInfos, _client.getStandings(_leagueId));
+            Collections.sort(liveStandings.liveStandings);
             for (MatchInfo matchInfo : matchInfos) {
                 try {
                     matchInfo.liveStandings = liveStandings;
