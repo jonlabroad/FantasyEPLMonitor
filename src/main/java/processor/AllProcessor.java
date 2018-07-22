@@ -33,10 +33,10 @@ public class AllProcessor {
         // Force local lambdas
         GlobalConfig.LocalLambdas = true;
 
-        HighlightProcessor highlightProcessor = new HighlightProcessor(GlobalConfig.CloudAppConfig.CurrentGameWeek);
+        HighlightProcessor highlightProcessor = new HighlightProcessor(GlobalConfig.CloudAppConfig.CurrentGameWeek, _leagueId);
         highlightProcessor.process();
 
-        if (!isTimeToPoll()) {
+        if (false && !isTimeToPoll()) {
             System.out.println("It's not time yet! Quiting...");
             return "No polling to do";
         }
@@ -106,7 +106,7 @@ public class AllProcessor {
         eventInfo.event = gameweek;
         eventInfo.fixtures = liveData.fixtures;
         eventInfo.clubs = clubs;
-        new S3JsonWriter().write(String.format("data/events/%s/EventInfo", gameweek), eventInfo, true);
+        new S3JsonWriter().write(String.format(GlobalConfig.DataRoot + "/events/%s/EventInfo", gameweek), eventInfo, true);
     }
 
     private ArrayList<Integer> getAllCupOpponents(Collection<Integer> teamIds) {
@@ -164,8 +164,14 @@ public class AllProcessor {
     }
 
     private void generateScoutingReports(HashMap<Integer, ProcessedTeam> teams) {
-        ScoutingProcessor processor = new ScoutingProcessor(_leagueId, teams);
-        processor.process();
+        try {
+            ScoutingProcessor processor = new ScoutingProcessor(_leagueId, teams);
+            processor.process();
+        }
+        catch (Exception ex) {
+            System.out.println("Scouting report generation failed. This is not fatal, but it still hurts :(");
+            ex.printStackTrace();
+        }
     }
 
     private Event getCurrentEvent() {
@@ -208,8 +214,8 @@ public class AllProcessor {
             System.out.format("%d (%d) @ (%d) %d: %s\n", fixture.team_a, fixture.team_a_score, fixture.team_h_score, fixture.team_h, fixture.kickoff_time);
             DateTime now = DateTime.now();
             System.out.println(now.toString());
-            System.out.println(util.Date.fromApiString(fixture.kickoff_time).plusHours(6).withZone(DateTimeZone.forID("America/New_York")));
-            if (fixture.started && now.isBefore(util.Date.fromApiString(fixture.kickoff_time).plusHours(6))) {
+            System.out.println(util.Date.fromApiString(fixture.kickoff_time).plusHours(7).withZone(DateTimeZone.forID("America/New_York")));
+            if (fixture.started && now.isBefore(util.Date.fromApiString(fixture.kickoff_time).plusHours(7))) {
                 System.out.format("Found fixture: %d @ %d\n", fixture.team_a, fixture.team_h);
                 return true;
             }

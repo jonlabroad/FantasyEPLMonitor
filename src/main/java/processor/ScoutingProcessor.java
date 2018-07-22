@@ -65,7 +65,7 @@ public class ScoutingProcessor {
             if (team == null) {
                 continue;
             }
-            writer.write(String.format("data/%d/%d/%d/ScoutingReport", _leagueId, team.id, _gameweek), report, true);
+            writer.write(String.format(GlobalConfig.DataRoot + "/%d/%d/%d/ScoutingReport", _leagueId, team.id, _gameweek), report, true);
         }
     }
 

@@ -3,6 +3,7 @@ package client;
 import cache.FootballerDataCache;
 import client.Request.EPLRequestGenerator;
 import client.Request.IRequestExecutor;
+import config.GlobalConfig;
 import data.ProcessedLeagueFixtureList;
 import data.eplapi.*;
 import data.Score;
@@ -152,7 +153,7 @@ public class EPLClient
     }
 
     public ProcessedLeagueFixtureList readLeagueH2hMatches(int leagueId) {
-        return new S3JsonReader().read(String.format("data/%d/fixtures/fixtures.json", leagueId), ProcessedLeagueFixtureList.class);
+        return new S3JsonReader().read(String.format(GlobalConfig.DataRoot + "/%d/fixtures/fixtures.json", leagueId), ProcessedLeagueFixtureList.class);
     }
 
     public LeagueEntriesAndMatches readLeagueH2hMatches(int leagueId, int pageNum) {

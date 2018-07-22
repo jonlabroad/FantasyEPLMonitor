@@ -17,7 +17,8 @@ public class CloudAppConfigProvider {
     }
 
     public CloudAppConfig read() {
-        return _reader.read(FILENAME, CloudAppConfig.class);
+        CloudAppConfig newConfig = _reader.read(FILENAME, CloudAppConfig.class);
+        return newConfig != null ? newConfig : new CloudAppConfig();
     }
 
     public void write(CloudAppConfig config) {

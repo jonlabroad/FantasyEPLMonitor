@@ -26,12 +26,19 @@ import java.util.concurrent.Future;
 public class AllProcessorLambda implements RequestHandler<Map<String, Object>, String> {
 
     protected EPLClient _client = EPLClientFactory.createClient();
-    protected int _leagueId = 31187;
+    protected int _leagueId = 5815;
 
     public String handleRequest(Map<String, Object> params, Context context) {
+        getLeagueId(params);
         AllProcessor processor = new AllProcessor(_leagueId);
         processor.process();
         return null;
+    }
+
+    private void getLeagueId(Map<String, Object> params) {
+        if (params.containsKey("leagueid")) {
+            _leagueId = (Integer) params.get("leagueid");
+        }
     }
 
     public static void main(String[] args) {

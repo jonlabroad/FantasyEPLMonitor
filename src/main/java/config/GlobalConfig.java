@@ -18,11 +18,12 @@ public class GlobalConfig {
     // Highlights
     public static String YoutubeChannelId = "UCqZQlzSHbVJrwrn5XvzrzcA";
 
-    // LegacyMatchInfo
-    public static String MatchInfoRoot = "data";
+    public static final String SeasonPath = "Season2017";
+    public static final String DataRoot = "data/" + SeasonPath;
+    public static String MatchInfoRoot = DataRoot;
 
     public static final String S3Bucket = "fantasyeplmatchtracker";
-    public static final String PlayerDataRoot = "data/players";
+    public static final String PlayerDataRoot = DataRoot + "/players";
     public static final String TopicNamePrefix = "matchtrackeralert_";
     public static final String TopicArnFormat = String.format("arn:aws:sns:us-east-1:796987500533:%s", TopicNamePrefix) + "%d";
 

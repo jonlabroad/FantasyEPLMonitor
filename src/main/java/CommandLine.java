@@ -17,6 +17,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.Map;
 
 public class CommandLine {
     public static void main(String[] args) throws IOException, UnirestException, InterruptedException {
@@ -36,8 +37,11 @@ public class CommandLine {
             //new HighlightProcessor(29).process();
         //}
 
+        Map<String, Object> params = new HashMap<>();
+        int leagueId = getLeagueId(args);
+        params.put("leagueid", leagueId > -1 ? leagueId : 5815);
         AllProcessorLambda allProcessor = new AllProcessorLambda();
-        allProcessor.handleRequest(new HashMap<>(), null);
+        allProcessor.handleRequest(params, null);
 
         //calculateUltimateH2h();
 
@@ -63,6 +67,14 @@ public class CommandLine {
         //processor.process();
 
         //cleanRecordings();
+    }
+
+    private static int getLeagueId(String args[])
+    {
+        if (args.length < 1) {
+            return -1;
+        }
+        return Integer.parseInt(args[0]);
     }
 
     private static Live readLiveData() {
@@ -108,11 +120,11 @@ public class CommandLine {
         }
     }
 
-    private static void processFixtures() {
+    private static void processFixtures(int leagueId) {
         ProcessedLeagueFixtureList processed = new ProcessedLeagueFixtureList();
         S3JsonReader reader = new S3JsonReader();
         for (int i = 1; i <= 13; i++) {
-            LeagueEntriesAndMatches matches = reader.read(String.format("data/31187/fixtures/leagues-entries-and-h2h-matches-31187-page-%d.json", i), LeagueEntriesAndMatches.class);
+            LeagueEntriesAndMatches matches = reader.read(String.format(GlobalConfig.DataRoot + "/%d/fixtures/leagues-entries-and-h2h-matches-%d-page-%d.json", leagueId, leagueId, i), LeagueEntriesAndMatches.class);
             processed.league = matches.league;
             for (Match match : matches.matches.results) {
                 if (!processed.matches.containsKey(match.event)) {
@@ -122,7 +134,7 @@ public class CommandLine {
             }
         }
         S3JsonWriter writer = new S3JsonWriter();
-        writer.write("data/31187/fixtures/fixtures.json", processed);
+        writer.write(String.format(GlobalConfig.DataRoot + "/%d/fixtures/fixtures.json", leagueId), processed);
     }
 
     private static void calculateUltimateH2h() {

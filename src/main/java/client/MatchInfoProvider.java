@@ -38,7 +38,7 @@ public class MatchInfoProvider implements IMatchInfoDatastore {
     }
 
     public List<MatchInfo> readAll() {
-        Collection<String> keys = _reader.getKeys(String.format("data/%d", _leagueId));
+        Collection<String> keys = _reader.getKeys(String.format(GlobalConfig.DataRoot + "/%d", _leagueId));
         List<MatchInfo> matchInfos = new ArrayList<>();
         for (String key : keys) {
             if (!key.endsWith(GlobalConfig.CloudAppConfig.CurrentGameWeek + "/MatchInfo")) {

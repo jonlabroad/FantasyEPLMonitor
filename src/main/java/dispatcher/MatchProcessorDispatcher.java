@@ -2,6 +2,7 @@ package dispatcher;
 
 import client.EPLClient;
 import client.EPLClientFactory;
+import config.GlobalConfig;
 import data.LiveStandings;
 import data.MatchInfo;
 import data.ProcessedLeagueFixtureList;
@@ -37,7 +38,7 @@ public class MatchProcessorDispatcher {
     public void dispatch() {
         if (_leagueId > 0) {
             Standings standings = _client.getStandings(_leagueId);
-            new S3JsonWriter().write(String.format("data/%d/api/leagues-h2h-standings", _leagueId), standings, true);
+            new S3JsonWriter().write(String.format(GlobalConfig.DataRoot + "/%d/api/leagues-h2h-standings", _leagueId), standings, true);
         }
 
         for (Match match : _matches) {
