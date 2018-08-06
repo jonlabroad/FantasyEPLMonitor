@@ -51,4 +51,9 @@ public class AllProcessorLambda implements RequestHandler<Map<String, Object>, S
             _leagueId = (Integer) params.get("leagueid");
         }
     }
+
+    public static void main(String[] args) {
+        Map<String, Object> params = new HashMap<>();
+        new AllProcessorLambda(false).handleRequest(params, null);
+    }
 }
