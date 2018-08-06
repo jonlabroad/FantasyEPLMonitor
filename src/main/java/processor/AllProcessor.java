@@ -33,8 +33,10 @@ public class AllProcessor {
         // Force local lambdas
         GlobalConfig.LocalLambdas = true;
 
-        HighlightProcessor highlightProcessor = new HighlightProcessor(GlobalConfig.CloudAppConfig.CurrentGameWeek, _leagueId);
-        highlightProcessor.process();
+        if (GlobalConfig.LocalLambdas) {
+            HighlightProcessor highlightProcessor = new HighlightProcessor(GlobalConfig.CloudAppConfig.CurrentGameWeek, _leagueId);
+            highlightProcessor.process();
+        }
 
         if (false && !isTimeToPoll()) {
             System.out.println("It's not time yet! Quiting...");
