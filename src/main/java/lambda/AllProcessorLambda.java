@@ -31,7 +31,7 @@ public class AllProcessorLambda implements RequestHandler<Map<String, Object>, S
 
     public AllProcessorLambda()
     {
-        
+
     }
 
     public AllProcessorLambda(boolean isLambda)

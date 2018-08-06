@@ -17,6 +17,11 @@ public class CloudConfigUpdater {
     public boolean update() {
         Event currentEvent = getCurrentEvent();
         boolean generateScoutingReports = true;
+        if (currentEvent == null) {
+            System.out.println("Unable to find current event");
+            return false;
+        }
+        
         if (currentEvent.id != GlobalConfig.CloudAppConfig.CurrentGameWeek) {
             GlobalConfig.CloudAppConfig.CurrentGameWeek = currentEvent.id;
             new CloudAppConfigProvider().write(GlobalConfig.CloudAppConfig);

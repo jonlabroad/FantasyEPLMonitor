@@ -6,10 +6,12 @@ import data.ProcessedLeagueFixtureList;
 import data.eplapi.*;
 import data.youtube.Item;
 import lambda.AllProcessorLambda;
+import org.joda.time.DateTime;
 import persistance.S3JsonReader;
 import persistance.S3JsonWriter;
 import com.mashape.unirest.http.exceptions.UnirestException;
 import processor.HighlightProcessor;
+import processor.HybridAllProcessor;
 import processor.scouting.H2hSimulator;
 import processor.scouting.Record;
 
@@ -30,18 +32,19 @@ public class CommandLine {
 
         //writePlayerProcessorConfig();
 
-        GlobalConfig.LocalLambdas = true;
         GlobalConfig.TestMode = false;
 
-        //for (int gw=1; gw<29; gw++) {
-            //new HighlightProcessor(29).process();
-        //}
+        int leagueId = 5815;
+        new HighlightProcessor(GlobalConfig.CloudAppConfig.CurrentGameWeek, leagueId).process();
 
-        Map<String, Object> params = new HashMap<>();
-        int leagueId = getLeagueId(args);
-        params.put("leagueid", leagueId > -1 ? leagueId : 5815);
-        AllProcessorLambda allProcessor = new AllProcessorLambda(false);
-        allProcessor.handleRequest(params, null);
+        HybridAllProcessor processor = new HybridAllProcessor(leagueId);
+        processor.process();
+
+        //Map<String, Object> params = new HashMap<>();
+        //int leagueId = getLeagueId(args);
+        //params.put("leagueid", leagueId > -1 ? leagueId : 5815);
+        //AllProcessorLambda allProcessor = new AllProcessorLambda(false);
+        //allProcessor.handleRequest(params, null);
 
         //calculateUltimateH2h();
 

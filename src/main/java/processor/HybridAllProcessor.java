@@ -4,133 +4,39 @@ import client.EPLClient;
 import client.EPLClientFactory;
 import config.CloudAppConfigProvider;
 import config.GlobalConfig;
-import config.PlayerProcessorConfig;
-import data.EventInfo;
-import data.ProcessedTeam;
 import data.eplapi.*;
-import dispatcher.MatchProcessorDispatcher;
-import dispatcher.PlayerProcessorDispatcher;
-import dispatcher.TeamProcessorDispatcher;
+import dispatcher.AllProcessorDispatcher;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
-import persistance.S3JsonWriter;
-import processor.league.LeagueProcessor;
-import util.CloudConfigUpdater;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
-public class AllProcessor {
+public class HybridAllProcessor {
 
     private int _leagueId;
     private EPLClient _client = EPLClientFactory.createClient();
 
-    public AllProcessor(int leagueId) {
+    public HybridAllProcessor(int leagueId) {
         _leagueId = leagueId;
     }
 
-    public String process(boolean isLambda) {
-        // Force local lambdas
-        GlobalConfig.LocalLambdas = true;
+    public String process() {
+        // Processing only performed if this is running on-premise
+        HighlightProcessor highlightProcessor = new HighlightProcessor(GlobalConfig.CloudAppConfig.CurrentGameWeek, _leagueId);
+        highlightProcessor.process();
 
-        if (!isLambda) {
-            // Processing only performed if this is running on-premise
-            HighlightProcessor highlightProcessor = new HighlightProcessor(GlobalConfig.CloudAppConfig.CurrentGameWeek, _leagueId);
-            highlightProcessor.process();
-
-            if (!isTimeToPoll()) {
-                System.out.println("It's not time yet! Quiting...");
-                return "No polling to do";
-            }
+        if (false && !isTimeToPoll()) {
+            System.out.println("It's not time yet! Quiting...");
+            return "No polling to do";
         }
 
-        DateTime start = DateTime.now();
-        CloudConfigUpdater configUpdater = new CloudConfigUpdater(_client);
-        boolean generateScoutingReports = false;
-        if (configUpdater.update()) {
-            generateScoutingReports = true;
-        }
+        System.out.println("Running lambda...");
+        AllProcessorDispatcher dispatcher = new AllProcessorDispatcher(false);
+        dispatcher.process();
+        System.out.println("Done");
 
-        writeEventInfo();
-
-        PlayerProcessorConfig.getInstance().refresh(); // There appears to be caching going on (objs not unloaded from mem)
-        HashMap<Integer, ProcessedTeam> processedTeams = new HashMap<>();
-        try {
-            PlayerProcessorDispatcher playerProcessor = new PlayerProcessorDispatcher(_client);
-            playerProcessor.dispatchAll();
-
-            Collection<Integer> teamsToProcess = _client.getTeamsInLeague(_leagueId);
-            teamsToProcess.addAll(getAllCupOpponents(teamsToProcess));
-
-            TeamProcessorDispatcher teamProcessor = new TeamProcessorDispatcher(_client, teamsToProcess, GlobalConfig.CloudAppConfig.CurrentGameWeek);
-            teamProcessor.start();
-            processedTeams = teamProcessor.join();
-
-            MatchProcessorDispatcher leagueMatchProcessor = new MatchProcessorDispatcher(_client, _leagueId, processedTeams,
-                    _client.findMatches(_leagueId, GlobalConfig.CloudAppConfig.CurrentGameWeek));
-            leagueMatchProcessor.dispatch();
-            leagueMatchProcessor.join();
-
-            MatchProcessorDispatcher cupMatchProcessor = new MatchProcessorDispatcher(_client, -1, processedTeams,
-                    getAllCupMatches(processedTeams.keySet()));
-            cupMatchProcessor.dispatch();
-            cupMatchProcessor.join();
-
-            if (generateScoutingReports) {
-                generateScoutingReports(processedTeams);
-            }
-
-            AlertProcessor alertProcessor = new AlertProcessor(_leagueId, processedTeams.keySet());
-            alertProcessor.process();
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        try {
-            new LeagueProcessor(processedTeams.values(), _leagueId, GlobalConfig.CloudAppConfig.CurrentGameWeek).process();
-        }
-        catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        DateTime end = DateTime.now();
-        System.out.format("Processing took %f sec\n", (end.getMillis() - start.getMillis()) / 1000.0);
-
-        return null;
-    }
-
-    private void writeEventInfo() {
-        int gameweek = GlobalConfig.CloudAppConfig.CurrentGameWeek;
-        Live liveData = _client.getLiveData(gameweek);
-        ArrayList<Club> clubs = _client.getClubs();
-
-        EventInfo eventInfo = new EventInfo();
-        eventInfo.event = gameweek;
-        eventInfo.fixtures = liveData.fixtures;
-        eventInfo.clubs = clubs;
-        new S3JsonWriter().write(String.format(GlobalConfig.DataRoot + "/events/%s/EventInfo", gameweek), eventInfo, true);
-    }
-
-    private ArrayList<Integer> getAllCupOpponents(Collection<Integer> teamIds) {
-        ArrayList<Integer> cupTeamIds = new ArrayList<>();
-        for (int teamId : teamIds) {
-            Match cup = getCurrentCupMatch(teamId);
-            if (cup != null) {
-                cupTeamIds.add(teamId == cup.entry_1_entry ? cup.entry_2_entry : cup.entry_1_entry);
-            }
-        }
-        return cupTeamIds;
-    }
-
-    private Collection<Match> getAllCupMatches(Collection<Integer> teamIds) {
-        ArrayList<Match> matches = new ArrayList<>();
-        for (int teamId : teamIds) {
-            Match cup = getCurrentCupMatch(teamId);
-            if (cup != null) {
-                matches.add(cup);
-            }
-        }
-        return matches;
+        return "Done";
     }
 
     private boolean isTimeToPoll() {
@@ -163,17 +69,6 @@ public class AllProcessor {
         }
 
         return true;
-    }
-
-    private void generateScoutingReports(HashMap<Integer, ProcessedTeam> teams) {
-        try {
-            ScoutingProcessor processor = new ScoutingProcessor(_leagueId, teams);
-            processor.process();
-        }
-        catch (Exception ex) {
-            System.out.println("Scouting report generation failed. This is not fatal, but it still hurts :(");
-            ex.printStackTrace();
-        }
     }
 
     private Event getCurrentEvent() {
