@@ -26,7 +26,7 @@ public class HybridAllProcessor {
         HighlightProcessor highlightProcessor = new HighlightProcessor(GlobalConfig.CloudAppConfig.CurrentGameWeek, _leagueId);
         highlightProcessor.process();
 
-        if (false && !isTimeToPoll()) {
+        if (!isTimeToPoll()) {
             System.out.println("It's not time yet! Quiting...");
             return "No polling to do";
         }
