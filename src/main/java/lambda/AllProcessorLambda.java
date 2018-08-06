@@ -27,11 +27,22 @@ public class AllProcessorLambda implements RequestHandler<Map<String, Object>, S
 
     protected EPLClient _client = EPLClientFactory.createClient();
     protected int _leagueId = 5815;
+    protected boolean _isLambda = true;
+
+    public AllProcessorLambda()
+    {
+        
+    }
+
+    public AllProcessorLambda(boolean isLambda)
+    {
+        _isLambda = isLambda;
+    }
 
     public String handleRequest(Map<String, Object> params, Context context) {
         getLeagueId(params);
         AllProcessor processor = new AllProcessor(_leagueId);
-        processor.process();
+        processor.process(_isLambda);
         return null;
     }
 
@@ -39,10 +50,5 @@ public class AllProcessorLambda implements RequestHandler<Map<String, Object>, S
         if (params.containsKey("leagueid")) {
             _leagueId = (Integer) params.get("leagueid");
         }
-    }
-
-    public static void main(String[] args) {
-        Map<String, Object> params = new HashMap<>();
-        new AllProcessorLambda().handleRequest(params, null);
     }
 }

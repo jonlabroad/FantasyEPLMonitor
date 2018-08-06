@@ -29,11 +29,11 @@ public class AllProcessor {
         _leagueId = leagueId;
     }
 
-    public String process() {
+    public String process(boolean isLambda) {
         // Force local lambdas
         GlobalConfig.LocalLambdas = true;
 
-        if (GlobalConfig.LocalLambdas) {
+        if (!isLambda) {
             HighlightProcessor highlightProcessor = new HighlightProcessor(GlobalConfig.CloudAppConfig.CurrentGameWeek, _leagueId);
             highlightProcessor.process();
         }
@@ -263,10 +263,4 @@ public class AllProcessor {
     private DateTime getEventStartTime(Event event) {
         return util.Date.fromApiString(event.deadline_time);
     }
-
-    public static void main(String[] args) {
-        Map<String, Object> params = new HashMap<>();
-        new AllProcessorLambda().handleRequest(params, null);
-    }
-
 }

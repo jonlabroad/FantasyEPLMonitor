@@ -40,7 +40,7 @@ public class CommandLine {
         Map<String, Object> params = new HashMap<>();
         int leagueId = getLeagueId(args);
         params.put("leagueid", leagueId > -1 ? leagueId : 5815);
-        AllProcessorLambda allProcessor = new AllProcessorLambda();
+        AllProcessorLambda allProcessor = new AllProcessorLambda(false);
         allProcessor.handleRequest(params, null);
 
         //calculateUltimateH2h();
