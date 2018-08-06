@@ -18,7 +18,7 @@ public class GlobalConfig {
     // Highlights
     public static String YoutubeChannelId = "UCqZQlzSHbVJrwrn5XvzrzcA";
 
-    public static final String SeasonPath = "Season2017";
+    public static final String SeasonPath = "Season2018";
     public static final String DataRoot = "data/" + SeasonPath;
     public static String MatchInfoRoot = DataRoot;
 
