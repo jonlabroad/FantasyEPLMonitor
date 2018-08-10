@@ -26,14 +26,16 @@ public class EPLClient
     }
 
     public Standings getStandings(int leagueId) {
+        HttpRequest request = _generator.GenerateLeagueH2hStandingsRequest(leagueId);
         try {
-            HttpRequest request = _generator.GenerateLeagueH2hStandingsRequest(leagueId);
             return _executor.Execute(request, Standings.class);
         }
         catch(Exception ex) {
-            ex.printStackTrace();
+            NewStandings newStandings = _executor.Execute(request, NewStandings.class);
+            //ex.printStackTrace();
+            return new Standings(newStandings);
         }
-        return null;
+        //return null;
     }
 
     public ArrayList<Club> getClubs() {
@@ -209,6 +211,10 @@ public class EPLClient
 
     public Collection<Match> findMatches(int leagueId, int gameweek) {
         ProcessedLeagueFixtureList matchesInfo = getLeagueEntriesAndMatches(leagueId);
+        if (matchesInfo == null)
+        {
+            return null;
+        }
         return matchesInfo.matches.get(gameweek);
     }
 

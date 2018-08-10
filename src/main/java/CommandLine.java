@@ -34,8 +34,11 @@ public class CommandLine {
 
         GlobalConfig.TestMode = false;
 
+        //int leagueId = 5815;
+        //processFixtures(leagueId);
+
         int leagueId = 5815;
-        new HighlightProcessor(GlobalConfig.CloudAppConfig.CurrentGameWeek, leagueId).process();
+        //new HighlightProcessor(GlobalConfig.CloudAppConfig.CurrentGameWeek, leagueId).process();
 
         HybridAllProcessor processor = new HybridAllProcessor(leagueId);
         processor.process();
@@ -126,7 +129,7 @@ public class CommandLine {
     private static void processFixtures(int leagueId) {
         ProcessedLeagueFixtureList processed = new ProcessedLeagueFixtureList();
         S3JsonReader reader = new S3JsonReader();
-        for (int i = 1; i <= 13; i++) {
+        for (int i = 1; i <= 38; i++) {
             LeagueEntriesAndMatches matches = reader.read(String.format(GlobalConfig.DataRoot + "/%d/fixtures/leagues-entries-and-h2h-matches-%d-page-%d.json", leagueId, leagueId, i), LeagueEntriesAndMatches.class);
             processed.league = matches.league;
             for (Match match : matches.matches.results) {

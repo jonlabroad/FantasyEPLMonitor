@@ -13,6 +13,9 @@ public class LocalAwsLambdaInvoker implements ILambdaInvoker {
     }
 
     private RequestHandler<Map<String, Object>, String> createLambda(String lambdaName) {
+        if (lambdaName.equals("EPLFantasyDataPolling")) {
+            return new AllProcessorLambda();
+        }
         if (lambdaName.equals("EPLFantasyPlayerProcessor")) {
             return new PlayerProcessorLambda();
         }

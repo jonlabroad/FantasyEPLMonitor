@@ -26,13 +26,13 @@ public class HybridAllProcessor {
         HighlightProcessor highlightProcessor = new HighlightProcessor(GlobalConfig.CloudAppConfig.CurrentGameWeek, _leagueId);
         highlightProcessor.process();
 
-        if (!isTimeToPoll()) {
+        if (false && !isTimeToPoll()) {
             System.out.println("It's not time yet! Quiting...");
             return "No polling to do";
         }
 
         System.out.println("Running lambda...");
-        AllProcessorDispatcher dispatcher = new AllProcessorDispatcher(false);
+        AllProcessorDispatcher dispatcher = new AllProcessorDispatcher(true);
         dispatcher.process();
         System.out.println("Done");
 

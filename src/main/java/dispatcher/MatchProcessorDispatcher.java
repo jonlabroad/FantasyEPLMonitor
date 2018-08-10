@@ -8,6 +8,7 @@ import data.MatchInfo;
 import data.ProcessedLeagueFixtureList;
 import data.ProcessedTeam;
 import data.eplapi.Match;
+import data.eplapi.Standing;
 import data.eplapi.Standings;
 import persistance.S3JsonWriter;
 import processor.MatchProcessor;
@@ -41,6 +42,23 @@ public class MatchProcessorDispatcher {
             new S3JsonWriter().write(String.format(GlobalConfig.DataRoot + "/%d/api/leagues-h2h-standings", _leagueId), standings, true);
         }
 
+        // Hack for GW 1
+        if (_matches == null) {
+            Standings standings = _client.getStandings(_leagueId);
+            _matches = new ArrayList<Match>();
+            for (Standing standing : standings.standings.results) {
+                Match fakeMatch = new Match();
+                fakeMatch.entry_1_name = standing.entry_name;
+                fakeMatch.entry_1_entry = standing.entry;
+                fakeMatch.entry_1_player_name = standing.player_name;
+                fakeMatch.entry_2_name = standing.entry_name;
+                fakeMatch.entry_2_entry = standing.entry;
+                fakeMatch.entry_2_player_name = standing.player_name;
+                fakeMatch.event = GlobalConfig.CloudAppConfig.CurrentGameWeek;
+                _matches.add(fakeMatch);
+            }
+        }
+
         for (Match match : _matches) {
             MatchProcessor processor = new MatchProcessor(_client, _leagueId, _teams, match);
             _processors.add(processor);
@@ -64,13 +82,24 @@ public class MatchProcessorDispatcher {
 
         if (_leagueId > 0) {
             // Gross
-            LiveStandings liveStandings = new LiveStandings(matchInfos, _client.getStandings(_leagueId));
-            Collections.sort(liveStandings.liveStandings);
-            for (MatchInfo matchInfo : matchInfos) {
-                try {
-                    matchInfo.liveStandings = liveStandings;
+            // GW 1 HACK!!! RE-ENABLE AFTER FULL STANDINGS ARE AVAILABLE!!!
+            if (false) {
+                LiveStandings liveStandings = new LiveStandings(matchInfos, _client.getStandings(_leagueId));
+                if (liveStandings != null) {
+                    Collections.sort(liveStandings.liveStandings);
                 }
-                finally {
+                for (MatchInfo matchInfo : matchInfos) {
+                    try {
+                        matchInfo.liveStandings = liveStandings;
+                    } finally {
+                        MatchProcessor.writeMatchInfo(_leagueId, matchInfo);
+                    }
+                }
+            }
+            else
+            {
+                // GW HACK
+                for (MatchInfo matchInfo : matchInfos) {
                     MatchProcessor.writeMatchInfo(_leagueId, matchInfo);
                 }
             }
