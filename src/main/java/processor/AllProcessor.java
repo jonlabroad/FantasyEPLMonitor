@@ -146,7 +146,7 @@ public class AllProcessor {
         System.out.format("Finished: %b\n", event.finished);
         System.out.format("Data checked: %b\n", event.data_checked);
 
-        if (GlobalConfig.CloudAppConfig.day == null || util.Date.fromString(GlobalConfig.CloudAppConfig.day).getDayOfMonth() != currentTime.getDayOfMonth()) {
+        if (GlobalConfig.CloudAppConfig.day == null || GlobalConfig.CloudAppConfig.day.isEmpty() || util.Date.fromString(GlobalConfig.CloudAppConfig.day).getDayOfMonth() != currentTime.getDayOfMonth()) {
             System.out.println("It's a new day!");
             GlobalConfig.CloudAppConfig.finalPollOfDayCompleted = false;
             GlobalConfig.CloudAppConfig.day = util.Date.toString(currentTime);
