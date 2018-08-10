@@ -79,8 +79,8 @@ public class AllProcessor {
                 generateScoutingReports(processedTeams);
             }
 
-            AlertProcessor alertProcessor = new AlertProcessor(_leagueId, processedTeams.keySet());
-            alertProcessor.process();
+            //AlertProcessor alertProcessor = new AlertProcessor(_leagueId, processedTeams.keySet());
+            //alertProcessor.process();
 
         } catch (Exception e) {
             e.printStackTrace();
