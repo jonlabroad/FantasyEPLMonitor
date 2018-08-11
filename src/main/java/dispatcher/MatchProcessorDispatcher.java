@@ -83,7 +83,7 @@ public class MatchProcessorDispatcher {
         if (_leagueId > 0) {
             // Gross
             // GW 1 HACK!!! RE-ENABLE AFTER FULL STANDINGS ARE AVAILABLE!!!
-            if (false) {
+            if (true) {
                 LiveStandings liveStandings = new LiveStandings(matchInfos, _client.getStandings(_leagueId));
                 if (liveStandings != null) {
                     Collections.sort(liveStandings.liveStandings);
