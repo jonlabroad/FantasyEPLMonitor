@@ -30,6 +30,10 @@ public class H2hSimulator {
         else if (team2History == null) {
             team2History = team1History;
         }
+        if (team1History == null || team2History == null)
+        {
+            return new HashMap<>();
+        }
         return simulate(team1History, team2History);
     }
 

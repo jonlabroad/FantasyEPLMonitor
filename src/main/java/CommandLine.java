@@ -38,6 +38,7 @@ public class CommandLine {
         //processFixtures(leagueId);
 
         int leagueId = 5815;
+        //processFixtures(leagueId);
         //new HighlightProcessor(GlobalConfig.CloudAppConfig.CurrentGameWeek, leagueId).process();
 
         HybridAllProcessor processor = new HybridAllProcessor(leagueId);
@@ -126,11 +127,25 @@ public class CommandLine {
         }
     }
 
+    private static void processFixturesFromApi(int leagueId) {
+        EPLClient client = EPLClientFactory.createClient();
+        for (int i = 1; i < 50; i++) {
+            LeagueEntriesAndMatches matchesPage = client.readLeagueH2hMatches(leagueId, i);
+            if (matchesPage.matches.results.length <= 0) {
+                break;
+            }
+
+        }
+
+    }
+
     private static void processFixtures(int leagueId) {
         ProcessedLeagueFixtureList processed = new ProcessedLeagueFixtureList();
         S3JsonReader reader = new S3JsonReader();
-        for (int i = 1; i <= 38; i++) {
-            LeagueEntriesAndMatches matches = reader.read(String.format(GlobalConfig.DataRoot + "/%d/fixtures/leagues-entries-and-h2h-matches-%d-page-%d.json", leagueId, leagueId, i), LeagueEntriesAndMatches.class);
+        EPLClient client = EPLClientFactory.createClient();
+        for (int i = 1; i <= 13; i++) {
+            String path = String.format(GlobalConfig.DataRoot + "/%d/fixtures/leagues-entries-and-h2h-matches-%d-page-%d.json", leagueId, leagueId, i);
+            LeagueEntriesAndMatches matches = reader.read(path, LeagueEntriesAndMatches.class);
             processed.league = matches.league;
             for (Match match : matches.matches.results) {
                 if (!processed.matches.containsKey(match.event)) {

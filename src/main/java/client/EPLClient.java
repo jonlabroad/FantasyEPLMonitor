@@ -32,7 +32,7 @@ public class EPLClient
         }
         catch(Exception ex) {
             NewStandings newStandings = _executor.Execute(request, NewStandings.class);
-            //ex.printStackTrace();
+            ex.printStackTrace();
             return new Standings(newStandings);
         }
         //return null;

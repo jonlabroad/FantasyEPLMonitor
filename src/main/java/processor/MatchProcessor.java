@@ -54,8 +54,14 @@ public class MatchProcessor implements IParallelizableProcess {
         ProcessedMatchTeam team2 = new ProcessedMatchTeam(pTeam2, getStanding(standings, _match.entry_2_entry));
 
         H2hSimulator h2hSim = new H2hSimulator(_client, _match.entry_1_entry, _match.entry_2_entry);
-        HashMap<Integer, Record> h2hResults = h2hSim.simulate();
-
+        HashMap<Integer, Record> h2hResults = new HashMap<>();
+        try {
+            h2hResults = h2hSim.simulate();
+        }
+        catch (Exception ex)
+        {
+            ex.printStackTrace();
+        }
         List<TeamMatchEvent> sharedEvents = new MatchEventDeduplicator().deduplicate(team1, team2);
         sharedEvents.sort(new MatchEventSortComparator());
         _result = createMatchInfo(_match, sharedEvents, team1, team2, h2hResults, null);
