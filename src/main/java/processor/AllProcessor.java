@@ -65,6 +65,8 @@ public class AllProcessor {
             teamProcessor.start();
             processedTeams = teamProcessor.join();
 
+            estimateAverageScore(processedTeams);
+
             MatchProcessorDispatcher leagueMatchProcessor = new MatchProcessorDispatcher(_client, _leagueId, processedTeams,
                     _client.findMatches(_leagueId, GlobalConfig.CloudAppConfig.CurrentGameWeek));
             leagueMatchProcessor.dispatch();
@@ -80,7 +82,7 @@ public class AllProcessor {
             }
 
             try {
-                AlertProcessor alertProcessor = new AlertProcessor(_leagueId, processedTeams.keySet());
+                AlertProcessor alertProcessor = new AlertProcessor(_leagueId, processedTeams.keySet(), _client);
                 alertProcessor.process();
             }
             catch (Exception ex) {
@@ -102,6 +104,23 @@ public class AllProcessor {
         System.out.format("Processing took %f sec\n", (end.getMillis() - start.getMillis()) / 1000.0);
 
         return null;
+    }
+
+    private void estimateAverageScore(HashMap<Integer, ProcessedTeam> teams)
+    {
+        ProcessedTeam average = teams.get(0);
+        if (average != null) {
+            int totalScore = 0;
+            int numAvgd = 0;
+            for (ProcessedTeam team : teams.values()) {
+                if (team.id != 0) {
+                    totalScore += team.score.startingScore;
+                    numAvgd++;
+                }
+            }
+            int avgScore = totalScore/numAvgd;
+            average.score.startingScore = avgScore;
+        }
     }
 
     private void writeEventInfo() {

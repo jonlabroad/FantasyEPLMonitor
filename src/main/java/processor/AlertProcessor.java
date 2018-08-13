@@ -1,9 +1,14 @@
 package processor;
 
 import alerts.AndroidAlertSender;
+import client.EPLClient;
 import client.MatchInfoProvider;
 import config.AlertProcessorConfig;
+import config.CloudAppConfigProvider;
+import config.GlobalConfig;
 import data.*;
+import data.eplapi.Standing;
+import data.eplapi.Standings;
 import org.joda.time.DateTime;
 import processor.alert.ConfigProvider;
 
@@ -17,18 +22,22 @@ public class AlertProcessor {
     int _leagueId;
     Set<Integer> _teamIds;
     MatchInfoProvider _matchInfoProvider;
+    EPLClient _eplClient;
 
     Set<Integer> _processedTeams = new HashSet<>();
 
-    public AlertProcessor(int leagueId, Set<Integer> teamIds) {
+    public AlertProcessor(int leagueId, Set<Integer> teamIds, EPLClient client) {
         AlertProcessorConfig config = readConfig();
         _config = config != null ? config : new AlertProcessorConfig();
         _leagueId = leagueId;
         _matchInfoProvider = new MatchInfoProvider(_leagueId);
         _teamIds = teamIds != null ? teamIds : new HashSet<>();
+        _eplClient = client;
     }
 
     public void process() {
+        SetAvailableTeams();
+
     // Read match info data
         List<MatchInfo> matchInfos = _matchInfoProvider.readAll();
 
@@ -118,5 +127,21 @@ public class AlertProcessor {
             return true;
         }
         return _teamIds.contains(teamId);
+    }
+
+    private void SetAvailableTeams() {
+        if (GlobalConfig.CloudAppConfig.AvailableTeams.isEmpty()) {
+            Standings standings = _eplClient.getStandings(_leagueId);
+            if (standings != null) {
+                for (Standing standing : standings.standings.results) {
+                    TeamIdName team = new TeamIdName();
+                    team.teamId = standing.entry;
+                    team.teamName = standing.entry_name;
+                    team.teamOwner = standing.player_name;
+                    GlobalConfig.CloudAppConfig.AvailableTeams.put(team.teamId, team);
+                }
+                new CloudAppConfigProvider().write(GlobalConfig.CloudAppConfig);
+            }
+        }
     }
 }

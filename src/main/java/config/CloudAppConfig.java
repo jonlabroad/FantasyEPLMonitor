@@ -9,4 +9,5 @@ public class CloudAppConfig {
     public int CurrentGameWeek = 1;
     public String day = null;
     public boolean finalPollOfDayCompleted = false;
+    public HashMap<Integer, TeamIdName> AvailableTeams = new HashMap<>();
 }

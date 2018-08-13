@@ -1,5 +1,7 @@
 package lambda;
 
+import client.EPLClient;
+import client.EPLClientFactory;
 import com.amazonaws.services.lambda.runtime.Context;
 import com.amazonaws.services.lambda.runtime.RequestHandler;
 import config.GlobalConfig;
@@ -17,7 +19,7 @@ public class AlertProcessorLambda implements RequestHandler<Map<String, Object>,
         if (GlobalConfig.TestMode) {
             teamIds.add(2365803);
         }
-        new AlertProcessor(leagueId, teamIds).process();
+        new AlertProcessor(leagueId, teamIds, EPLClientFactory.createClient()).process();
         return null;
     }
 }
