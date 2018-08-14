@@ -1,5 +1,6 @@
 package data;
 
+import config.GlobalConfig;
 import data.eplapi.Standing;
 import data.eplapi.Standings;
 
@@ -17,26 +18,28 @@ public class LiveStandingTeam implements Comparable<LiveStandingTeam> {
         teamName = team.entry != null ? team.entry.entry.name : "AVERAGE";
         teamId = team.id;
 
-        liveResult = "D";
-        standing.matches_played++;
-        standing.points_for += team.score.startingScore;
-        if (team.score.startingScore > otherTeam.score.startingScore)
-        {
-            liveResult = "W";
-            standing.matches_won++;
-            standing.points_total += 3;
+        if (doIncrementStandings(standing)) {
+            liveResult = "D";
+            standing.matches_played++;
+            standing.points_for += team.score.startingScore;
+            if (team.score.startingScore > otherTeam.score.startingScore) {
+                liveResult = "W";
+                standing.matches_won++;
+                standing.points_total += 3;
+            } else if (team.score.startingScore < otherTeam.score.startingScore) {
+                liveResult = "L";
+                standing.matches_lost++;
+                standing.points_total += 0;
+            } else {
+                standing.matches_drawn++;
+                standing.points_total += 1;
+            }
         }
-        else if (team.score.startingScore < otherTeam.score.startingScore)
-        {
-            liveResult = "L";
-            standing.matches_lost++;
-            standing.points_total += 0;
-        }
-        else
-        {
-            standing.matches_drawn++;
-            standing.points_total += 1;
-        }
+    }
+
+    private boolean doIncrementStandings(Standing standing)
+    {
+        return standing.matches_played < GlobalConfig.CloudAppConfig.CurrentGameWeek;
     }
 
     private Standing findStanding(int teamId, Standings standings)

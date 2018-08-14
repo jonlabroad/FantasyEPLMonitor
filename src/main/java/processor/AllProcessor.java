@@ -15,6 +15,7 @@ import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import persistance.S3JsonWriter;
 import processor.league.LeagueProcessor;
+import processor.team.EventProcessor;
 import util.CloudConfigUpdater;
 
 import java.util.*;
@@ -50,7 +51,8 @@ public class AllProcessor {
             generateScoutingReports = true;
         }
 
-        writeEventInfo();
+        EventProcessor eventProcessor = new EventProcessor(_client, GlobalConfig.CloudAppConfig.CurrentGameWeek);
+        eventProcessor.process();
 
         PlayerProcessorConfig.getInstance().refresh(); // There appears to be caching going on (objs not unloaded from mem)
         HashMap<Integer, ProcessedTeam> processedTeams = new HashMap<>();
@@ -123,18 +125,6 @@ public class AllProcessor {
         }
     }
 
-    private void writeEventInfo() {
-        int gameweek = GlobalConfig.CloudAppConfig.CurrentGameWeek;
-        Live liveData = _client.getLiveData(gameweek);
-        ArrayList<Club> clubs = _client.getClubs();
-
-        EventInfo eventInfo = new EventInfo();
-        eventInfo.event = gameweek;
-        eventInfo.fixtures = liveData.fixtures;
-        eventInfo.clubs = clubs;
-        new S3JsonWriter().write(String.format(GlobalConfig.DataRoot + "/events/%s/EventInfo", gameweek), eventInfo, true);
-    }
-
     private ArrayList<Integer> getAllCupOpponents(Collection<Integer> teamIds) {
         ArrayList<Integer> cupTeamIds = new ArrayList<>();
         for (int teamId : teamIds) {
@@ -191,7 +181,7 @@ public class AllProcessor {
 
     private void generateScoutingReports(HashMap<Integer, ProcessedTeam> teams) {
         try {
-            ScoutingProcessor processor = new ScoutingProcessor(_leagueId, teams);
+            ScoutingProcessor processor = new ScoutingProcessor(_leagueId, _client, teams);
             processor.process();
         }
         catch (Exception ex) {

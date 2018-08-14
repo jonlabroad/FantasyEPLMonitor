@@ -64,7 +64,7 @@ public class MatchProcessor implements IParallelizableProcess {
         }
         List<TeamMatchEvent> sharedEvents = new MatchEventDeduplicator().deduplicate(team1, team2);
         sharedEvents.sort(new MatchEventSortComparator());
-        _result = createMatchInfo(_match, sharedEvents, team1, team2, h2hResults, null);
+        _result = createMatchInfo(_match, sharedEvents, team1, team2, h2hResults);
     }
 
     public MatchInfo getResult() {
@@ -96,8 +96,8 @@ public class MatchProcessor implements IParallelizableProcess {
         return new HashMap<>(); //TODO
     }
 
-    protected MatchInfo createMatchInfo(Match match, List<TeamMatchEvent> events, ProcessedMatchTeam team1, ProcessedMatchTeam team2, HashMap<Integer, Record> h2hSim, LiveStandings lStandings) {
-        MatchInfo info = new MatchInfo(match.event, events, team1, team2, getFixtures(match.event), h2hSim.get(team1.id), h2hSim.get(team2.id), null);
+    protected MatchInfo createMatchInfo(Match match, List<TeamMatchEvent> events, ProcessedMatchTeam team1, ProcessedMatchTeam team2, HashMap<Integer, Record> h2hSim) {
+        MatchInfo info = new MatchInfo(match.event, events, team1, team2, getFixtures(match.event), h2hSim.get(team1.id), h2hSim.get(team2.id));
         return info;
     }
 

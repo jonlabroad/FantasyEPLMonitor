@@ -12,8 +12,10 @@ import persistance.S3JsonWriter;
 import com.mashape.unirest.http.exceptions.UnirestException;
 import processor.HighlightProcessor;
 import processor.HybridAllProcessor;
+import processor.league.LeagueProcessor;
 import processor.scouting.H2hSimulator;
 import processor.scouting.Record;
+import processor.team.EventProcessor;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -43,6 +45,11 @@ public class CommandLine {
 
         HybridAllProcessor processor = new HybridAllProcessor(leagueId);
         processor.process();
+
+        //for (int gw = 2; gw <= 38; gw++) {
+        //    EventProcessor processor = new EventProcessor(EPLClientFactory.createClient(), gw);
+        //    processor.process();
+        //}
 
         //Map<String, Object> params = new HashMap<>();
         //int leagueId = getLeagueId(args);
