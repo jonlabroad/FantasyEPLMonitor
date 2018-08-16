@@ -23,6 +23,6 @@ public class CloudAppConfigProvider {
 
     public void write(CloudAppConfig config) {
         _config = config;
-        _writer.write(FILENAME, config);
+        _writer.write(FILENAME, config, true);
     }
 }
