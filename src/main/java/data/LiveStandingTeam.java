@@ -9,6 +9,7 @@ public class LiveStandingTeam implements Comparable<LiveStandingTeam> {
     int teamId;
     Standing standing;
     String liveResult;
+    Score currentWeekScore = new Score();
 
     public LiveStandingTeam(ProcessedTeam team, ProcessedTeam otherTeam, Standings standings)
     {
@@ -17,6 +18,8 @@ public class LiveStandingTeam implements Comparable<LiveStandingTeam> {
 
         teamName = team.entry != null ? team.entry.entry.name : "AVERAGE";
         teamId = team.id;
+        currentWeekScore.startingScore = team.score.startingScore;
+        currentWeekScore.subScore = team.score.subScore;
 
         if (doIncrementStandings(standing)) {
             liveResult = "D";

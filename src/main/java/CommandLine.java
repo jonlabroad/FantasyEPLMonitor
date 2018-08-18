@@ -12,6 +12,7 @@ import persistance.S3JsonWriter;
 import com.mashape.unirest.http.exceptions.UnirestException;
 import processor.HighlightProcessor;
 import processor.HybridAllProcessor;
+import processor.ScoutingProcessor;
 import processor.league.LeagueProcessor;
 import processor.scouting.H2hSimulator;
 import processor.scouting.Record;

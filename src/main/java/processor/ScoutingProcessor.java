@@ -51,6 +51,7 @@ public class ScoutingProcessor {
                 processTeams(_teams, report.match, report, standings);
 
                 findDifferential(report);
+                //generateStats(report);
                 simulateH2h(report);
                 writeReports(report, gameweek);
 
@@ -63,6 +64,14 @@ public class ScoutingProcessor {
         }
 
         return reports;
+    }
+
+    private void generateStats(ScoutingReport report)
+    {
+        for (ProcessedTeam team : report.teams.values())
+        {
+            //team.entry.entry.
+        }
     }
 
     private void writeReports(ScoutingReport report, int gameweek) {
