@@ -40,7 +40,7 @@ public class SingleTeamProcessor implements IParallelizableProcess {
         ProcessedTeam team = new ProcessedTeam(_teamId, entry, processedPicks, score, events, picks != null ? picks.active_chip : "");
         List<TeamMatchEvent> autosubs = new AutosubDetector().detectAutoSubs(_teamId, null, team.picks);
         team.setAutosubs(autosubs);
-        team.transferCost = picks.entry_history.event_transfers_cost;
+        team.transferCost = picks != null ? picks.entry_history.event_transfers_cost : 0;
 
         _processedTeam = team;
     }
