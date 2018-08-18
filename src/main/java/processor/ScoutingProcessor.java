@@ -51,7 +51,7 @@ public class ScoutingProcessor {
                 processTeams(_teams, report.match, report, standings);
 
                 findDifferential(report);
-                //generateStats(report);
+                generateStats(report);
                 simulateH2h(report);
                 writeReports(report, gameweek);
 
@@ -70,8 +70,70 @@ public class ScoutingProcessor {
     {
         for (ProcessedTeam team : report.teams.values())
         {
-            //team.entry.entry.
+            addBestPlayer(team, report);
+            addInformPlayer(team, report);
         }
+    }
+
+    private TeamStats getStats(ProcessedTeam team, ScoutingReport report) {
+        if (!report.stats.containsKey(team.id)) {
+            report.stats.put(team.id, new TeamStats());
+        }
+        return report.stats.get(team.id);
+    }
+
+    private void addBestPlayer(ProcessedTeam team, ScoutingReport report)
+    {
+        ProcessedPlayer player = findBestPlayer(team);
+        TeamStats stats = getStats(team, report);
+        stats.bestPlayer = player;
+    }
+
+    private void addInformPlayer(ProcessedTeam team, ScoutingReport report)
+    {
+        ProcessedPlayer player = findInformPlayer(team);
+        TeamStats stats = getStats(team, report);
+        stats.informPlayer = player;
+    }
+
+    private ProcessedPlayer findBestPlayer(ProcessedTeam team)
+    {
+        double maxPts = 0.0;
+        ProcessedPlayer bestPlayer = null;
+        for (ProcessedPick pick : team.picks)
+        {
+            try {
+                double pointsPerGame = Double.parseDouble(pick.footballer.rawData.footballer.points_per_game);
+                if (pointsPerGame > 0.0 && pointsPerGame > maxPts) {
+                    maxPts = pointsPerGame;
+                    bestPlayer = pick.footballer;
+                }
+            }
+            catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        }
+        return bestPlayer;
+    }
+
+    private ProcessedPlayer findInformPlayer(ProcessedTeam team)
+    {
+        double maxPts = 0.0;
+        ProcessedPlayer bestPlayer = null;
+        for (ProcessedPick pick : team.picks)
+        {
+            try {
+                double form = Double.parseDouble(pick.footballer.rawData.footballer.form);
+                if (form > 0.0 && form > maxPts) {
+                    maxPts = form;
+                    bestPlayer = pick.footballer;
+                }
+            }
+            catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        }
+        return bestPlayer;
     }
 
     private void writeReports(ScoutingReport report, int gameweek) {

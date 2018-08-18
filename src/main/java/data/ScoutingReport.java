@@ -12,4 +12,5 @@ public class ScoutingReport {
     public HashMap<Integer, ProcessedMatchTeam> teams = new HashMap<>();
     public HashMap<Integer, Record> simulatedH2h = new HashMap<>();
     public HashSet<Integer> differentials = new HashSet<>();
+    public HashMap<Integer, TeamStats> stats = new HashMap<>();
 }
