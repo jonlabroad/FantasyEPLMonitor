@@ -26,6 +26,14 @@ public class EPLClient
     }
 
     public Standings getStandings(int leagueId) {
+        if (_footballerCache.standings == null) {
+            Standings standings = readStandings(leagueId);
+            _footballerCache.standings = standings;
+        }
+        return _footballerCache.standings;
+    }
+
+    public Standings readStandings(int leagueId) {
         HttpRequest request = _generator.GenerateLeagueH2hStandingsRequest(leagueId);
         try {
             return _executor.Execute(request, Standings.class);

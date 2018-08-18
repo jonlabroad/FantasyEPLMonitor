@@ -12,6 +12,7 @@ public class FootballerDataCache {
     public HashMap<Integer, EntryData> entries = new HashMap<>();
     public HashMap<Integer, TeamHistory> history = new HashMap<>();
     public HashMap<Integer, ProcessedLeagueFixtureList> leagueEntriesAndMatches = new HashMap<>();
+    public Standings standings = null;
     public BootstrapStatic bootstrapStatic = null;
 
     public void clear() {
@@ -21,6 +22,7 @@ public class FootballerDataCache {
         liveData.clear();
         leagueEntriesAndMatches = null;
         bootstrapStatic = null;
+        standings = null;
     }
 
     public Footballer getFootballer(int id) {
