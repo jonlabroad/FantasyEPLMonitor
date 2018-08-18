@@ -30,9 +30,19 @@ public class SingleTeamProcessor implements IParallelizableProcess {
         ArrayList<ProcessedPick> processedPicks = getPlayersForTeam();
 
         Picks picks = _client.getPicks(_teamId, _gameweek);
+        Event event = getCurrentEvent();
+        boolean useEventScore = event.data_checked && event.finished;
 
         // Calculate score
-        Score score = new ScoreCalculator().calculate(picks, processedPicks, picks != null && picks.active_chip.equals("bboost"));
+        Score score;
+        if (!useEventScore) {
+            score = new ScoreCalculator().calculate(picks, processedPicks, picks != null && picks.active_chip.equals("bboost"));
+        }
+        else {
+            score = new Score();
+            score.startingScore = picks.entry_history.points;
+            score.subScore = picks.entry_history.points_on_bench;
+        }
 
         // Merge all the events into a single stream
         List<TeamMatchEvent> events = mergeEvents(processedPicks);
@@ -81,5 +91,16 @@ public class SingleTeamProcessor implements IParallelizableProcess {
 
     private ProcessedPlayer readProcessedPlayer(int footballerId) {
         return _playerProvider.getPlayer(footballerId);
+    }
+
+    private Event getCurrentEvent() {
+        BootstrapStatic boot = _client.getBootstrapStatic();
+        int currentEvent = boot.currentEvent;
+        for (Event event : boot.events) {
+            if (event.id == currentEvent) {
+                return event;
+            }
+        }
+        return null;
     }
 }
