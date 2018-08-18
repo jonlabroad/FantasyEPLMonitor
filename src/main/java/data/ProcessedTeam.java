@@ -16,6 +16,7 @@ public class ProcessedTeam {
 
     public List<TeamMatchEvent> events;
     public List<TeamMatchEvent> autosubs = new ArrayList<>();
+    public int transferCost;
 
     public ProcessedTeam() {}
 

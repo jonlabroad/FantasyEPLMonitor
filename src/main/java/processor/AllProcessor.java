@@ -116,7 +116,7 @@ public class AllProcessor {
             int numAvgd = 0;
             for (ProcessedTeam team : teams.values()) {
                 if (team.id != 0) {
-                    totalScore += team.score.startingScore + team.entry.entry.event_transfers_cost;
+                    totalScore += team.score.startingScore + team.transferCost;
                     numAvgd++;
                 }
             }
