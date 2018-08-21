@@ -27,7 +27,7 @@ public class TeamProcessorLambda implements RequestHandler<Map<String, Object>, 
 
         int leagueId = 31187;
 
-        TeamProcessorDispatcher processor = new TeamProcessorDispatcher(EPLClientFactory.createClient(), teams, leagueId);
+        TeamProcessorDispatcher processor = new TeamProcessorDispatcher(EPLClientFactory.createClient(), teams, GlobalConfig.CloudAppConfig.CurrentGameWeek, leagueId);
         processor.start();
         Map<Integer, ProcessedTeam> processedTeams = processor.join();
         return new Gson().toJson(processedTeams);

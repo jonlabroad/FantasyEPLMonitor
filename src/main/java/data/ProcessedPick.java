@@ -1,7 +1,7 @@
 package data;
 
-import client.ScoreCalculator;
-import data.eplapi.Pick;
+        import client.ScoreCalculator;
+        import data.eplapi.Pick;
 
 public class ProcessedPick {
     public ProcessedPlayer footballer;

@@ -16,19 +16,21 @@ public class TeamProcessorDispatcher {
     EPLClient _client;
     Collection<Integer> _teamIds;
     int _gameweek;
+    int _leagueId;
     ArrayList<SingleTeamProcessor> _processors = new ArrayList<>();
 
-    public TeamProcessorDispatcher(EPLClient client, Collection<Integer> teamIds, int gameweek) {
+    public TeamProcessorDispatcher(EPLClient client, Collection<Integer> teamIds, int gameweek, int leagueId) {
         _client = client != null ? client : EPLClientFactory.createClient();
         _executor = new ParallelExecutor();
         _teamIds = teamIds;
         _gameweek = gameweek;
+        _leagueId = leagueId;
     }
 
     public void start() {
         for (int teamId : _teamIds) {
             ProcessedPlayerProvider playerProvider = new ProcessedPlayerProvider();
-            SingleTeamProcessor processor = new SingleTeamProcessor(playerProvider, teamId, _gameweek, _client);
+            SingleTeamProcessor processor = new SingleTeamProcessor(playerProvider, teamId, _gameweek, _leagueId, _client);
             _processors.add(processor);
             _executor.add(processor);
         }

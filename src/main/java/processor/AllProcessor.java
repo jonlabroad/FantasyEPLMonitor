@@ -46,7 +46,7 @@ public class AllProcessor {
 
         DateTime start = DateTime.now();
         CloudConfigUpdater configUpdater = new CloudConfigUpdater(_client);
-        boolean generateScoutingReports = false;
+        boolean generateScoutingReports = true;
         if (configUpdater.update()) {
             generateScoutingReports = true;
         }
@@ -63,7 +63,7 @@ public class AllProcessor {
             Collection<Integer> teamsToProcess = _client.getTeamsInLeague(_leagueId);
             teamsToProcess.addAll(getAllCupOpponents(teamsToProcess));
 
-            TeamProcessorDispatcher teamProcessor = new TeamProcessorDispatcher(_client, teamsToProcess, GlobalConfig.CloudAppConfig.CurrentGameWeek);
+            TeamProcessorDispatcher teamProcessor = new TeamProcessorDispatcher(_client, teamsToProcess, GlobalConfig.CloudAppConfig.CurrentGameWeek, _leagueId);
             teamProcessor.start();
             processedTeams = teamProcessor.join();
 
@@ -111,7 +111,7 @@ public class AllProcessor {
     private void estimateAverageScore(HashMap<Integer, ProcessedTeam> teams)
     {
         ProcessedTeam average = teams.get(0);
-        if (average != null) {
+        if (average != null && average.score.startingScore == 0) {
             int totalScore = 0;
             int numAvgd = 0;
             for (ProcessedTeam team : teams.values()) {

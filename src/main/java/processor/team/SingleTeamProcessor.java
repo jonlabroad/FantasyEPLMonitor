@@ -12,14 +12,16 @@ import java.util.List;
 
 public class SingleTeamProcessor implements IParallelizableProcess {
     private int _teamId;
+    int _leagueId;
     int _gameweek;
     EPLClient _client;
     ProcessedPlayerProvider _playerProvider;
     ProcessedTeam _processedTeam = null;
 
-    public SingleTeamProcessor(ProcessedPlayerProvider provider, int teamId, int gameweek, EPLClient client) {
+    public SingleTeamProcessor(ProcessedPlayerProvider provider, int teamId, int gameweek, int leagueId, EPLClient client) {
         _teamId = teamId;
         _gameweek = gameweek;
+        _leagueId = leagueId;
 
         _playerProvider = provider;
         _client = client;
@@ -40,8 +42,24 @@ public class SingleTeamProcessor implements IParallelizableProcess {
         }
         else {
             score = new Score();
-            score.startingScore = picks.entry_history.points;
-            score.subScore = picks.entry_history.points_on_bench;
+            if (picks != null) {
+                score.startingScore = picks.entry_history.points;
+                score.subScore = picks.entry_history.points_on_bench;
+            }
+            else {
+                // AVERAGE
+                Standings standings = _client.getStandings(_leagueId);
+                for (Match match : standings.matches_this.results) {
+                    if (match.entry_1_entry == 0) {
+                        score.startingScore = match.entry_1_points;
+                        break;
+                    }
+                    else if (match.entry_2_entry == 0) {
+                        score.startingScore = match.entry_2_points;
+                        break;
+                    }
+                }
+            }
         }
 
         // Merge all the events into a single stream
